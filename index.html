@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comité RSE — AfrSCM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --border: #d8d4cc;
+    --border-strong: #a09890;
+    --text: #1a1815;
+    --text-muted: #7a746c;
+    --accent: #2d5a8e;
+    --accent-light: #e8eff7;
+    --green: #2e7d52;
+    --green-bg: #eaf4ee;
+    --orange: #b85c00;
+    --orange-bg: #fdf0e0;
+    --blue: #1a5296;
+    --blue-bg: #e8f0fb;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--text);
+    padding: 32px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  header {
+    border-bottom: 2px solid var(--border-strong);
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+  header .org {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  header h1 {
+    font-family: var(--mono);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+  }
+  header .sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  section { margin-bottom: 28px; }
+
+  section h2 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+
+  .card {
+    display: block;
+    text-decoration: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border-strong);
+    border-radius: 3px;
+    padding: 12px 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .card:hover {
+    border-left-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  .card .card-title {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .card .card-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .card.accent-green  { border-left-color: var(--green); }
+  .card.accent-orange { border-left-color: var(--orange); }
+  .card.accent-blue   { border-left-color: var(--blue); }
+
+  .lucie-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 3px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.82rem;
+  }
+  .lucie-banner .pill {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 2px;
+    background: var(--orange-bg);
+    color: var(--orange);
+    white-space: nowrap;
+  }
+  .lucie-banner .info { color: var(--text-muted); line-height: 1.5; }
+
+  footer {
+    margin-top: 36px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="org">AfrSCM · Association Francophone de Supply Chain Management</div>
+  <h1>Comité RSE</h1>
+  <div class="sub">Tableau de bord — Responsable : Rémi Lequette</div>
+</header>
+
+<section>
+  <h2>Statut Label Lucie ISO 26000</h2>
+  <div class="lucie-banner">
+    <span class="pill">⏳ Renouvellement en cours</span>
+    <span class="info">Audit R2 reçu · Stratégie de réponse à définir · Approche pragmatique retenue</span>
+  </div>
+</section>
+
+<section>
+  <h2>Ressources du comité</h2>
+  <div class="cards">
+    <a class="card accent-blue" href="membres.html" target="_blank">
+      <div class="card-title">👥 Membres du comité</div>
+      <div class="card-desc">Fiches, rôles, contacts — François, Claire, Laetitia, Rémi</div>
+    </a>
+    <a class="card accent-green" href="engagements/index.html" target="_blank">
+      <div class="card-title">✅ Engagements Lucie</div>
+      <div class="card-desc">Suivi des engagements ISO 26000, statuts et responsables</div>
+    </a>
+    <a class="card" href="reunions/index.html" target="_blank">
+      <div class="card-title">📅 Réunions</div>
+      <div class="card-desc">Comptes rendus et ordres du jour — accès par date</div>
+    </a>
+  </div>
+</section>
+
+<section>
+  <h2>Agenda</h2>
+  <div class="cards">
+    <a class="card accent-orange" href="reunions/2026-05-27/index.html" target="_blank">
+      <div class="card-title">📅 Réunion Comité 27/05/2026</div>
+      <div class="card-desc">Première réunion du Comité RSE · 18h30 · Lecture seule</div>
+    </a>
+    <a class="card accent-orange" href="reunions/2026-05-27/index.html?reunion=2026-05-27" target="_blank">
+      <div class="card-title">✏ Réunion 27/05/2026 — Édition</div>
+      <div class="card-desc">Saisie des notes, décisions et actions en séance</div>
+    </a>
+    <div class="card">
+      <div class="card-title">🏛 CA 15/06/2026</div>
+      <div class="card-desc">Conseil d'Administration · Présentation RSE à préparer</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏛 CA 21/09/2026</div>
+      <div class="card-desc">Conseil d'Administration</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏛 CA 10/11/2026</div>
+      <div class="card-desc">Conseil d'Administration</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>AfrSCM · Comité RSE · mis à jour 2026-05-28</span>
+  <span>Dossier versionné sous Git — hors diffusion</span>
+</footer>
+
+</body>
+</html>
