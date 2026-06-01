@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engagements Lucie ISO 26000 — AfrSCM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --border: #ddd8ce;
+    --text: #1a1915;
+    --muted: #7a7568;
+    --accent: #2e5e3e;
+    --accent-light: #eaf2ec;
+    --amber: #c87a1a;
+    --amber-light: #fdf3e3;
+    --red: #b53030;
+    --red-light: #fdeaea;
+    --modified: #fff8e6;
+    --modified-border: #e6b84a;
+    --cr-bg: #f0f4ff;
+    --cr-border: #5a7ab8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  body.embed-mode header, body.embed-mode .toolbar, body.embed-mode .patch-bar,
+  body.embed-mode main, body.embed-mode footer { display: none !important; }
+  body.embed-mode #change-summary { display: block !important; padding: 0; }
+
+  header {
+    background: var(--accent); color: white;
+    padding: 1.2rem 2.5rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  header .logo-zone h1 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; }
+  header .logo-zone .sub { font-size: 0.72rem; font-weight: 300; opacity: 0.75; margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  header .reunion-badge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); border-radius: 6px; padding: 0.3rem 0.75rem; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.02em; white-space: nowrap; }
+  header .edit-indicator { background: var(--amber); color: white; border-radius: 6px; padding: 0.3rem 0.75rem; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  header .cr-indicator { background: var(--cr-border); color: white; border-radius: 6px; padding: 0.3rem 0.75rem; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  header .stats { margin-left: auto; display: flex; gap: 1.8rem; align-items: center; }
+  .stat-pill { text-align: center; }
+  .stat-pill .val { font-family: 'DM Serif Display', serif; font-size: 1.7rem; line-height: 1; }
+  .stat-pill .lbl { font-size: 0.65rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .toolbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.7rem 2.5rem; display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: center; }
+  .filter-group { display: flex; gap: 0.3rem; align-items: center; flex-wrap: wrap; }
+  .filter-group .group-label { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-right: 0.15rem; white-space: nowrap; }
+  .filter-btn { border: 1.5px solid var(--border); background: transparent; border-radius: 20px; padding: 0.22rem 0.7rem; font-size: 0.73rem; font-family: 'DM Sans', sans-serif; color: var(--text); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .filter-btn.modified-btn.active { background: var(--amber); border-color: var(--amber); color: white; }
+  .filter-select { border: 1.5px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0.22rem 0.6rem; font-size: 0.73rem; font-family: 'DM Sans', sans-serif; color: var(--text); cursor: pointer; outline: none; transition: border-color 0.15s; max-width: 220px; }
+  .filter-select:hover, .filter-select:focus { border-color: var(--accent); }
+  .view-toggle { margin-left: auto; display: flex; gap: 0.2rem; border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .view-btn { background: transparent; border: none; padding: 0.28rem 0.75rem; font-size: 0.73rem; font-family: 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+  .view-btn.active { background: var(--accent); color: white; }
+
+  .patch-bar { background: #fffbf0; border-bottom: 2px solid var(--modified-border); padding: 0.55rem 2.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .patch-bar .patch-info { font-size: 0.78rem; color: var(--amber); font-weight: 500; flex: 1; }
+  .btn-patch { border: 1.5px solid var(--modified-border); background: white; border-radius: 6px; padding: 0.3rem 0.9rem; font-size: 0.75rem; font-family: 'DM Sans', sans-serif; color: var(--amber); cursor: pointer; font-weight: 500; transition: all 0.15s; }
+  .btn-patch:hover { background: var(--amber); color: white; border-color: var(--amber); }
+  .btn-patch:disabled { opacity: 0.4; cursor: default; }
+  .btn-patch-clear { color: var(--muted); border-color: var(--border); }
+  .btn-patch-clear:hover { background: var(--red); color: white; border-color: var(--red); }
+  .btn-patch-cr { color: var(--cr-border); border-color: var(--cr-border); }
+  .btn-patch-cr:hover { background: var(--cr-border); color: white; border-color: var(--cr-border); }
+
+  main { padding: 1.5rem 2.5rem; max-width: 1600px; margin: 0 auto; }
+  .main-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+  .main-layout .table-col { flex: 1; min-width: 0; }
+  .main-layout .edit-col { width: 360px; flex-shrink: 0; position: sticky; top: 1rem; }
+
+  .table-wrap { overflow-x: auto; }
+  table.eng-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; background: var(--surface); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+  table.eng-table thead th { background: var(--bg); border-bottom: 2px solid var(--border); padding: 0.5rem 0.8rem; text-align: left; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); white-space: nowrap; cursor: pointer; user-select: none; }
+  table.eng-table thead th:hover { color: var(--accent); }
+  table.eng-table thead th .sort-arrow { margin-left: 3px; opacity: 0.4; }
+  table.eng-table thead th.sorted .sort-arrow { opacity: 1; color: var(--accent); }
+  table.eng-table tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
+  table.eng-table tbody tr:last-child { border-bottom: none; }
+  table.eng-table tbody tr:hover { background: var(--accent-light); }
+  table.eng-table tbody tr.selected { background: #d4e8d8; }
+  table.eng-table tbody tr.row-modified td { background: #fef3cd; }
+  table.eng-table tbody tr.row-modified td:first-child { border-left: 4px solid var(--amber); }
+  table.eng-table tbody tr.row-modified:hover td { background: #fde8a0; }
+  table.eng-table tbody tr.row-modified.selected td { background: #fcd97a; }
+  table.eng-table td { padding: 0.55rem 0.8rem; vertical-align: middle; }
+
+  .pa-tag { font-weight: 600; font-size: 0.72rem; letter-spacing: 0.05em; color: white; padding: 0.15rem 0.5rem; border-radius: 4px; white-space: nowrap; display: inline-block; }
+  .obj-text { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+  .dom-chip { font-size: 0.67rem; border-radius: 4px; padding: 0.12rem 0.45rem; white-space: nowrap; display: inline-block; color: white; }
+  .badge-sm { font-size: 0.67rem; border-radius: 4px; padding: 0.12rem 0.45rem; font-weight: 500; white-space: nowrap; display: inline-block; }
+  .badge-engage     { background: var(--accent-light); color: var(--accent); }
+  .badge-non-engage { background: #f3f3f3; color: var(--muted); border: 1px solid var(--border); }
+  .badge-priorite   { background: #fff0f0; color: var(--red); }
+  .badge-referent   { background: var(--amber-light); color: var(--amber); }
+  .badge-modified   { background: var(--modified); color: var(--amber); border: 1px solid var(--modified-border); font-size: 0.62rem; }
+
+  .mini-bar-wrap { display: flex; align-items: center; gap: 5px; }
+  .mini-bar-track { width: 55px; height: 5px; background: var(--bg); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); flex-shrink: 0; }
+  .mini-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+  .mini-pct { font-size: 0.68rem; color: var(--muted); min-width: 26px; }
+
+  .risk-badge { display: inline-block; font-size: 0.67rem; font-weight: 500; padding: 0.12rem 0.45rem; border-radius: 4px; }
+  .risk-Faible { background: var(--accent-light); color: var(--accent); }
+  .risk-Moyen  { background: var(--amber-light); color: var(--amber); }
+  .risk-Eleve  { background: var(--red-light); color: var(--red); }
+
+  .btn-edit-row { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 0.15rem 0.4rem; cursor: pointer; font-size: 0.75rem; color: var(--muted); transition: all 0.15s; line-height: 1; }
+  .btn-edit-row:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  #detail-panel { margin-top: 1.1rem; display: none; animation: slideIn 0.18s ease; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .edit-panel { background: var(--surface); border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; animation: slideIn 0.18s ease; }
+  .edit-panel-header { background: var(--accent); color: white; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .edit-panel-header .pa-tag { background: rgba(255,255,255,0.25); font-size: 0.78rem; }
+  .edit-panel-header .ep-title { font-size: 0.82rem; flex: 1; line-height: 1.4; }
+  .edit-panel-header .btn-close-edit { background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 1rem; padding: 0; line-height: 1; }
+  .edit-panel-header .btn-close-edit:hover { color: white; }
+  .edit-panel-body { padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.9rem; }
+  .edit-field label { display: block; font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.3rem; }
+  .toggle-engage { display: flex; gap: 0.4rem; }
+  .toggle-btn { flex: 1; border: 1.5px solid var(--border); background: transparent; border-radius: 6px; padding: 0.35rem 0; font-size: 0.75rem; font-family: 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; transition: all 0.15s; text-align: center; }
+  .toggle-btn.on  { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .toggle-btn.off { background: #f3f3f3; border-color: var(--border); color: var(--muted); }
+  .toggle-btn:disabled { opacity: 0.6; cursor: default; }
+  .edit-select { width: 100%; border: 1.5px solid var(--border); background: var(--surface); border-radius: 6px; padding: 0.35rem 0.6rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; }
+  .edit-select:focus { border-color: var(--accent); }
+  .edit-select:disabled { background: var(--bg); color: var(--muted); cursor: default; }
+
+  .new-ref-wrap { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+  .new-ref-input { flex: 1; border: 1.5px solid var(--amber); background: var(--surface); border-radius: 6px; padding: 0.32rem 0.6rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; }
+  .new-ref-input:focus { border-color: var(--accent); }
+  .btn-new-ref-ok { background: var(--accent); border: none; color: white; border-radius: 6px; padding: 0.32rem 0.7rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap; }
+  .btn-new-ref-cancel { background: transparent; border: 1.5px solid var(--border); color: var(--muted); border-radius: 6px; padding: 0.32rem 0.6rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+
+  .slider-wrap { display: flex; align-items: center; gap: 0.6rem; }
+  .slider-wrap input[type=range] { flex: 1; accent-color: var(--accent); }
+  .slider-wrap input[type=range]:disabled { opacity: 0.6; cursor: default; }
+  .slider-val { font-size: 0.8rem; font-weight: 600; color: var(--accent); min-width: 32px; text-align: right; }
+  .edit-note { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; color: var(--text); resize: vertical; min-height: 60px; outline: none; }
+  .edit-note:focus { border-color: var(--accent); }
+  .edit-note:disabled { background: var(--bg); color: var(--muted); cursor: default; resize: none; }
+  .edit-field.field-modified { border-left: 3px solid var(--amber); padding-left: 0.6rem; background: var(--amber-light); border-radius: 0 4px 4px 0; }
+  .btn-cancel-edit { background: transparent; border: 1.5px solid var(--border); color: var(--muted); border-radius: 6px; padding: 0.35rem 0.8rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+  .btn-cancel-edit:hover { border-color: var(--red); color: var(--red); }
+
+  .diff-field { display: flex; flex-direction: column; gap: 0.25rem; }
+  .diff-avant { font-size: 0.75rem; color: var(--muted); text-decoration: line-through; }
+  .diff-apres { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+  .diff-label { font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.2rem; }
+
+  .detail-card { background: var(--surface); border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; }
+  .detail-card-header { display: flex; align-items: flex-start; gap: 0.9rem; padding: 0.9rem 1.2rem 0.6rem; border-bottom: 1px solid var(--border); }
+  .detail-objectif { font-size: 0.9rem; line-height: 1.5; color: var(--text); flex: 1; }
+  .detail-badges-row { display: flex; gap: 0.4rem; padding: 0.55rem 1.2rem; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border); }
+  .detail-avancement { padding: 0.5rem 1.2rem 0.4rem; border-bottom: 1px solid var(--border); }
+  .bar-label { display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--muted); margin-bottom: 0.25rem; }
+  .bar-track { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+  .bar-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.5s ease; }
+  .detail-body { padding: 0.7rem 1.2rem 0.9rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .info-block label { display: block; font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.2rem; }
+  .info-block p { font-size: 0.78rem; line-height: 1.55; color: var(--text); }
+  .info-block.full { grid-column: 1 / -1; }
+  .indicateur-val { display: inline-block; background: var(--accent-light); color: var(--accent); border-radius: 4px; padding: 0.12rem 0.45rem; font-weight: 600; font-size: 0.72rem; margin-top: 0.25rem; }
+  .detail-close-row { padding: 0.45rem 1.2rem 0.7rem; text-align: right; border-top: 1px solid var(--border); }
+  .btn-close-detail { border: 1.5px solid var(--border); background: transparent; border-radius: 6px; padding: 0.28rem 0.8rem; font-size: 0.73rem; font-family: 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; }
+  .btn-close-detail:hover { border-color: var(--red); color: var(--red); }
+
+  .domain-section { margin-bottom: 2rem; }
+  .domain-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.85rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--border); }
+  .domain-badge { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .domain-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; font-weight: 400; }
+  .domain-count { margin-left: auto; font-size: 0.68rem; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 0.1rem 0.5rem; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 1rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .card-header { display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1rem 0.5rem; border-bottom: 1px solid var(--border); }
+  .card-objectif { font-size: 0.84rem; line-height: 1.45; color: var(--text); flex: 1; }
+  .badges-row { display: flex; gap: 0.35rem; padding: 0 1rem 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.35rem; }
+  .avancement-bar { margin: 0 1rem 0.55rem; }
+  .card-body { padding: 0 1rem 0.8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+  .empty-state { text-align: center; padding: 3rem 2rem; color: var(--muted); font-size: 0.88rem; }
+  footer { text-align: center; padding: 1.2rem; font-size: 0.68rem; color: var(--muted); border-top: 1px solid var(--border); margin-top: 2rem; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .modal-box { background: var(--surface); border-radius: 10px; padding: 1.5rem; max-width: 420px; width: 90%; box-shadow: 0 8px 40px rgba(0,0,0,0.2); }
+  .modal-box h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 0.6rem; }
+  .modal-box p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-bottom: 1.2rem; }
+  .modal-btns { display: flex; gap: 0.6rem; justify-content: flex-end; }
+  .modal-btns button { border-radius: 6px; padding: 0.4rem 1rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--text); }
+  .modal-btns .btn-restore { background: var(--accent); color: white; border-color: var(--accent); }
+
+  #change-summary { display: none; }
+  #change-summary.visible { display: block; }
+  .change-summary-inner { background: var(--surface); border: 1.5px solid var(--modified-border); border-radius: 8px; padding: 1rem 1.2rem; margin: 1rem 2.5rem; }
+  .change-summary-inner h3 { font-family: 'DM Serif Display', serif; font-size: 1rem; font-weight: 400; margin-bottom: 0.7rem; color: var(--amber); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .change-summary-inner h3:hover { opacity: 0.85; }
+  .cs-toggle { font-size: 0.72rem; font-family: 'DM Sans', sans-serif; color: var(--amber); border: 1px solid var(--modified-border); border-radius: 4px; padding: 0.1rem 0.45rem; transition: background 0.15s; }
+  .change-summary-inner h3:hover .cs-toggle { background: var(--amber); color: white; }
+  .cs-body { overflow: hidden; transition: max-height 0.25s ease, opacity 0.2s ease; }
+  .cs-body.collapsed { max-height: 0 !important; opacity: 0; }
+  .cs-row { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+  .cs-row:last-child { border-bottom: none; }
+  .cs-pa { font-weight: 600; min-width: 42px; }
+  .cs-field { color: var(--muted); min-width: 80px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 0.1rem; }
+  .cs-avant { color: var(--muted); text-decoration: line-through; }
+  .cs-apres { color: var(--accent); font-weight: 500; }
+  .cs-arrow { color: var(--border); }
+  .cs-note { color: var(--muted); font-style: italic; }
+
+  @media (max-width: 900px) { .main-layout { flex-direction: column; } .main-layout .edit-col { width: 100%; position: static; } }
+  @media (max-width: 700px) { header, main, .toolbar, .patch-bar { padding-left: 1rem; padding-right: 1rem; } .cards-grid { grid-template-columns: 1fr; } .card-body, .detail-body { grid-template-columns: 1fr; } .view-toggle { margin-left: 0; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-zone">
+    <h1>Engagements Lucie ISO 26000</h1>
+    <div class="sub">AfrSCM — Comite RSE - Renouvellement Label</div>
+  </div>
+  <div id="reunion-badge" style="display:none" class="reunion-badge"></div>
+  <div id="edit-indicator" style="display:none" class="edit-indicator">Edition</div>
+  <div id="cr-indicator" style="display:none" class="cr-indicator">CR</div>
+  <div class="stats">
+    <div class="stat-pill"><div class="val" id="stat-total">-</div><div class="lbl">Engagements</div></div>
+    <div class="stat-pill"><div class="val" id="stat-engages">-</div><div class="lbl">Engages</div></div>
+    <div class="stat-pill"><div class="val" id="stat-domaines">-</div><div class="lbl">Domaines</div></div>
+  </div>
+</header>
+
+<div class="patch-bar" id="patch-bar" style="display:none">
+  <div class="patch-info" id="patch-info">Aucune modification</div>
+  <button class="btn-patch btn-patch-clear" onclick="clearPatch()">Effacer le patch</button>
+  <input type="file" accept=".json" id="import-patch-input" style="display:none" onchange="importPatch(this)">
+  <button class="btn-patch" onclick="document.getElementById('import-patch-input').click()">Importer un patch</button>
+  <button class="btn-patch btn-patch-cr" id="btn-passer-cr" onclick="passerCR()" style="display:none">Passer en CR</button>
+  <button class="btn-patch" id="btn-export-patch" onclick="exportPatch()" disabled>Exporter le Patch</button>
+</div>
+
+<div id="change-summary">
+  <div class="change-summary-inner" id="change-summary-inner"></div>
+</div>
+
+<div class="toolbar">
+  <div class="filter-group">
+    <span class="group-label">Statut :</span>
+    <button class="filter-btn active" data-type="statut" data-val="all">Tous</button>
+    <button class="filter-btn" data-type="statut" data-val="engage">Engages</button>
+    <button class="filter-btn" data-type="statut" data-val="non-engage">Non engages</button>
+    <button class="filter-btn" data-type="statut" data-val="priorite">Priorite 1</button>
+  </div>
+  <div class="filter-group">
+    <span class="group-label">Domaine :</span>
+    <select id="select-domaine" class="filter-select"><option value="all">Tous les domaines</option></select>
+  </div>
+  <div class="filter-group" id="filter-referent-group">
+    <span class="group-label">Referent :</span>
+  </div>
+  <div class="view-toggle">
+    <button class="view-btn active" id="btn-view-table" onclick="setView('table')">Tableau</button>
+    <button class="view-btn" id="btn-view-cards" onclick="setView('cards')">Cartes</button>
+  </div>
+</div>
+
+<main>
+  <div id="view-table">
+    <div class="main-layout">
+      <div class="table-col">
+        <div class="table-wrap">
+          <table class="eng-table">
+            <thead>
+              <tr>
+                <th data-col="pa" onclick="sortBy('pa')">PA <span class="sort-arrow">&#8597;</span></th>
+                <th data-col="domaine" onclick="sortBy('domaine')">Domaine <span class="sort-arrow">&#8597;</span></th>
+                <th>Objectif</th>
+                <th data-col="engage" onclick="sortBy('engage')">Statut <span class="sort-arrow">&#8597;</span></th>
+                <th data-col="referent" onclick="sortBy('referent')">Referent <span class="sort-arrow">&#8597;</span></th>
+                <th data-col="avancement" onclick="sortBy('avancement')">Avancement <span class="sort-arrow">&#8597;</span></th>
+                <th data-col="risque" onclick="sortBy('risque')">Risque <span class="sort-arrow">&#8597;</span></th>
+                <th id="col-edit" style="display:none; width:36px;"></th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+        <div id="detail-panel"><div class="detail-card" id="detail-card-inner"></div></div>
+      </div>
+      <div class="edit-col" id="edit-col" style="display:none">
+        <div class="edit-panel" id="edit-panel"></div>
+      </div>
+    </div>
+  </div>
+  <div id="view-cards" style="display:none"><div id="cards-content"></div></div>
+</main>
+
+<div class="modal-overlay" id="modal-restore" style="display:none">
+  <div class="modal-box">
+    <h3>Patch en cours detecte</h3>
+    <p id="modal-restore-msg"></p>
+    <div class="modal-btns">
+      <button onclick="dismissRestore()">Ignorer</button>
+      <button class="btn-restore" onclick="doRestore()">Restaurer</button>
+    </div>
+  </div>
+</div>
+
+<footer id="footer-info"></footer>
+
+<script>
+const DOMAIN_COLORS = {
+  'Gouvernance responsable':                        '#2e5e3e',
+  'Droits des personnes':                           '#6e3a1a',
+  'Relations et conditions de travail responsables':'#1a3e6e',
+  'Environnement':                                  '#3a6e1a',
+  "Ethique dans les relations d'affaires":          '#5e1a5e',
+  'Interets des consommateurs':                     '#1a5e5e',
+  'Developpement local et interet general':         '#5e4a1a',
+};
+
+// --- SOURCE UNIQUE ------------------------------------------------------------
+const DATA = [
+  { domaine: "Gouvernance responsable", pa: "PA01", priorite: 1, referent: "", objectif: "Structurer la gouvernance RSO afin de garantir la cohérence entre les valeurs de l'association et ses décisions stratégiques.", indicateur: "Signature des chartes administrateurs 100% | Présence au comité RSE 75%", cible: "75%", engage: 1, avancement: 0.4, risque: "Faible", ct: "Chartes comité RSO Administrateurs et Formateurs intégrant un volet RSO", lt: "Matrice de matérialité et Strategie RSO formalisée | Synthèse du questionnaire des parties prenantes" },
+  { domaine: "Gouvernance responsable", pa: "PA02", priorite: 1, referent: "", objectif: "Cartographier et piloter les risques afin de sécuriser la pérennité économique et opérationnelle de l'association.", indicateur: "Taux de couverture des risques critiques par un plan d'action.", cible: "90%", engage: 0, avancement: 0, risque: "Faible", ct: "Analyse SWOT, Cartographie des risques.", lt: "Feuille de route pluriannuelle des developpements et pistes d'innovation | Plan d'actions de maitrise des risques et suivi à jour" },
+  { domaine: "Droits des personnes", pa: "PA03", priorite: 1, referent: "Laetitia", objectif: "Sécuriser l'éthique des relations afin de garantir un environnement de travail et d'échange mutuel sans harcèlement ni discrimination.", indicateur: "Taux de membres du Bureau/CA sensibilisés à la procédure d'alerte. | Nombre d'événements tenus conformément à la charte (70%)", cible: "100%", engage: 0, avancement: 0, risque: "Faible", ct: "Procédure d'alerte formalisée, Désignation du référent éthique.", lt: "Support de communication aux parties prenantes | Charte des evenements" },
+  { domaine: "Droits des personnes", pa: "PA04", priorite: 1, referent: "Laetitia", objectif: "Promouvoir activement la diversité afin de refléter la richesse des métiers de la Supply Chain et assurer l'égalité des chances.", indicateur: "Part du genre le moins représenté au sein du CA.", cible: "40%", engage: 0, avancement: 0, risque: "Faible", ct: "Guide \"questions interdites\" (document de référence interne)", lt: "Tableau de suivi de la composition du CA et du Bureau | Modèles de contrats intégrant la clause non-discrimination" },
+  { domaine: "Droits des personnes", pa: "PA05", priorite: 0, referent: "Remi", objectif: "Fiabiliser la gestion des données afin de garantir la vie privée des membres et la conformité stricte au RGPD.", indicateur: "Taux de conformité du registre de traitement (auto-évaluation CNIL).", cible: "90%", engage: 0, avancement: 0, risque: "Faible", ct: "Nomination d'un référent RGPD | Registre des traitements de données (modèle CNIL) | Cartographie des flux de données | Tableau de suivi des mises à jour du registre | Attestation de conformité RGPD du prestataire informatique", lt: "Clauses RGPD dans les contrats | Procédure de suppression / anonymisation des données | Registre de suppression des données | Relevé de conformité transmis au CA annuellement | Rapport annuel de conformité RGPD | Grille d'autoévaluation CNIL | Guide de bonnes pratiques RGPD" },
+  { domaine: "Relations et conditions de travail responsables", pa: "PA07", priorite: 0, referent: "", objectif: "Clarifier les rôles et parcours afin de favoriser l'engagement durable et le bien-être des administrateurs et formateurs.", indicateur: "Taux de satisfaction globale des collaborateurs (Baromètre QVT).", cible: "80%", engage: 0, avancement: 0, risque: "Faible", ct: "Fiches de poste validées et diffusées | Parcours administrateurs mis à jour | Rapport d'étonnement et plan d'actions associé.", lt: "Calendrier et compte rendu des moments conviviaux | Sondage QVT et mini-baromètre interne | Témoignages valorisant les actions QVT dans la newsletter" },
+  { domaine: "Relations et conditions de travail responsables", pa: "PA08", priorite: 0, referent: "", objectif: "Fluidifier la communication interne afin de renforcer l'adhésion des parties prenantes aux projets de l'association.", indicateur: "Taux de participation aux enquêtes de consultation interne.", cible: "70%", engage: 0, avancement: 0, risque: "Faible", ct: "Questionnaire d'enquête parties prenantes internes | Rapport de diagnostic sur la communication | Calendrier annuel des réunions | Procédure ou charte de communication interne | Modèle de compte rendu partagé | Fiche de rôle du référent communication", lt: "Synthèse des résultats et plan d'amélioration | Calendrier annuel des réunions | Procédure ou charte de communication interne" },
+  { domaine: "Relations et conditions de travail responsables", pa: "PA09", priorite: 0, referent: "", objectif: "Anticiper les risques santé/sécurité afin de protéger l'intégrité physique et mentale des intervenants lors des événements.", indicateur: "Pourcentage d'événements majeurs ayant fait l'objet d'un brief sécurité.", cible: "100%", engage: 0, avancement: 0, risque: "Faible", ct: "Cartographie des RPS, Fiche \"Minute Prévention\", Check-list sécurité.", lt: "Registre de suivi des incidents et actions correctives | Synthèse annuelle Santé et sécurité présentée au CA" },
+  { domaine: "Relations et conditions de travail responsables", pa: "PA10", priorite: 0, referent: "", objectif: "Professionnaliser la gouvernance RSO afin de doter les élus des compétences nécessaires au pilotage de la transition.", indicateur: "% d'administrateur-es ayant répondu au questionnaire 90% | % d'administrateur-es ayant suivi la formation 90%", cible: "4h/élu", engage: 0, avancement: 0, risque: "Faible", ct: "Questionnaire besoin formation", lt: "Feuille de présence et retour formation, synthèse annuelle" },
+  { domaine: "Environnement", pa: "PA12", priorite: 0, referent: "", objectif: "Sélectionner des certifications et des serious games promouvant l'éco-conception et l'économie circulaire afin de promouvoir les supply chains responsables.", indicateur: "Visibilité de la page web 40/mois | Suivi des webinaires 5 personnes/mois", cible: "", engage: 0, avancement: 0, risque: "Faible", ct: "Plan de communication intégrant la RSO | Page web SC responsable", lt: "Synthèse annuelle SC responsable" },
+  { domaine: "Environnement", pa: "PA13", priorite: 0, referent: "", objectif: "Optimiser l'usage des ressources afin de tendre vers la sobriété numérique et matérielle de l'association.", indicateur: "Réduction de la consommation de ressources (matériel de bureau)", cible: "-20%", engage: 0, avancement: 0, risque: "Faible", ct: "Diagnostic des consommations, Guide des écogestes numériques.", lt: "Rapport annuel consommation" },
+  { domaine: "Environnement", pa: "PA14", priorite: 0, referent: "", objectif: "Réduire les nuisances liées aux événements afin de minimiser l'impact direct sur l'environnement.", indicateur: "Taux annuel d'événements conformes au guide de minimisation des impacts environnement", cible: "80%", engage: 0, avancement: 0, risque: "Faible", ct: "Éco-guide de l'association pour les évènements | Référence au guide dans les chartes", lt: "Rapport annuel de suivi des évènements" },
+  { domaine: "Environnement", pa: "PA15", priorite: 0, referent: "", objectif: "Piloter l'empreinte carbone afin de définir une trajectoire de décarbonation réaliste pour les activités de l'association.", indicateur: "Nombre d'événements ayant fait l'objet d'un calcul d'empreinte carbone.", cible: "5", engage: 0, avancement: 0, risque: "Faible", ct: "Guide de calcul de l'empreinte carbone pour les évènements", lt: "Rapport annuel d'impact carbone" },
+  { domaine: "Ethique dans les relations d'affaires", pa: "PA17", priorite: 0, referent: "", objectif: "Cadrer les pratiques de concurrence afin de protéger la propriété intellectuelle et garantir une déontologie exemplaire.", indicateur: "Taux de chartes enseignants signées intégrant le volet copyright.", cible: "95%", engage: 0, avancement: 0, risque: "Faible", ct: "Chartes enseignants mises à jour et signées", lt: "Rapport à l'AG" },
+  { domaine: "Ethique dans les relations d'affaires", pa: "PA18", priorite: 0, referent: "", objectif: "Engager les fournisseurs dans la RSO afin de diffuser les bonnes pratiques sur l'ensemble de la chaîne de valeur.", indicateur: "Part des contrats fournisseurs incluant une clause de responsabilité sociétale.", cible: "70%", engage: 0, avancement: 0, risque: "Faible", ct: "Modèle de contrat avec clauses RSO, Formulaire évaluation fournisseur.", lt: "Contrats signés | Rapport de suivi" },
+  { domaine: "Ethique dans les relations d'affaires", pa: "PA19", priorite: 0, referent: "", objectif: "Équilibrer les relations partenaires afin de prévenir tout risque de dépendance économique réciproque.", indicateur: "Délai moyen de paiement des fournisseurs (en jours).", cible: "< 30 j", engage: 0, avancement: 0, risque: "Faible", ct: "Grille d'analyse de dépendance", lt: "Reporting comptable délais de paiement." },
+  { domaine: "Intérets des consommateurs", pa: "PA21", priorite: 0, referent: "", objectif: "Garantir la sécurité des services afin de prévenir tout incident lors des formations et protéger la santé des adhérents.", indicateur: "Événements conformes au guide.", cible: "100%", engage: 0, avancement: 0, risque: "Faible", ct: "Guide de prévention des risques", lt: "Rapport de suivi des évènements" },
+  { domaine: "Intérets des consommateurs", pa: "PA22", priorite: 0, referent: "", objectif: "Monitorer la satisfaction client afin de garantir une amélioration continue de la qualité pédagogique des offres.", indicateur: "Score moyen de satisfaction (CSAT) sur les formations.", cible: "8,5/10", engage: 0, avancement: 0, risque: "Faible", ct: "Questionnaire de satisfaction", lt: "Tableau de bord satisfaction | Synthèse des critiques et plan d'action" },
+  { domaine: "Developpement local et intérêt général", pa: "PA24", priorite: 0, referent: "", objectif: "Soutenir le dynamisme local afin de renforcer l'ancrage territorial de l'association et favoriser l'insertion.", indicateur: "Nombre d'interventions réalisées dans des écoles ou universités régionales.", cible: "6/an", engage: 0, avancement: 0, risque: "Faible", ct: "Calendrier des interventions locales", lt: "Rapport AG" },
+  { domaine: "Developpement local et intérêt général", pa: "PA25", priorite: 0, referent: "", objectif: "Favoriser le partage de connaissances afin de démocratiser les enjeux de la Supply Chain responsable auprès du plus grand nombre.", indicateur: "Taux d'événements intégrant un sujet RSO.", cible: "50%", engage: 0, avancement: 0, risque: "Faible", ct: "Programme des webinaires, Statistiques de participation.", lt: "Rapport AG, retour des questionnaires" },
+];
+// -----------------------------------------------------------------------------
+
+// --- CHANGE_DATA -------------------------------------------------------------
+const CHANGE_DATA = [
+  {
+    "pa": "PA01",
+    "referent": {
+      "avant": "",
+      "apres": "Laetitia"
+    },
+    "avancement": {
+      "avant": 0.4,
+      "apres": 0.35
+    },
+    "note": "La modification de la charte est prete.\nLes administrateur-es non actifs peuvent poser un problème pour le KPI, point à discuter en bureau."
+  },
+  {
+    "pa": "PA02",
+    "referent": {
+      "avant": "",
+      "apres": "François"
+    },
+    "risque": {
+      "avant": "Faible",
+      "apres": "Moyen"
+    },
+    "note": "Besoin du soutien des autres membres et du bureau pour organiser les séances de brainstorming. \nVoir la gestion des risques, ressource de la réunion."
+  },
+  {
+    "pa": "PA05",
+    "note": "A mettre en prioritaire c'est une conformité"
+  },
+  {
+    "pa": "PA12",
+    "referent": {
+      "avant": "",
+      "apres": "Claire"
+    },
+    "note": "C'est un bon axe pour la communication, aligné avec la stratégie RSE."
+  }
+];
+// -----------------------------------------------------------------------------
+
+// --- MODE --------------------------------------------------------------------
+const MODE = "cr"; // valeurs : "lecture" | "edition" | "cr"
+// -----------------------------------------------------------------------------
+
+// --- APPLY -------------------------------------------------------------------
+function applyPatch(htmlFile, patch) {
+  // Cle primaire : pa — Champs editables : engage, referent, avancement, risque (+ note hors DATA)
+  const newEntries = [];
+  for (const mod of (patch.modifications || [])) {
+    const entry = {};
+    for (const field of ['engage', 'referent', 'avancement', 'risque']) {
+      if (mod[field] !== undefined) entry[field] = mod[field];
+    }
+    if (mod.note !== undefined) entry.note = mod.note;
+    if (Object.keys(entry).length > 0) newEntries.push({ pa: mod.pa, ...entry });
+  }
+  const newBlock = '// --- CHANGE_DATA -------------------------------------------------------------\n'
+    + 'const CHANGE_DATA = ' + JSON.stringify(newEntries, null, 2) + ';\n'
+    + '// -----------------------------------------------------------------------------';
+  return htmlFile.replace(
+    /\/\/ --- CHANGE_DATA -+\nconst CHANGE_DATA = \[[\s\S]*?\];\n\/\/ -+/,
+    newBlock
+  );
+}
+// -----------------------------------------------------------------------------
+
+// --- MERGE -------------------------------------------------------------------
+function mergeChanges(htmlFile) {
+  // Fusionne CHANGE_DATA dans DATA, vide CHANGE_DATA, remet MODE a "lecture"
+  const dataMatch = htmlFile.match(/\/\/ --- SOURCE UNIQUE -+\nconst DATA = (\[[\s\S]*?\]);\n\/\/ -+/);
+  if (!dataMatch) throw new Error('Bloc SOURCE UNIQUE introuvable');
+  let data = JSON.parse(dataMatch[1]);
+  const cdMatch = htmlFile.match(/\/\/ --- CHANGE_DATA -+\nconst CHANGE_DATA = (\[[\s\S]*?\]);\n\/\/ -+/);
+  if (!cdMatch) throw new Error('Bloc CHANGE_DATA introuvable');
+  const changes = JSON.parse(cdMatch[1]);
+  for (const change of changes) {
+    const idx = data.findIndex(r => r.pa === change.pa);
+    if (idx === -1) continue;
+    for (const field of ['engage', 'referent', 'avancement', 'risque']) {
+      if (change[field] !== undefined) {
+        const val = change[field];
+        data[idx][field] = (val && val.apres !== undefined) ? val.apres : val;
+      }
+    }
+  }
+  const newDataBlock = '// --- SOURCE UNIQUE ------------------------------------------------------------\n'
+    + 'const DATA = ' + JSON.stringify(data, null, 2) + ';\n'
+    + '// -----------------------------------------------------------------------------';
+  htmlFile = htmlFile.replace(/\/\/ --- SOURCE UNIQUE -+\nconst DATA = \[[\s\S]*?\];\n\/\/ -+/, newDataBlock);
+  htmlFile = htmlFile.replace(
+    /\/\/ --- CHANGE_DATA -+\nconst CHANGE_DATA = \[[\s\S]*?\];\n\/\/ -+/,
+    '// --- CHANGE_DATA -------------------------------------------------------------\nconst CHANGE_DATA = [];\n// -----------------------------------------------------------------------------'
+  );
+  htmlFile = htmlFile.replace(
+    /\/\/ --- MODE -+\nconst MODE = "[^"]*";[^\n]*/,
+    '// --- MODE --------------------------------------------------------------------\nconst MODE = "lecture"; // valeurs : "lecture" | "edition" | "cr"'
+  );
+  return htmlFile;
+}
+// -----------------------------------------------------------------------------
+
+// Runtime : deriver l'etat depuis MODE fichier + parametres URL
+const urlParams   = new URLSearchParams(window.location.search);
+const _urlReunion = urlParams.get('reunion') || urlParams.get('session') || null;
+const _urlCR      = urlParams.get('cr') === 'true';
+const _urlEmbed   = urlParams.get('embed') === 'true';
+const _patchDate  = CHANGE_DATA.length > 0 && CHANGE_DATA[0]._reunion_date ? CHANGE_DATA[0]._reunion_date : null;
+const REUNION_DATE = _urlReunion || _patchDate || null;
+
+let _runtimeMode = MODE;
+if (_urlEmbed)        _runtimeMode = 'embed';
+else if (_urlCR)      _runtimeMode = 'cr';
+else if (_urlReunion) _runtimeMode = 'edition';
+
+const EDIT_MODE  = _runtimeMode === 'edition';
+const CR_MODE    = _runtimeMode === 'cr';
+const EMBED_MODE = _runtimeMode === 'embed';
+const IDB_KEY    = REUNION_DATE ? 'afrscm-patch-engagements-' + REUNION_DATE : null;
+
+// Initialiser CHANGES depuis CHANGE_DATA
+let CHANGES = {};
+let extraReferents = [];
+for (const entry of CHANGE_DATA) {
+  if (!entry.pa) continue;
+  const ch = {};
+  for (const field of ['engage', 'referent', 'avancement', 'risque']) {
+    if (entry[field] !== undefined) {
+      const v = entry[field];
+      if (v !== null && typeof v === 'object' && v.apres !== undefined) ch[field] = v;
+      else { const orig = (DATA.find(r => r.pa === entry.pa) || {})[field]; ch[field] = { avant: orig, apres: v }; }
+    }
+  }
+  if (entry.note) ch.note = entry.note;
+  if (Object.keys(ch).length > 0) CHANGES[entry.pa] = ch;
+}
+
+// IndexedDB — fonctionne en file:// contrairement a localStorage
+const _IDB_NAME = 'afrscm-engagements', _IDB_STORE = 'patches';
+let _idb = null;
+async function idbOpen() {
+  if (_idb) return _idb;
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(_IDB_NAME, 1);
+    r.onupgradeneeded = e => e.target.result.createObjectStore(_IDB_STORE);
+    r.onsuccess = e => { _idb = e.target.result; res(_idb); };
+    r.onerror = () => rej(r.error);
+  });
+}
+async function idbSet(key, val) {
+  try { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction(_IDB_STORE,'readwrite'); tx.objectStore(_IDB_STORE).put(val, key); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); } catch(e) {}
+}
+async function idbGet(key) {
+  try { const db = await idbOpen(); return new Promise((res, rej) => { const r = db.transaction(_IDB_STORE,'readonly').objectStore(_IDB_STORE).get(key); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); } catch(e) { return null; }
+}
+async function idbDel(key) {
+  try { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction(_IDB_STORE,'readwrite'); tx.objectStore(_IDB_STORE).delete(key); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); } catch(e) {}
+}
+
+// Activer UI selon le mode
+if (EMBED_MODE) document.body.classList.add('embed-mode');
+
+if (REUNION_DATE && (EDIT_MODE || CR_MODE)) {
+  const d = new Date(REUNION_DATE + 'T00:00:00');
+  const lbl = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const badge = document.getElementById('reunion-badge');
+  badge.textContent = 'Reunion du ' + lbl.charAt(0).toUpperCase() + lbl.slice(1);
+  badge.style.display = '';
+}
+if (EDIT_MODE) {
+  document.getElementById('edit-indicator').style.display = '';
+  document.getElementById('patch-bar').style.display = '';
+  document.getElementById('col-edit').style.display = '';
+  document.getElementById('btn-passer-cr').style.display = '';
+}
+if (CR_MODE) {
+  document.getElementById('cr-indicator').style.display = '';
+  document.getElementById('change-summary').classList.add('visible');
+}
+
+// Utilitaires
+function domainColor(d) { return DOMAIN_COLORS[d] || '#555'; }
+
+function toList(str) {
+  if (!str) return '';
+  const items = str.split(' | ').filter(Boolean);
+  if (items.length > 1) return '<ul style="padding-left:1rem;margin:0;">' + items.map(i => '<li>' + i + '</li>').join('') + '</ul>';
+  return str;
+}
+
+function effectiveRow(row) {
+  if (!CHANGES[row.pa]) return row;
+  const c = CHANGES[row.pa];
+  return { ...row,
+    engage:     c.engage     !== undefined ? c.engage.apres     : row.engage,
+    referent:   c.referent   !== undefined ? c.referent.apres   : row.referent,
+    avancement: c.avancement !== undefined ? c.avancement.apres : row.avancement,
+    risque:     c.risque     !== undefined ? c.risque.apres     : row.risque,
+  };
+}
+
+function isModified(pa) { return !!(CHANGES[pa] && Object.keys(CHANGES[pa]).length > 0); }
+
+function allReferents() {
+  const fromData = DATA.map(r => r.referent).filter(Boolean);
+  const fromChanges = Object.values(CHANGES)
+    .map(c => c.referent && c.referent.apres)
+    .filter(Boolean);
+  return [...new Set([...fromData, ...fromChanges, ...extraReferents])].sort();
+}
+
+function fieldLabel(f) { return { engage:'Statut', referent:'Referent', avancement:'Avancement', risque:'Risque' }[f] || f; }
+function fieldDisplay(f, v) {
+  if (f === 'engage') return v ? 'Engage' : 'Non engage';
+  if (f === 'avancement') return Math.round((v || 0) * 100) + '%';
+  return v || '—';
+}
+
+// Patch storage (IndexedDB)
+function savePatchToStorage() {
+  if (!IDB_KEY) return;
+  idbSet(IDB_KEY, { changes: CHANGES, extraReferents });
+}
+
+function savePatchNote(pa, note) {
+  if (!CHANGES[pa]) CHANGES[pa] = {};
+  if (note.trim()) CHANGES[pa].note = note.trim(); else delete CHANGES[pa].note;
+  if (Object.keys(CHANGES[pa]).length === 0) delete CHANGES[pa];
+  savePatchToStorage(); updatePatchUI(); updateChangeSummary();
+}
+
+window.importPatch = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const patch = JSON.parse(e.target.result);
+      for (const mod of (patch.modifications || [])) {
+        if (!mod.pa) continue;
+        if (!CHANGES[mod.pa]) CHANGES[mod.pa] = {};
+        for (const field of ['engage', 'referent', 'avancement', 'risque']) {
+          if (mod[field] !== undefined) {
+            const orig = (DATA.find(r => r.pa === mod.pa) || {})[field];
+            const val = mod[field];
+            if (val !== null && typeof val === 'object' && val.apres !== undefined) CHANGES[mod.pa][field] = val;
+            else CHANGES[mod.pa][field] = { avant: orig, apres: val };
+          }
+        }
+        if (mod.note !== undefined) CHANGES[mod.pa].note = mod.note;
+        if (Object.keys(CHANGES[mod.pa]).length === 0) delete CHANGES[mod.pa];
+      }
+      if (patch.nouveaux_referents) extraReferents = [...new Set([...extraReferents, ...patch.nouveaux_referents])];
+      savePatchToStorage(); updatePatchUI(); updateChangeSummary(); rebuildReferentFilters(); renderCurrent();
+      alert('Patch importe : ' + Object.keys(CHANGES).length + ' engagement(s) modifie(s).');
+    } catch(err) {
+      alert('Erreur lors de la lecture du patch : ' + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+};
+
+window.clearPatch = function() {
+  if (!confirm('Effacer toutes les modifications en cours ?')) return;
+  CHANGES = {}; extraReferents = [];
+  if (IDB_KEY) idbDel(IDB_KEY);
+  updatePatchUI(); updateChangeSummary(); closeEditPanel(); renderCurrent();
+};
+
+window.passerCR = function() {
+  if (!confirm('Passer en mode CR ? Les modifications seront figees (lecture seule).')) return;
+  const url = new URL(window.location.href);
+  url.searchParams.set('cr', 'true');
+  if (REUNION_DATE) url.searchParams.set('reunion', REUNION_DATE);
+  window.location.href = url.toString();
+};
+
+window.exportPatch = function() {
+  const nb = Object.keys(CHANGES).length;
+  if (!nb) return;
+  const patch = {
+    date_reunion: REUNION_DATE,
+    exporte_le: new Date().toISOString().slice(0,10),
+    nouveaux_referents: extraReferents.length ? extraReferents : undefined,
+    modifications: Object.entries(CHANGES).map(([pa, champs]) => {
+      const entry = { pa };
+      for (const [f,v] of Object.entries(champs)) { if (f==='note') entry.note=v; else entry[f]=v; }
+      return entry;
+    })
+  };
+  const blob = new Blob([JSON.stringify(patch, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'patch-engagements-' + (REUNION_DATE || new Date().toISOString().slice(0,10)) + '.json';
+  a.click();
+  if (IDB_KEY) idbDel(IDB_KEY);
+  alert('Patch exporte (' + nb + ' modification' + (nb>1?'s':'') + '). Le patch local a ete efface.');
+};
+
+async function checkStoredPatch() {
+  if (!IDB_KEY) return;
+  const stored = await idbGet(IDB_KEY);
+  if (!stored) return;
+  const ch = stored.changes || stored;
+  if (Object.keys(ch).length === 0) return;
+  const nb = Object.keys(ch).length;
+  document.getElementById('modal-restore-msg').textContent =
+    'Un patch non exporte contient ' + nb + ' modification' + (nb>1?'s':'') + ' pour la reunion du ' + REUNION_DATE + '. Voulez-vous le restaurer ?';
+  document.getElementById('modal-restore').style.display = '';
+  window._storedPatch = stored;
+}
+
+window.dismissRestore = function() {
+  document.getElementById('modal-restore').style.display = 'none';
+  if (IDB_KEY) idbDel(IDB_KEY);
+};
+
+window.doRestore = function() {
+  const p = window._storedPatch || {};
+  const raw = p.changes || p;
+  CHANGES = {};
+  for (const [pa, champs] of Object.entries(raw)) {
+    const ch = {};
+    for (const [f,v] of Object.entries(champs)) {
+      if (f === 'note') { ch.note = v; continue; }
+      if (v !== null && typeof v === 'object' && v.apres !== undefined) ch[f] = v;
+      else { const orig = (DATA.find(r => r.pa === pa) || {})[f]; ch[f] = { avant: orig, apres: v }; }
+    }
+    CHANGES[pa] = ch;
+  }
+  extraReferents = p.extraReferents || [];
+  document.getElementById('modal-restore').style.display = 'none';
+  updatePatchUI(); updateChangeSummary(); rebuildReferentFilters(); renderCurrent();
+};
+
+// Patch UI & change summary
+function updatePatchUI() {
+  if (!EDIT_MODE) return;
+  const nb = Object.keys(CHANGES).length;
+  document.getElementById('patch-info').textContent = nb === 0
+    ? 'Aucune modification'
+    : nb + ' engagement' + (nb>1?'s':'') + ' modifie' + (nb>1?'s':'');
+  document.getElementById('btn-export-patch').disabled = nb === 0;
+  document.getElementById('btn-passer-cr').style.display = nb > 0 ? '' : 'none';
+}
+
+function updateChangeSummary() {
+  const el = document.getElementById('change-summary-inner');
+  if (!el) return;
+  const nb = Object.keys(CHANGES).length;
+  if (nb === 0) {
+    el.innerHTML = '<h3>Modifications de la session</h3><p style="font-size:0.82rem;color:var(--muted);font-style:italic;">Aucune modification enregistree.</p>';
+    if (!CR_MODE && !EMBED_MODE) document.getElementById('change-summary').classList.remove('visible');
+    return;
+  }
+  if (EDIT_MODE) document.getElementById('change-summary').classList.add('visible');
+
+  // Filtrer selon les filtres actifs
+  const filteredPas = new Set(getFiltered().map(r => r.pa));
+  const visibleChanges = Object.entries(CHANGES).filter(([pa]) => filteredPas.has(pa));
+
+  // Grouper par domaine en respectant l'ordre de DATA
+  const grouped = {};
+  for (const row of DATA) {
+    if (!visibleChanges.find(([pa]) => pa === row.pa)) continue;
+    if (!grouped[row.domaine]) grouped[row.domaine] = [];
+    grouped[row.domaine].push(row);
+  }
+
+  const date = REUNION_DATE ? ' — Reunion du ' + REUNION_DATE : '';
+  const suffix = visibleChanges.length < nb
+    ? ' <span style="font-size:0.72rem;color:var(--muted);font-weight:400;">(' + visibleChanges.length + '/' + nb + ' selon filtre)</span>'
+    : '';
+
+  let html = '<h3 id="cs-heading">'
+    + '<span>Modifications de la session' + date + suffix + '</span>'
+    + '<span class="cs-toggle" id="cs-toggle-btn">▲ Réduire</span>'
+    + '</h3>'
+    + '<div class="cs-body" id="cs-body">';
+
+  for (const [domaine, rows] of Object.entries(grouped)) {
+    const color = domainColor(domaine);
+    html += '<div style="margin-bottom:1.1rem;">'
+      + '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;padding-bottom:0.3rem;border-bottom:2px solid ' + color + ';">'
+      + '<div style="width:10px;height:10px;border-radius:50%;background:' + color + ';flex-shrink:0;"></div>'
+      + '<span style="font-family:\'DM Serif Display\',serif;font-size:0.88rem;color:' + color + ';">' + domaine + '</span>'
+      + '</div>';
+
+    for (const row of rows) {
+      const ch = CHANGES[row.pa] || {};
+      html += '<div class="cs-pa-card" data-pa="' + row.pa + '" style="background:var(--modified);border:1px solid var(--modified-border);border-radius:6px;padding:0.6rem 0.8rem;margin-bottom:0.5rem;cursor:pointer;transition:box-shadow 0.15s;">'
+        + '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.45rem;">'
+        + '<span class="pa-tag" style="background:' + color + '">' + row.pa + '</span>'
+        + '<span style="font-size:0.75rem;color:var(--muted);line-height:1.4;flex:1;">' + row.objectif + '</span>'
+        + '</div>';
+
+      // Champs modifiés
+      const fields = ['engage','referent','avancement','risque'].filter(f => ch[f] !== undefined);
+      if (fields.length) {
+        html += '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:' + (ch.note ? '0.45rem' : '0') + ';">';
+        for (const field of fields) {
+          html += '<div style="background:white;border:1px solid var(--modified-border);border-radius:4px;padding:0.2rem 0.5rem;font-size:0.72rem;">'
+            + '<span style="text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-size:0.63rem;">' + fieldLabel(field) + '</span>'
+            + '<div style="display:flex;align-items:center;gap:0.3rem;margin-top:0.1rem;">'
+            + '<span style="color:var(--muted);text-decoration:line-through;">' + fieldDisplay(field, ch[field].avant) + '</span>'
+            + '<span style="color:var(--muted);">→</span>'
+            + '<span style="color:var(--accent);font-weight:600;">' + fieldDisplay(field, ch[field].apres) + '</span>'
+            + '</div></div>';
+        }
+        html += '</div>';
+      }
+
+      // Note de séance
+      if (ch.note) {
+        html += '<div style="border-top:1px solid var(--modified-border);padding-top:0.4rem;font-size:0.75rem;color:var(--muted);font-style:italic;line-height:1.5;">'
+          + '<span style="text-transform:uppercase;letter-spacing:0.05em;font-size:0.62rem;font-style:normal;">Note</span><br>' + ch.note
+          + '</div>';
+      }
+
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  el.innerHTML = html + '</div>' || '<p style="font-size:0.82rem;color:var(--muted);font-style:italic;">Aucune modification dans la selection.</p>';
+
+  // Toggle collapse/expand
+  let _csCollapsed = false;
+  const heading = el.querySelector('#cs-heading');
+  const body = el.querySelector('#cs-body');
+  const toggleBtn = el.querySelector('#cs-toggle-btn');
+  if (body) body.style.maxHeight = body.scrollHeight + 'px';
+  if (heading) heading.addEventListener('click', () => {
+    _csCollapsed = !_csCollapsed;
+    if (_csCollapsed) {
+      body.style.maxHeight = '0';
+      body.classList.add('collapsed');
+      toggleBtn.textContent = '▼ Développer';
+    } else {
+      body.classList.remove('collapsed');
+      body.style.maxHeight = body.scrollHeight + 'px';
+      toggleBtn.textContent = '▲ Réduire';
+    }
+  });
+
+  // Clic sur une carte → sélectionner le PA
+  el.querySelectorAll('.cs-pa-card[data-pa]').forEach(card => {
+    card.addEventListener('mouseenter', () => card.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)');
+    card.addEventListener('mouseleave', () => card.style.boxShadow = '');
+    card.addEventListener('click', (e) => { e.stopPropagation(); selectPaFromSummary(card.dataset.pa); });
+  });
+}
+
+function selectPaFromSummary(pa) {
+  const row = DATA.find(r => r.pa === pa);
+  if (!row) return;
+  // Appliquer le filtre domaine
+  filters.domaine = row.domaine;
+  const sel = document.getElementById('select-domaine');
+  if (sel) sel.value = row.domaine;
+  persistFilters();
+  // Sélectionner le PA et afficher la fiche
+  selectedPa = pa;
+  renderCurrent();
+  // Mettre en évidence la ligne après rendu
+  const tr = document.querySelector('#table-body tr[data-pa="' + pa + '"]');
+  if (tr) { tr.classList.add('selected'); tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  showDetail(effectiveRow(row));
+}
+
+function recordChange(pa, field, avant, apres) {
+  if (!CHANGES[pa]) CHANGES[pa] = {};
+  const original = DATA.find(r => r.pa === pa)[field];
+  if (apres === original || String(apres) === String(original)) {
+    delete CHANGES[pa][field];
+    if (Object.keys(CHANGES[pa]).length === 0) delete CHANGES[pa];
+  } else {
+    CHANGES[pa][field] = { avant, apres };
+  }
+  savePatchToStorage(); updatePatchUI(); updateChangeSummary();
+}
+
+// Filtres
+let currentView = 'table', selectedPa = null, editPa = null;
+let filters = { statut: 'all', domaine: 'all', referent: 'all' };
+let sortCol = 'pa', sortDir = 1;
+
+function persistFilters() {
+  const url = new URL(window.location.href);
+  if (filters.domaine && filters.domaine !== 'all') url.searchParams.set('domaine', filters.domaine);
+  else url.searchParams.delete('domaine');
+  history.replaceState(null, '', url);
+}
+
+function restoreFilters() {
+  const d = urlParams.get('domaine');
+  if (d) { filters.domaine = d; const sel = document.getElementById('select-domaine'); if (sel) sel.value = d; }
+}
+
+function rebuildReferentFilters() {
+  const referents = allReferents();
+  const rg = document.getElementById('filter-referent-group');
+  rg.innerHTML = '<span class="group-label">Referent :</span>';
+  rg.appendChild(makeFilterBtn('Tous', 'referent', 'all', filters.referent === 'all'));
+  rg.appendChild(makeFilterBtn('Avec référent', 'referent', '__some__', filters.referent === '__some__'));
+  rg.appendChild(makeFilterBtn('Sans référent', 'referent', '__none__', filters.referent === '__none__'));
+  referents.forEach(r => rg.appendChild(makeFilterBtn(r, 'referent', r, filters.referent === r)));
+  rg.style.display = '';
+}
+
+function buildDynamicFilters() {
+  const domaines = [...new Set(DATA.map(r => r.domaine))];
+  const sel = document.getElementById('select-domaine');
+  domaines.forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; sel.appendChild(o); });
+  sel.addEventListener('change', () => { filters.domaine = sel.value; persistFilters(); renderCurrent(); });
+  rebuildReferentFilters();
+}
+
+function makeFilterBtn(label, type, val, active) {
+  const b = document.createElement('button');
+  b.className = 'filter-btn' + (active ? ' active' : '');
+  if (val === 'modified') b.classList.add('modified-btn');
+  b.dataset.type = type; b.dataset.val = val; b.textContent = label;
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-type="' + type + '"]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); filters[type] = val; renderCurrent();
+  });
+  return b;
+}
+
+document.querySelectorAll('.filter-btn[data-type="statut"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-type="statut"]').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active'); filters.statut = btn.dataset.val; renderCurrent();
+  });
+});
+
+function getFiltered() {
+  return DATA.filter(r => {
+    const eff = effectiveRow(r);
+    if (filters.statut === 'engage'     && !eff.engage)        return false;
+    if (filters.statut === 'non-engage' &&  eff.engage)        return false;
+    if (filters.statut === 'priorite'   && !r.priorite)        return false;
+    if (filters.statut === 'modified'   && !isModified(r.pa))  return false;
+    if (filters.domaine  !== 'all' && r.domaine    !== filters.domaine)  return false;
+    if (filters.referent === '__none__' && eff.referent) return false;
+    if (filters.referent === '__some__' && !eff.referent) return false;
+    if (filters.referent !== 'all' && filters.referent !== '__none__' && filters.referent !== '__some__' && eff.referent !== filters.referent) return false;
+    return true;
+  });
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = 1; }
+  document.querySelectorAll('th[data-col]').forEach(th => th.classList.remove('sorted'));
+  const th = document.querySelector('th[data-col="' + col + '"]');
+  if (th) { th.classList.add('sorted'); th.querySelector('.sort-arrow').textContent = sortDir === 1 ? '\u2191' : '\u2193'; }
+  renderCurrent();
+}
+
+function getSorted(rows) {
+  return [...rows].sort((a, b) => {
+    const ea = effectiveRow(a), eb = effectiveRow(b);
+    let va = ea[sortCol] != null ? ea[sortCol] : '', vb = eb[sortCol] != null ? eb[sortCol] : '';
+    if (typeof va === 'number') return (va - vb) * sortDir;
+    return String(va).localeCompare(String(vb)) * sortDir;
+  });
+}
+
+// Rendu tableau
+function renderTable() {
+  const rows  = getSorted(getFiltered());
+  const tbody = document.getElementById('table-body');
+  if (selectedPa && !rows.find(r => r.pa === selectedPa)) { selectedPa = null; hideDetail(); }
+  if (editPa    && !rows.find(r => r.pa === editPa))      { closeEditPanel(); }
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Aucun engagement trouve.</td></tr>'; hideDetail(); return; }
+
+  tbody.innerHTML = rows.map(r => {
+    const eff = effectiveRow(r), color = domainColor(r.domaine);
+    const pct = Math.round((eff.avancement || 0) * 100);
+    const mod = isModified(r.pa);
+    const engageBadge = eff.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
+    const prioriteBadge = r.priorite ? ' <span class="badge-sm badge-priorite">P1</span>' : '';
+    const modBadge = mod ? ' <span class="badge-sm badge-modified">modifie</span>' : '';
+    const referentCell = eff.referent ? '<span class="badge-sm badge-referent">' + eff.referent + '</span>' : '<span style="color:var(--muted);font-size:0.7rem;">-</span>';
+    const editBtn = EDIT_MODE ? '<td><button class="btn-edit-row" data-pa="' + r.pa + '" title="Modifier">&#9998;</button></td>' : '<td style="display:none"></td>';
+    return '<tr class="row-eng' + (selectedPa === r.pa ? ' selected' : '') + (mod ? ' row-modified' : '') + '" data-pa="' + r.pa + '">'
+      + '<td><span class="pa-tag" style="background:' + color + '">' + r.pa + '</span></td>'
+      + '<td><span class="dom-chip" style="background:' + color + '; max-width:120px; overflow:hidden; text-overflow:ellipsis;" title="' + r.domaine + '">' + r.domaine.split(' ').slice(0,2).join(' ') + '...</span></td>'
+      + '<td><div class="obj-text" title="' + r.objectif + '">' + r.objectif + '</div></td>'
+      + '<td>' + engageBadge + prioriteBadge + modBadge + '</td>'
+      + '<td>' + referentCell + '</td>'
+      + '<td><div class="mini-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:' + pct + '%"></div></div><span class="mini-pct">' + pct + '%</span></div></td>'
+      + '<td><span class="risk-badge risk-' + eff.risque + '">' + eff.risque + '</span></td>'
+      + editBtn
+      + '</tr>';
+  }).join('');
+
+  tbody.querySelectorAll('tr.row-eng').forEach(tr => {
+    tr.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-edit-row')) return;
+      const pa = tr.dataset.pa;
+      if (selectedPa === pa) {
+        // Désélection : fermer la fiche et retirer le filtre domaine
+        selectedPa = null;
+        tbody.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+        hideDetail();
+        filters.domaine = 'all';
+        const sel = document.getElementById('select-domaine');
+        if (sel) sel.value = 'all';
+        persistFilters();
+        renderCurrent();
+        return;
+      }
+      tbody.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+      tr.classList.add('selected'); selectedPa = pa;
+      const row = DATA.find(r => r.pa === pa);
+      // Filtrer sur le domaine du PA sélectionné
+      filters.domaine = row.domaine;
+      const sel = document.getElementById('select-domaine');
+      if (sel) sel.value = row.domaine;
+      persistFilters();
+      showDetail(effectiveRow(row));
+      if (editPa && EDIT_MODE) { editPa = pa; openEditPanel(row); }
+      else if (editPa && CR_MODE) { editPa = pa; openCRPanel(row); }
+      renderCurrent();
+    });
+  });
+
+  tbody.querySelectorAll('.btn-edit-row').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pa = btn.dataset.pa;
+      tbody.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+      const tr = tbody.querySelector('tr[data-pa="' + pa + '"]');
+      if (tr) tr.classList.add('selected'); selectedPa = pa;
+      if (editPa === pa) { closeEditPanel(); return; }
+      editPa = pa; openEditPanel(DATA.find(r => r.pa === pa));
+    });
+  });
+
+  if (CR_MODE) {
+    tbody.querySelectorAll('tr.row-modified').forEach(tr => {
+      tr.addEventListener('click', () => {
+        const pa = tr.dataset.pa;
+        if (editPa === pa) { closeEditPanel(); return; }
+        editPa = pa; openCRPanel(DATA.find(r => r.pa === pa));
+      });
+    });
+  }
+}
+
+function showDetail(row) {
+  const color = domainColor(row.domaine), pct = Math.round((row.avancement || 0) * 100);
+  let badges = row.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
+  if (row.priorite) badges += ' <span class="badge-sm badge-priorite">Priorite 1</span>';
+  if (row.referent) badges += ' <span class="badge-sm badge-referent">' + row.referent + '</span>';
+  const avancementBlock = pct > 0 ? '<div class="detail-avancement"><div class="bar-label"><span>Avancement</span><span>' + pct + '%</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' : '';
+  const indicateurBlock = row.indicateur ? '<div class="info-block full"><label>Indicateur</label><p>' + toList(row.indicateur) + '</p>' + (row.cible ? '<div><span class="indicateur-val">Cible : ' + row.cible + '</span></div>' : '') + '</div>' : '';
+  const ctBlock = row.ct ? '<div class="info-block"><label>Livrables court terme</label><p>' + toList(row.ct) + '</p></div>' : '';
+  const ltBlock = row.lt ? '<div class="info-block"><label>Livrables long terme</label><p>' + toList(row.lt) + '</p></div>' : '';
+  document.getElementById('detail-card-inner').innerHTML =
+    '<div class="detail-card-header"><span class="pa-tag" style="background:' + color + ';flex-shrink:0">' + row.pa + '</span><div class="detail-objectif">' + row.objectif + '</div></div>'
+    + '<div class="detail-badges-row">' + badges + '</div>'
+    + avancementBlock
+    + '<div class="detail-body">' + indicateurBlock + ctBlock + ltBlock
+    + '<div class="info-block"><label>Risque</label><span class="risk-badge risk-' + row.risque + '">' + row.risque + '</span></div>'
+    + '<div class="info-block"><label>Domaine</label><span class="dom-chip" style="background:' + color + '">' + row.domaine + '</span></div>'
+    + '</div>'
+    + '<div class="detail-close-row"><button class="btn-close-detail" onclick="closeDetail()">Fermer</button></div>';
+  const panel = document.getElementById('detail-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideDetail() { document.getElementById('detail-panel').style.display = 'none'; }
+window.closeDetail = function() { selectedPa = null; hideDetail(); document.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected')); };
+
+// Panneau edition
+function buildRefSelect(pa, currentVal) {
+  const refs = allReferents();
+  let options = '<option value=""' + (currentVal === '' ? ' selected' : '') + '>- non assigne -</option>';
+  refs.forEach(r => { options += '<option value="' + r + '"' + (currentVal === r ? ' selected' : '') + '>' + r + '</option>'; });
+  options += '<option value="__new__">+ Nouveau referent...</option>';
+  return '<select class="edit-select" id="edit-referent" onchange="handleReferentChange(\'' + pa + '\', this.value)">' + options + '</select>'
+    + '<div class="new-ref-wrap" id="new-ref-wrap" style="display:none">'
+    + '<input class="new-ref-input" id="new-ref-input" type="text" placeholder="Prenom Nom" autocomplete="off" data-pa="' + pa + '">'
+    + '<button class="btn-new-ref-ok" onclick="confirmNewReferent(\'' + pa + '\')">OK</button>'
+    + '<button class="btn-new-ref-cancel" onclick="cancelNewReferent()">X</button>'
+    + '</div>';
+}
+
+function openEditPanel(row) {
+  const eff = effectiveRow(row), color = domainColor(row.domaine);
+  const ch = CHANGES[row.pa] || {};
+  const currentNote = ch.note || '';
+  const currentAvPct = Math.round((eff.avancement || 0) * 100);
+  function mCls(field) { return ch[field] !== undefined ? ' field-modified' : ''; }
+  document.getElementById('edit-panel').innerHTML =
+    '<div class="edit-panel-header">'
+    + '<span class="pa-tag" style="background:' + color + '">' + row.pa + '</span>'
+    + '<div class="ep-title">' + row.objectif + '</div>'
+    + '<button class="btn-close-edit" onclick="closeEditPanel()">X</button>'
+    + '</div>'
+    + '<div class="edit-panel-body">'
+    + '<div class="edit-field' + mCls('engage') + '"><label>Statut engagement</label><div class="toggle-engage">'
+    + '<button class="toggle-btn ' + (eff.engage ? 'on' : 'off') + '" id="tog-engage-on" onclick="toggleEngage(\'' + row.pa + '\', 1)">Engage</button>'
+    + '<button class="toggle-btn ' + (!eff.engage ? 'on' : 'off') + '" id="tog-engage-off" onclick="toggleEngage(\'' + row.pa + '\', 0)">Non engage</button>'
+    + '</div></div>'
+    + '<div class="edit-field' + mCls('referent') + '"><label>Referent</label>' + buildRefSelect(row.pa, eff.referent) + '</div>'
+    + '<div class="edit-field' + mCls('avancement') + '"><label>Avancement</label><div class="slider-wrap">'
+    + '<input type="range" min="0" max="100" step="5" value="' + currentAvPct + '" id="edit-avancement"'
+    + ' oninput="document.getElementById(\'edit-av-val\').textContent=this.value+\'%\'"'
+    + ' onchange="changeAvancement(\'' + row.pa + '\', this.value)">'
+    + '<span class="slider-val" id="edit-av-val">' + currentAvPct + '%</span>'
+    + '</div></div>'
+    + '<div class="edit-field' + mCls('risque') + '"><label>Niveau de risque</label><select class="edit-select" onchange="changeRisque(\'' + row.pa + '\', this.value)">'
+    + '<option value="Faible"' + (eff.risque === 'Faible' ? ' selected' : '') + '>Faible</option>'
+    + '<option value="Moyen"'  + (eff.risque === 'Moyen'  ? ' selected' : '') + '>Moyen</option>'
+    + '<option value="Eleve"'  + (eff.risque === 'Eleve'  ? ' selected' : '') + '>Eleve</option>'
+    + '</select></div>'
+    + '<div class="edit-field' + (currentNote ? ' field-modified' : '') + '"><label>Note de seance</label>'
+    + '<textarea class="edit-note" placeholder="Decisions, commentaires..." onchange="changeNote(\'' + row.pa + '\', this.value)">' + currentNote + '</textarea>'
+    + '</div>'
+    + '</div>'
+    + '<div class="edit-panel-footer"><button class="btn-cancel-edit" onclick="closeEditPanel()">Fermer</button></div>';
+  document.getElementById('edit-col').style.display = '';
+  showDetail(eff);
+}
+
+function openCRPanel(row) {
+  const eff = effectiveRow(row), color = domainColor(row.domaine);
+  const ch = CHANGES[row.pa] || {};
+  function diffField(label, field) {
+    if (!ch[field]) return '';
+    return '<div class="edit-field diff-field"><div class="diff-label">' + label + '</div>'
+      + '<div><span class="diff-avant">' + fieldDisplay(field, ch[field].avant) + '</span> -> <span class="diff-apres">' + fieldDisplay(field, ch[field].apres) + '</span></div></div>';
+  }
+  document.getElementById('edit-panel').innerHTML =
+    '<div class="edit-panel-header" style="background:var(--cr-border)">'
+    + '<span class="pa-tag" style="background:rgba(255,255,255,0.25)">' + row.pa + '</span>'
+    + '<div class="ep-title">' + row.objectif + '</div>'
+    + '<button class="btn-close-edit" onclick="closeEditPanel()">X</button>'
+    + '</div>'
+    + '<div class="edit-panel-body">'
+    + diffField('Statut engagement', 'engage')
+    + diffField('Referent', 'referent')
+    + diffField('Avancement', 'avancement')
+    + diffField('Niveau de risque', 'risque')
+    + (ch.note ? '<div class="edit-field"><div class="diff-label">Note de seance</div><p style="font-size:0.78rem;color:var(--muted);font-style:italic;">' + ch.note + '</p></div>' : '')
+    + (!Object.keys(ch).length ? '<p style="font-size:0.82rem;color:var(--muted);">Aucune modification sur cet engagement.</p>' : '')
+    + '</div>'
+    + '<div class="edit-panel-footer"><button class="btn-cancel-edit" onclick="closeEditPanel()">Fermer</button></div>';
+  document.getElementById('edit-col').style.display = '';
+  showDetail(eff);
+}
+
+function closeEditPanel() {
+  editPa = null;
+  document.getElementById('edit-col').style.display = 'none';
+  document.getElementById('edit-panel').innerHTML = '';
+}
+
+window.handleReferentChange = function(pa, val) {
+  if (val === '__new__') {
+    document.getElementById('new-ref-wrap').style.display = 'flex';
+    const inp = document.getElementById('new-ref-input');
+    inp.focus();
+    inp.onkeydown = (e) => { if (e.key === 'Enter') confirmNewReferent(inp.dataset.pa); };
+    return;
+  }
+  document.getElementById('new-ref-wrap').style.display = 'none';
+  recordChange(pa, 'referent', DATA.find(r => r.pa === pa).referent, val); renderCurrent();
+};
+window.confirmNewReferent = function(pa) {
+  const input = document.getElementById('new-ref-input'), nom = input.value.trim();
+  if (!nom) { input.focus(); return; }
+  if (!allReferents().includes(nom)) extraReferents.push(nom);
+  const sel = document.getElementById('edit-referent');
+  const newOpt = document.createElement('option'); newOpt.value = nom; newOpt.textContent = nom; newOpt.selected = true;
+  sel.insertBefore(newOpt, sel.querySelector('option[value="__new__"]'));
+  document.getElementById('new-ref-wrap').style.display = 'none';
+  recordChange(pa, 'referent', DATA.find(r => r.pa === pa).referent, nom);
+  savePatchToStorage(); rebuildReferentFilters(); renderCurrent();
+};
+window.cancelNewReferent = function() {
+  const sel = document.getElementById('edit-referent');
+  sel.value = sel.querySelector('option:not([value="__new__"])').value || '';
+  document.getElementById('new-ref-wrap').style.display = 'none';
+};
+window.toggleEngage = function(pa, val) {
+  recordChange(pa, 'engage', DATA.find(r => r.pa === pa).engage, val);
+  document.getElementById('tog-engage-on').className  = 'toggle-btn ' + (val  ? 'on' : 'off');
+  document.getElementById('tog-engage-off').className = 'toggle-btn ' + (!val ? 'on' : 'off');
+  renderCurrent();
+};
+window.changeAvancement = function(pa, val) {
+  recordChange(pa, 'avancement', DATA.find(r => r.pa === pa).avancement, parseInt(val) / 100); renderCurrent();
+};
+window.changeRisque = function(pa, val) {
+  recordChange(pa, 'risque', DATA.find(r => r.pa === pa).risque, val); renderCurrent();
+};
+window.changeNote = function(pa, val) { savePatchNote(pa, val); };
+
+// Vue cartes
+function renderCards() {
+  const rows = getFiltered(), container = document.getElementById('cards-content');
+  if (!rows.length) { container.innerHTML = '<div class="empty-state">Aucun engagement trouve.</div>'; return; }
+  const grouped = {};
+  rows.forEach(r => { if (!grouped[r.domaine]) grouped[r.domaine] = []; grouped[r.domaine].push(r); });
+  let html = '';
+  for (const [domain, items] of Object.entries(grouped)) {
+    const color = domainColor(domain);
+    html += '<div class="domain-section"><div class="domain-header"><div class="domain-badge" style="background:' + color + '"></div>'
+      + '<div class="domain-title">' + domain + '</div>'
+      + '<div class="domain-count">' + items.length + ' engagement' + (items.length>1?'s':'') + '</div></div>'
+      + '<div class="cards-grid">' + items.map(r => renderCard(effectiveRow(r), isModified(r.pa), r)).join('') + '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+function renderCard(row, modified, origRow) {
+  const color = domainColor(row.domaine), pct = Math.round((row.avancement || 0) * 100);
+  let badges = row.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
+  if (row.priorite) badges += '<span class="badge-sm badge-priorite">Priorite 1</span>';
+  if (row.referent) badges += '<span class="badge-sm badge-referent">' + row.referent + '</span>';
+  if (modified)     badges += '<span class="badge-sm badge-modified">modifie</span>';
+  let diffBlock = '';
+  if (CR_MODE && modified && origRow) {
+    const ch = CHANGES[origRow.pa] || {};
+    const diffs = ['engage','referent','avancement','risque'].filter(f => ch[f])
+      .map(f => '<span style="font-size:0.72rem;">' + fieldLabel(f) + ': <span style="color:var(--muted);text-decoration:line-through">' + fieldDisplay(f, ch[f].avant) + '</span> -> <span style="color:var(--accent);font-weight:600">' + fieldDisplay(f, ch[f].apres) + '</span></span>')
+      .join(' · ');
+    if (diffs) diffBlock = '<div style="padding:0.3rem 1rem 0.5rem;font-size:0.72rem;color:var(--muted);border-top:1px solid var(--border)">' + diffs + '</div>';
+  }
+  const avancementBar = pct > 0 ? '<div class="avancement-bar"><div class="bar-label"><span>Avancement</span><span>' + pct + '%</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' : '';
+  return '<div class="card" style="' + (modified ? 'border:2px solid var(--modified-border);background:var(--modified);' : '') + '">'
+    + '<div class="card-header"><span class="pa-tag" style="background:' + color + '">' + row.pa + '</span><div class="card-objectif">' + row.objectif + '</div></div>'
+    + '<div class="badges-row">' + badges + '</div>'
+    + avancementBar + diffBlock
+    + '<div class="card-body">'
+    + (row.indicateur ? '<div class="info-block full"><label>Indicateur</label><p>' + toList(row.indicateur) + '</p>' + (row.cible ? '<div><span class="indicateur-val">Cible : ' + row.cible + '</span></div>' : '') + '</div>' : '')
+    + (row.ct ? '<div class="info-block"><label>Livrables CT</label><p>' + toList(row.ct) + '</p></div>' : '')
+    + (row.lt ? '<div class="info-block"><label>Livrables LT</label><p>' + toList(row.lt) + '</p></div>' : '')
+    + '<div class="info-block"><label>Risque</label><span class="risk-badge risk-' + row.risque + '">' + row.risque + '</span></div>'
+    + '</div></div>';
+}
+
+window.setView = function(v) {
+  currentView = v;
+  document.getElementById('view-table').style.display = v === 'table' ? '' : 'none';
+  document.getElementById('view-cards').style.display  = v === 'cards' ? '' : 'none';
+  document.getElementById('btn-view-table').classList.toggle('active', v === 'table');
+  document.getElementById('btn-view-cards').classList.toggle('active', v === 'cards');
+  renderCurrent();
+};
+
+function renderCurrent() { if (currentView === 'table') renderTable(); else renderCards(); updateChangeSummary(); }
+
+// Init
+const engages  = DATA.filter(r => r.engage).length;
+const domaines = new Set(DATA.map(r => r.domaine)).size;
+document.getElementById('stat-total').textContent    = DATA.length;
+document.getElementById('stat-engages').textContent  = engages;
+document.getElementById('stat-domaines').textContent = domaines;
+document.getElementById('footer-info').textContent   = DATA.length + ' engagements · ' + domaines + ' domaines · AfrSCM Comite RSE';
+
+buildDynamicFilters();
+restoreFilters();
+renderCurrent();
+updateChangeSummary();
+
+if (EDIT_MODE) {
+  updatePatchUI();
+  checkStoredPatch();
+}
+</script>
+</body>
+</html>

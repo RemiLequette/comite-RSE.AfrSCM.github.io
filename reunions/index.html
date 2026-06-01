@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réunions — Comité RSE AfrSCM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+  :root {
+    --bg: #f5f3ee; --surface: #ffffff; --border: #d8d4cc; --border-strong: #a09890;
+    --text: #1a1815; --text-muted: #7a746c; --accent: #2d5a8e; --accent-light: #e8eff7;
+    --green: #2e7d52; --green-bg: #eaf4ee; --orange: #b85c00; --orange-bg: #fdf0e0;
+    --blue: #1a5296; --blue-bg: #e8f0fb;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: var(--sans); color: var(--text); padding: 28px; max-width: 760px; margin: 0 auto; }
+  .breadcrumb { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); margin-bottom: 18px; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  header { border-bottom: 2px solid var(--border-strong); padding-bottom: 14px; margin-bottom: 28px; }
+  header h1 { font-family: var(--mono); font-size: 1.1rem; font-weight: 600; color: var(--accent); }
+  header .sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+  .reunion-list { list-style: none; }
+  .reunion-item { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--border-strong); border-radius: 3px; padding: 12px 16px; margin-bottom: 8px; text-decoration: none; color: var(--text); transition: border-color 0.15s, box-shadow 0.15s; }
+  .reunion-item:hover { border-left-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .reunion-item.planifiee { border-left-color: var(--blue); }
+  .reunion-item.terminee  { border-left-color: var(--green); }
+  .reunion-date { font-family: var(--mono); font-size: 0.78rem; font-weight: 600; color: var(--accent); white-space: nowrap; min-width: 100px; }
+  .reunion-info { flex: 1; }
+  .reunion-title { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .reunion-desc  { font-size: 0.75rem; color: var(--text-muted); }
+  .badge { display: inline-block; font-family: var(--mono); font-size: 0.65rem; font-weight: 600; padding: 2px 8px; border-radius: 2px; white-space: nowrap; }
+  .badge-planifiee { background: var(--blue-bg); color: var(--blue); }
+  .badge-terminee  { background: var(--green-bg); color: var(--green); }
+  .badge-encours   { background: var(--orange-bg); color: var(--orange); }
+</style>
+</head>
+<body>
+
+<div class="breadcrumb">
+  <a href="../index.html">← Tableau de bord</a> · Réunions
+</div>
+
+<header>
+  <h1>Réunions du Comité RSE</h1>
+  <div class="sub">Historique et prochaines réunions — ordre chronologique inverse</div>
+</header>
+
+<ul class="reunion-list">
+  <a class="reunion-item terminee" href="2026-05-27/index.html" target="_blank">
+    <span class="reunion-date">27 mai 2026</span>
+    <div class="reunion-info">
+      <div class="reunion-title">Première réunion du Comité RSE</div>
+      <div class="reunion-desc">18h30 · Vote mission &amp; charte · Priorisation engagements Lucie</div>
+    </div>
+    <span class="badge badge-terminee">Terminée</span>
+  </a>
+</ul>
+
+</body>
+</html>
