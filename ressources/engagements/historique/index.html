@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Révisions des engagements — AfrSCM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --border: #d8d4cc;
+    --border-strong: #a09890;
+    --text: #1a1815;
+    --text-muted: #7a746c;
+    --accent: #2e5e3e;
+    --accent-light: #eaf2ec;
+    --amber: #c87a1a;
+    --amber-light: #fff8e6;
+    --amber-border: #e6b84a;
+    --blue: #1a5296;
+    --blue-bg: #e8f0fb;
+    --red: #8b1a1a;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: var(--sans); color: var(--text); min-height: 100vh; padding: 28px; max-width: 860px; margin: 0 auto; }
+
+  /* ── Indicateur serveur ── */
+  #server-indicator { position: fixed; top: 12px; right: 18px; z-index: 60; display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: .65rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 3px 8px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  #server-indicator .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  #server-indicator.ok  .dot { background: var(--accent); }
+  #server-indicator.off .dot { background: var(--amber); }
+  #server-indicator.err .dot { background: var(--red); }
+
+  /* ── Header ── */
+  header { border-bottom: 2px solid var(--border-strong); padding-bottom: 14px; margin-bottom: 28px; }
+  .breadcrumb { font-family: var(--mono); font-size: .7rem; color: var(--text-muted); margin-bottom: 10px; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  header h1 { font-family: var(--mono); font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+  header .sub { font-size: .78rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── Liste des révisions ── */
+  .rev-list { list-style: none; }
+  .rev-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border-strong);
+    border-radius: 3px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .rev-item.en-cours {
+    border-left-color: var(--amber);
+    background: var(--amber-light);
+  }
+  .rev-item.cloturee {
+    border-left-color: var(--accent);
+  }
+  .rev-item.referentiel {
+    border-left-color: var(--blue);
+  }
+
+  .rev-date {
+    font-family: var(--mono);
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 110px;
+  }
+  .rev-date.en-cours { color: var(--amber); }
+  .rev-date.cloturee { color: var(--accent); }
+  .rev-date.referentiel { color: var(--blue); }
+
+  .rev-body { flex: 1; min-width: 0; }
+  .rev-contexte { font-size: .82rem; color: var(--text); margin-bottom: 8px; }
+  .rev-contexte.empty { color: var(--text-muted); font-style: italic; }
+
+  .rev-links { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rev-link {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 2px;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .rev-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .rev-link.link-cr { border-color: var(--accent); color: var(--accent); }
+  .rev-link.link-cr:hover { background: var(--accent); color: white; }
+  .rev-link.link-edit { border-color: var(--amber); color: var(--amber); }
+  .rev-link.link-edit:hover { background: var(--amber); color: white; }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: .65rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+  .badge-encours { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber-border); }
+  .badge-cloturee { background: var(--accent-light); color: var(--accent); }
+  .badge-referentiel { background: var(--blue-bg); color: var(--blue); }
+
+  .empty-state { text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: .85rem; font-style: italic; }
+  .loading-state { text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: .85rem; font-style: italic; }
+
+  footer { margin-top: 36px; padding-top: 12px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: .68rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div id="server-indicator" class="off">
+  <span class="dot"></span>
+  <span id="server-label">Serveur...</span>
+</div>
+
+<header>
+  <div class="breadcrumb">
+    <a href="../index.html" target="_blank">Engagements Lucie</a> › Révisions
+  </div>
+  <h1>Révisions des engagements</h1>
+  <div class="sub">Historique des révisions successives — Engagements Lucie ISO 26000</div>
+</header>
+
+<div id="container"><div class="loading-state">Chargement...</div></div>
+
+<footer id="footer-info"></footer>
+
+<script>
+// ── Données embarquées (injectées par export-github-pages.js pour GitHub Pages) ──
+const REVISIONS_EMBEDDED = [
+  {
+    "date": "2026-06-03",
+    "encours": false
+  },
+  {
+    "date": "2026-05-27",
+    "encours": false
+  }
+];
+
+// ── Configuration ──
+const SERVER_URL = 'http://localhost:3000';
+const RESOURCE   = 'ressources/engagements';
+const HIST       = RESOURCE + '/historique/';
+
+let serverAvailable = false;
+
+function setIndicator(state, label) {
+  const el = document.getElementById('server-indicator');
+  el.className = state;
+  document.getElementById('server-label').textContent = label;
+}
+
+async function ping() {
+  try {
+    const r = await fetch(SERVER_URL + '/ping');
+    if (r.ok) { serverAvailable = true; setIndicator('ok', 'Serveur connecté'); return true; }
+  } catch(e) {}
+  serverAvailable = false;
+  setIndicator('off', 'Serveur absent');
+  return false;
+}
+
+// ── Construction de la liste des révisions depuis historique/ ──
+// Une révision = un data-YYYY-MM-DD.json
+// En cours  : data-*.json le plus récent + changes-*.json de même date
+// Clôturée  : data-*.json sans changes-*.json de même date (ou pas le plus récent)
+async function loadRevisions() {
+  if (!serverAvailable) {
+    if (REVISIONS_EMBEDDED) { render(REVISIONS_EMBEDDED); return; }
+    document.getElementById('container').innerHTML =
+      '<div class="empty-state">Serveur non disponible — démarrez start-server.bat</div>';
+    return;
+  }
+
+  try {
+    // Lister tous les data-*.json
+    const rData = await fetch(SERVER_URL + '/list?prefix=' + encodeURIComponent(HIST + 'data-'));
+    if (!rData.ok) throw new Error('Impossible de lister les fichiers data');
+    const { files: dataFiles } = await rData.json();
+    if (!dataFiles || !dataFiles.length) {
+      document.getElementById('container').innerHTML = '<div class="empty-state">Aucune révision enregistrée.</div>';
+      document.getElementById('footer-info').textContent = 'Aucune révision · AfrSCM Comité RSE';
+      return;
+    }
+
+    // Lister tous les changes-*.json
+    const rChanges = await fetch(SERVER_URL + '/list?prefix=' + encodeURIComponent(HIST + 'changes-'));
+    const changesDates = new Set();
+    if (rChanges.ok) {
+      const { files: changesFiles } = await rChanges.json();
+      if (changesFiles) {
+        changesFiles.forEach(f => {
+          const m = f.match(/changes-(\d{4}-\d{2}-\d{2})\.json$/);
+          if (m) changesDates.add(m[1]);
+        });
+      }
+    }
+
+    // Construire les révisions : trier les data par date décroissante
+    const sorted = dataFiles
+      .map(f => { const m = f.match(/data-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+      .filter(Boolean)
+      .sort()
+      .reverse();
+
+    // Le plus récent avec un changes = en cours ; tous les autres = clôturés
+    const latestDate = sorted[0];
+    const revisions = sorted.map((date, idx) => ({
+      date,
+      etat: idx === 0 && changesDates.has(date) ? 'encours' : (idx === 0 ? 'referentiel' : 'cloturee'),
+    }));
+
+    render(revisions);
+  } catch(e) {
+    setIndicator('err', 'Erreur');
+    document.getElementById('container').innerHTML =
+      '<div class="empty-state">Erreur de chargement : ' + e.message + '</div>';
+  }
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function render(revisions) {
+  if (!revisions.length) {
+    document.getElementById('container').innerHTML = '<div class="empty-state">Aucune révision enregistrée.</div>';
+    document.getElementById('footer-info').textContent = 'Aucune révision · AfrSCM Comité RSE';
+    return;
+  }
+
+  const items = revisions.map(rev => {
+    const stateCls = rev.etat === 'encours' ? 'en-cours' : rev.etat;
+    let badge;
+    if (rev.etat === 'encours')      badge = '<span class="badge badge-encours">En cours</span>';
+    else if (rev.etat === 'referentiel') badge = '<span class="badge badge-referentiel">Référentiel courant</span>';
+    else                             badge = '<span class="badge badge-cloturee">Clôturée</span>';
+
+    const links = [];
+    if (rev.etat === 'encours') {
+      links.push('<a class="rev-link link-edit" href="../index.html?date=' + rev.date + '&mode=edit" target="_blank">Éditer</a>');
+      links.push('<a class="rev-link link-cr" href="../index.html?date=' + rev.date + '" target="_blank">Voir</a>');
+    } else if (rev.etat === 'referentiel') {
+      links.push('<a class="rev-link link-cr" href="../index.html?date=' + rev.date + '" target="_blank">Voir</a>');
+    } else {
+      links.push('<a class="rev-link link-cr" href="../index.html?date=' + rev.date + '" target="_blank">Voir CR</a>');
+    }
+
+    return '<li class="rev-item ' + stateCls + '">'
+      + '<div class="rev-date ' + stateCls + '">' + formatDate(rev.date) + '</div>'
+      + '<div class="rev-body">'
+      + '<div class="rev-links">' + links.join('') + '</div>'
+      + '</div>'
+      + badge
+      + '</li>';
+  }).join('');
+
+  document.getElementById('container').innerHTML = '<ul class="rev-list">' + items + '</ul>';
+
+  const nb = revisions.length;
+  const enCours = revisions.filter(r => r.etat === 'encours').length;
+  document.getElementById('footer-info').textContent =
+    nb + ' révision' + (nb > 1 ? 's' : '')
+    + (enCours ? ' · 1 en cours' : '')
+    + ' · Engagements Lucie ISO 26000 · AfrSCM Comité RSE';
+}
+
+async function init() {
+  await ping();
+  await loadRevisions();
+}
+
+init();
+</script>
+</body>
+</html>

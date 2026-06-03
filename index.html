@@ -112,6 +112,19 @@
   .card.accent-green  { border-left-color: var(--green); }
   .card.accent-orange { border-left-color: var(--orange); }
   .card.accent-blue   { border-left-color: var(--blue); }
+  .card.accent-amber  { border-left-color: var(--orange); background: var(--orange-bg); }
+  .card.accent-amber .card-title { color: var(--orange); }
+  .card.accent-amber .card-desc  { color: var(--orange); opacity: 0.8; }
+  .card-link-inline {
+    display: inline-block;
+    margin-top: 7px;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--orange);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--orange);
+  }
+  .card-link-inline:hover { border-bottom-style: solid; }
 
   .lucie-banner {
     background: var(--surface);
@@ -175,9 +188,9 @@
       <div class="card-title">✅ Engagements Lucie</div>
       <div class="card-desc">Suivi des engagements ISO 26000, statuts et responsables</div>
     </a>
-    <a class="card accent-green" href="ressources/engagements/historique/index.html" target="_blank">
-      <div class="card-title">🕓 Historique des révisions</div>
-      <div class="card-desc">Révisions successives des engagements — patches, CR, backups</div>
+    <a class="card accent-green" id="card-revisions" href="ressources/engagements/historique/index.html" target="_blank">
+      <div class="card-title">🕓 Révisions des engagements</div>
+      <div class="card-desc">Historique des révisions successives des engagements Lucie</div>
     </a>
     <a class="card" href="reunions/index.html" target="_blank">
       <div class="card-title">📅 Réunions</div>
@@ -193,13 +206,9 @@
 <section>
   <h2>Agenda</h2>
   <div class="cards">
-    <a class="card accent-orange" href="reunions/2026-05-27/index.html" target="_blank">
-      <div class="card-title">📅 Réunion Comité 27/05/2026</div>
-      <div class="card-desc">Première réunion du Comité RSE · 18h30 · Lecture seule</div>
-    </a>
-    <a class="card accent-orange" href="reunions/2026-05-27/index.html?reunion=2026-05-27" target="_blank">
-      <div class="card-title">✏ Réunion 27/05/2026 — Édition</div>
-      <div class="card-desc">Saisie des notes, décisions et actions en séance</div>
+    <a class="card accent-green" href="reunions/index.html?date=2026-05-27" target="_blank">
+      <div class="card-title">📋 Réunion Comité 27/05/2026</div>
+      <div class="card-desc">Première réunion du Comité RSE · CR disponible</div>
     </a>
     <div class="card">
       <div class="card-title">🏛 CA 15/06/2026</div>
@@ -221,5 +230,43 @@
   <span>Dossier versionné sous Git — hors diffusion</span>
 </footer>
 
+<script>
+(async function() {
+  const SERVER = 'http://localhost:3000';
+  const RESOURCE_PREFIX = 'ressources/engagements/historique/';
+  try {
+    const ping = await fetch(SERVER + '/ping');
+    if (!ping.ok) return;
+    const listRes = await fetch(SERVER + '/list?prefix=' + encodeURIComponent(RESOURCE_PREFIX + 'data-'));
+    if (!listRes.ok) return;
+    const { files } = await listRes.json();
+    if (!files || !files.length) return;
+    // Trouver le data-*.json le plus recent
+    const sorted = files.sort().reverse();
+    const latest = sorted[0]; // ex: ressources/engagements/historique/data-2026-05-27.json
+    const dateMatch = latest.match(/data-(\d{4}-\d{2}-\d{2})\.json$/);
+    if (!dateMatch) return;
+    const date = dateMatch[1];
+    // Verifier si un changes-*.json de meme date existe
+    const changesRes = await fetch(SERVER + '/patch?file=' + encodeURIComponent(RESOURCE_PREFIX + 'changes-' + date + '.json'));
+    if (changesRes.status !== 200) return;
+    // Revision en cours detectee — mettre la carte en highlight
+    const card = document.getElementById('card-revisions');
+    if (!card) return;
+    card.classList.remove('accent-green');
+    card.classList.add('accent-amber');
+    card.querySelector('.card-title').textContent = '⚡ Révisions des engagements';
+    card.querySelector('.card-desc').textContent = 'Révision en cours · ' + date;
+    // Ajouter le lien direct
+    const link = document.createElement('a');
+    link.className = 'card-link-inline';
+    link.href = 'ressources/engagements/index.html?date=' + date;
+    link.target = '_blank';
+    link.textContent = '→ Ouvrir la révision en cours';
+    link.addEventListener('click', e => e.stopPropagation());
+    card.appendChild(link);
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>

@@ -27,7 +27,7 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  body.embed-mode header, body.embed-mode .toolbar, body.embed-mode .patch-bar,
+  body.embed-mode header, body.embed-mode .toolbar,
   body.embed-mode main, body.embed-mode footer { display: none !important; }
   body.embed-mode #change-summary { display: block !important; padding: 0; }
 
@@ -57,16 +57,6 @@
   .view-toggle { margin-left: auto; display: flex; gap: 0.2rem; border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; }
   .view-btn { background: transparent; border: none; padding: 0.28rem 0.75rem; font-size: 0.73rem; font-family: 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; transition: all 0.15s; }
   .view-btn.active { background: var(--accent); color: white; }
-
-  .patch-bar { background: #fffbf0; border-bottom: 2px solid var(--modified-border); padding: 0.55rem 2.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-  .patch-bar .patch-info { font-size: 0.78rem; color: var(--amber); font-weight: 500; flex: 1; }
-  .btn-patch { border: 1.5px solid var(--modified-border); background: white; border-radius: 6px; padding: 0.3rem 0.9rem; font-size: 0.75rem; font-family: 'DM Sans', sans-serif; color: var(--amber); cursor: pointer; font-weight: 500; transition: all 0.15s; }
-  .btn-patch:hover { background: var(--amber); color: white; border-color: var(--amber); }
-  .btn-patch:disabled { opacity: 0.4; cursor: default; }
-  .btn-patch-clear { color: var(--muted); border-color: var(--border); }
-  .btn-patch-clear:hover { background: var(--red); color: white; border-color: var(--red); }
-  .btn-patch-cr { color: var(--cr-border); border-color: var(--cr-border); }
-  .btn-patch-cr:hover { background: var(--cr-border); color: white; border-color: var(--cr-border); }
 
   main { padding: 1.5rem 2.5rem; max-width: 1600px; margin: 0 auto; }
   .main-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
@@ -145,7 +135,7 @@
   .edit-note { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; color: var(--text); resize: vertical; min-height: 60px; outline: none; }
   .edit-note:focus { border-color: var(--accent); }
   .edit-note:disabled { background: var(--bg); color: var(--muted); cursor: default; resize: none; }
-  .edit-panel-footer { padding: 0.6rem 1rem 0.8rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; justify-content: flex-end; }
+  .edit-field.field-modified { border-left: 3px solid var(--amber); padding-left: 0.6rem; background: var(--amber-light); border-radius: 0 4px 4px 0; }
   .btn-cancel-edit { background: transparent; border: 1.5px solid var(--border); color: var(--muted); border-radius: 6px; padding: 0.35rem 0.8rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; cursor: pointer; }
   .btn-cancel-edit:hover { border-color: var(--red); color: var(--red); }
 
@@ -186,20 +176,25 @@
   .card-body { padding: 0 1rem 0.8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
 
   .empty-state { text-align: center; padding: 3rem 2rem; color: var(--muted); font-size: 0.88rem; }
+  .loading-state { text-align: center; padding: 3rem 2rem; color: var(--muted); font-size: 0.88rem; font-style: italic; }
   footer { text-align: center; padding: 1.2rem; font-size: 0.68rem; color: var(--muted); border-top: 1px solid var(--border); margin-top: 2rem; }
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
-  .modal-box { background: var(--surface); border-radius: 10px; padding: 1.5rem; max-width: 420px; width: 90%; box-shadow: 0 8px 40px rgba(0,0,0,0.2); }
-  .modal-box h3 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 0.6rem; }
-  .modal-box p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-bottom: 1.2rem; }
-  .modal-btns { display: flex; gap: 0.6rem; justify-content: flex-end; }
-  .modal-btns button { border-radius: 6px; padding: 0.4rem 1rem; font-size: 0.78rem; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--text); }
-  .modal-btns .btn-restore { background: var(--accent); color: white; border-color: var(--accent); }
+  /* Indicateur serveur */
+  #server-indicator { position: fixed; top: 12px; right: 18px; z-index: 60; display: flex; align-items: center; gap: 6px; font-family: monospace; font-size: .65rem; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 3px 8px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  #server-indicator .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  #server-indicator.ok  .dot { background: var(--accent); }
+  #server-indicator.off .dot { background: var(--amber); }
+  #server-indicator.err .dot { background: var(--red); }
 
   #change-summary { display: none; }
   #change-summary.visible { display: block; }
   .change-summary-inner { background: var(--surface); border: 1.5px solid var(--modified-border); border-radius: 8px; padding: 1rem 1.2rem; margin: 1rem 2.5rem; }
-  .change-summary-inner h3 { font-family: 'DM Serif Display', serif; font-size: 1rem; font-weight: 400; margin-bottom: 0.7rem; color: var(--amber); }
+  .change-summary-inner h3 { font-family: 'DM Serif Display', serif; font-size: 1rem; font-weight: 400; margin-bottom: 0.7rem; color: var(--amber); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .change-summary-inner h3:hover { opacity: 0.85; }
+  .cs-toggle { font-size: 0.72rem; font-family: 'DM Sans', sans-serif; color: var(--amber); border: 1px solid var(--modified-border); border-radius: 4px; padding: 0.1rem 0.45rem; transition: background 0.15s; }
+  .change-summary-inner h3:hover .cs-toggle { background: var(--amber); color: white; }
+  .cs-body { overflow: hidden; transition: max-height 0.25s ease, opacity 0.2s ease; }
+  .cs-body.collapsed { max-height: 0 !important; opacity: 0; }
   .cs-row { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
   .cs-row:last-child { border-bottom: none; }
   .cs-pa { font-weight: 600; min-width: 42px; }
@@ -210,7 +205,7 @@
   .cs-note { color: var(--muted); font-style: italic; }
 
   @media (max-width: 900px) { .main-layout { flex-direction: column; } .main-layout .edit-col { width: 100%; position: static; } }
-  @media (max-width: 700px) { header, main, .toolbar, .patch-bar { padding-left: 1rem; padding-right: 1rem; } .cards-grid { grid-template-columns: 1fr; } .card-body, .detail-body { grid-template-columns: 1fr; } .view-toggle { margin-left: 0; } }
+  @media (max-width: 700px) { header, main, .toolbar { padding-left: 1rem; padding-right: 1rem; } .cards-grid { grid-template-columns: 1fr; } .card-body, .detail-body { grid-template-columns: 1fr; } .view-toggle { margin-left: 0; } }
 </style>
 </head>
 <body>
@@ -230,13 +225,9 @@
   </div>
 </header>
 
-<div class="patch-bar" id="patch-bar" style="display:none">
-  <div class="patch-info" id="patch-info">Aucune modification</div>
-  <button class="btn-patch btn-patch-clear" onclick="clearPatch()">Effacer le patch</button>
-  <input type="file" accept=".json" id="import-patch-input" style="display:none" onchange="importPatch(this)">
-  <button class="btn-patch" onclick="document.getElementById('import-patch-input').click()">Importer un patch</button>
-  <button class="btn-patch btn-patch-cr" id="btn-passer-cr" onclick="passerCR()" style="display:none">Passer en CR</button>
-  <button class="btn-patch" id="btn-export-patch" onclick="exportPatch()" disabled>Exporter le Patch</button>
+<div id="server-indicator" class="off">
+  <span class="dot"></span>
+  <span id="server-label">Serveur...</span>
 </div>
 
 <div id="change-summary">
@@ -283,7 +274,7 @@
                 <th id="col-edit" style="display:none; width:36px;"></th>
               </tr>
             </thead>
-            <tbody id="table-body"></tbody>
+            <tbody id="table-body"><tr><td colspan="8" class="loading-state">Chargement...</td></tr></tbody>
           </table>
         </div>
         <div id="detail-panel"><div class="detail-card" id="detail-card-inner"></div></div>
@@ -296,200 +287,214 @@
   <div id="view-cards" style="display:none"><div id="cards-content"></div></div>
 </main>
 
-<div class="modal-overlay" id="modal-restore" style="display:none">
-  <div class="modal-box">
-    <h3>Patch en cours detecte</h3>
-    <p id="modal-restore-msg"></p>
-    <div class="modal-btns">
-      <button onclick="dismissRestore()">Ignorer</button>
-      <button class="btn-restore" onclick="doRestore()">Restaurer</button>
-    </div>
-  </div>
-</div>
-
 <footer id="footer-info"></footer>
 
 <script>
+// ── Données embarquées (injectées par export-github-pages.js pour GitHub Pages) ──
+const DATA_EMBEDDED    = null;
+const CHANGES_EMBEDDED = null;
+
+// ── Configuration ──────────────────────────────────────────────────────────────
+const SERVER_URL  = 'http://localhost:3000';
+const RESOURCE    = 'ressources/engagements';
+
 const DOMAIN_COLORS = {
-  'Gouvernance responsable':                        '#2e5e3e',
-  'Droits des personnes':                           '#6e3a1a',
-  'Relations et conditions de travail responsables':'#1a3e6e',
-  'Environnement':                                  '#3a6e1a',
-  "Ethique dans les relations d'affaires":          '#5e1a5e',
-  'Interets des consommateurs':                     '#1a5e5e',
-  'Developpement local et interet general':         '#5e4a1a',
+  'Gouvernance responsable':                         '#2e5e3e',
+  'Droits des personnes':                            '#6e3a1a',
+  'Relations et conditions de travail responsables': '#1a3e6e',
+  'Environnement':                                   '#3a6e1a',
+  "Ethique dans les relations d'affaires":           '#5e1a5e',
+  'Interets des consommateurs':                      '#1a5e5e',
+  'Developpement local et interet general':          '#5e4a1a',
 };
 
-// --- SOURCE UNIQUE ------------------------------------------------------------
-const DATA = [
-  { domaine: "Gouvernance responsable", pa: "PA01", priorite: 1, referent: "", objectif: "Structurer la gouvernance RSO afin de garantir la cohérence entre les valeurs de l'association et ses décisions stratégiques.", indicateur: "Signature des chartes administrateurs 100% | Présence au comité RSE 75%", cible: "75%", engage: 1, avancement: 0.4, risque: "Faible", ct: "Chartes comité RSO Administrateurs et Formateurs intégrant un volet RSO", lt: "Matrice de matérialité et Strategie RSO formalisée | Synthèse du questionnaire des parties prenantes" },
-  { domaine: "Gouvernance responsable", pa: "PA02", priorite: 1, referent: "", objectif: "Cartographier et piloter les risques afin de sécuriser la pérennité économique et opérationnelle de l'association.", indicateur: "Taux de couverture des risques critiques par un plan d'action.", cible: "90%", engage: 0, avancement: 0, risque: "Faible", ct: "Analyse SWOT, Cartographie des risques.", lt: "Feuille de route pluriannuelle des developpements et pistes d'innovation | Plan d'actions de maitrise des risques et suivi à jour" },
-  { domaine: "Droits des personnes", pa: "PA03", priorite: 1, referent: "Laetitia", objectif: "Sécuriser l'éthique des relations afin de garantir un environnement de travail et d'échange mutuel sans harcèlement ni discrimination.", indicateur: "Taux de membres du Bureau/CA sensibilisés à la procédure d'alerte. | Nombre d'événements tenus conformément à la charte (70%)", cible: "100%", engage: 0, avancement: 0, risque: "Faible", ct: "Procédure d'alerte formalisée, Désignation du référent éthique.", lt: "Support de communication aux parties prenantes | Charte des evenements" },
-  { domaine: "Droits des personnes", pa: "PA04", priorite: 1, referent: "Laetitia", objectif: "Promouvoir activement la diversité afin de refléter la richesse des métiers de la Supply Chain et assurer l'égalité des chances.", indicateur: "Part du genre le moins représenté au sein du CA.", cible: "40%", engage: 0, avancement: 0, risque: "Faible", ct: "Guide \"questions interdites\" (document de référence interne)", lt: "Tableau de suivi de la composition du CA et du Bureau | Modèles de contrats intégrant la clause non-discrimination" },
-  { domaine: "Droits des personnes", pa: "PA05", priorite: 0, referent: "Remi", objectif: "Fiabiliser la gestion des données afin de garantir la vie privée des membres et la conformité stricte au RGPD.", indicateur: "Taux de conformité du registre de traitement (auto-évaluation CNIL).", cible: "90%", engage: 0, avancement: 0, risque: "Faible", ct: "Nomination d'un référent RGPD | Registre des traitements de données (modèle CNIL) | Cartographie des flux de données | Tableau de suivi des mises à jour du registre | Attestation de conformité RGPD du prestataire informatique", lt: "Clauses RGPD dans les contrats | Procédure de suppression / anonymisation des données | Registre de suppression des données | Relevé de conformité transmis au CA annuellement | Rapport annuel de conformité RGPD | Grille d'autoévaluation CNIL | Guide de bonnes pratiques RGPD" },
-  { domaine: "Relations et conditions de travail responsables", pa: "PA07", priorite: 0, referent: "", objectif: "Clarifier les rôles et parcours afin de favoriser l'engagement durable et le bien-être des administrateurs et formateurs.", indicateur: "Taux de satisfaction globale des collaborateurs (Baromètre QVT).", cible: "80%", engage: 0, avancement: 0, risque: "Faible", ct: "Fiches de poste validées et diffusées | Parcours administrateurs mis à jour | Rapport d'étonnement et plan d'actions associé.", lt: "Calendrier et compte rendu des moments conviviaux | Sondage QVT et mini-baromètre interne | Témoignages valorisant les actions QVT dans la newsletter" },
-  { domaine: "Relations et conditions de travail responsables", pa: "PA08", priorite: 0, referent: "", objectif: "Fluidifier la communication interne afin de renforcer l'adhésion des parties prenantes aux projets de l'association.", indicateur: "Taux de participation aux enquêtes de consultation interne.", cible: "70%", engage: 0, avancement: 0, risque: "Faible", ct: "Questionnaire d'enquête parties prenantes internes | Rapport de diagnostic sur la communication | Calendrier annuel des réunions | Procédure ou charte de communication interne | Modèle de compte rendu partagé | Fiche de rôle du référent communication", lt: "Synthèse des résultats et plan d'amélioration | Calendrier annuel des réunions | Procédure ou charte de communication interne" },
-  { domaine: "Relations et conditions de travail responsables", pa: "PA09", priorite: 0, referent: "", objectif: "Anticiper les risques santé/sécurité afin de protéger l'intégrité physique et mentale des intervenants lors des événements.", indicateur: "Pourcentage d'événements majeurs ayant fait l'objet d'un brief sécurité.", cible: "100%", engage: 0, avancement: 0, risque: "Faible", ct: "Cartographie des RPS, Fiche \"Minute Prévention\", Check-list sécurité.", lt: "Registre de suivi des incidents et actions correctives | Synthèse annuelle Santé et sécurité présentée au CA" },
-  { domaine: "Relations et conditions de travail responsables", pa: "PA10", priorite: 0, referent: "", objectif: "Professionnaliser la gouvernance RSO afin de doter les élus des compétences nécessaires au pilotage de la transition.", indicateur: "% d'administrateur-es ayant répondu au questionnaire 90% | % d'administrateur-es ayant suivi la formation 90%", cible: "4h/élu", engage: 0, avancement: 0, risque: "Faible", ct: "Questionnaire besoin formation", lt: "Feuille de présence et retour formation, synthèse annuelle" },
-  { domaine: "Environnement", pa: "PA12", priorite: 0, referent: "", objectif: "Sélectionner des certifications et des serious games promouvant l'éco-conception et l'économie circulaire afin de promouvoir les supply chains responsables.", indicateur: "Visibilité de la page web 40/mois | Suivi des webinaires 5 personnes/mois", cible: "", engage: 0, avancement: 0, risque: "Faible", ct: "Plan de communication intégrant la RSO | Page web SC responsable", lt: "Synthèse annuelle SC responsable" },
-  { domaine: "Environnement", pa: "PA13", priorite: 0, referent: "", objectif: "Optimiser l'usage des ressources afin de tendre vers la sobriété numérique et matérielle de l'association.", indicateur: "Réduction de la consommation de ressources (matériel de bureau)", cible: "-20%", engage: 0, avancement: 0, risque: "Faible", ct: "Diagnostic des consommations, Guide des écogestes numériques.", lt: "Rapport annuel consommation" },
-  { domaine: "Environnement", pa: "PA14", priorite: 0, referent: "", objectif: "Réduire les nuisances liées aux événements afin de minimiser l'impact direct sur l'environnement.", indicateur: "Taux annuel d'événements conformes au guide de minimisation des impacts environnement", cible: "80%", engage: 0, avancement: 0, risque: "Faible", ct: "Éco-guide de l'association pour les évènements | Référence au guide dans les chartes", lt: "Rapport annuel de suivi des évènements" },
-  { domaine: "Environnement", pa: "PA15", priorite: 0, referent: "", objectif: "Piloter l'empreinte carbone afin de définir une trajectoire de décarbonation réaliste pour les activités de l'association.", indicateur: "Nombre d'événements ayant fait l'objet d'un calcul d'empreinte carbone.", cible: "5", engage: 0, avancement: 0, risque: "Faible", ct: "Guide de calcul de l'empreinte carbone pour les évènements", lt: "Rapport annuel d'impact carbone" },
-  { domaine: "Ethique dans les relations d'affaires", pa: "PA17", priorite: 0, referent: "", objectif: "Cadrer les pratiques de concurrence afin de protéger la propriété intellectuelle et garantir une déontologie exemplaire.", indicateur: "Taux de chartes enseignants signées intégrant le volet copyright.", cible: "95%", engage: 0, avancement: 0, risque: "Faible", ct: "Chartes enseignants mises à jour et signées", lt: "Rapport à l'AG" },
-  { domaine: "Ethique dans les relations d'affaires", pa: "PA18", priorite: 0, referent: "", objectif: "Engager les fournisseurs dans la RSO afin de diffuser les bonnes pratiques sur l'ensemble de la chaîne de valeur.", indicateur: "Part des contrats fournisseurs incluant une clause de responsabilité sociétale.", cible: "70%", engage: 0, avancement: 0, risque: "Faible", ct: "Modèle de contrat avec clauses RSO, Formulaire évaluation fournisseur.", lt: "Contrats signés | Rapport de suivi" },
-  { domaine: "Ethique dans les relations d'affaires", pa: "PA19", priorite: 0, referent: "", objectif: "Équilibrer les relations partenaires afin de prévenir tout risque de dépendance économique réciproque.", indicateur: "Délai moyen de paiement des fournisseurs (en jours).", cible: "< 30 j", engage: 0, avancement: 0, risque: "Faible", ct: "Grille d'analyse de dépendance", lt: "Reporting comptable délais de paiement." },
-  { domaine: "Intérets des consommateurs", pa: "PA21", priorite: 0, referent: "", objectif: "Garantir la sécurité des services afin de prévenir tout incident lors des formations et protéger la santé des adhérents.", indicateur: "Événements conformes au guide.", cible: "100%", engage: 0, avancement: 0, risque: "Faible", ct: "Guide de prévention des risques", lt: "Rapport de suivi des évènements" },
-  { domaine: "Intérets des consommateurs", pa: "PA22", priorite: 0, referent: "", objectif: "Monitorer la satisfaction client afin de garantir une amélioration continue de la qualité pédagogique des offres.", indicateur: "Score moyen de satisfaction (CSAT) sur les formations.", cible: "8,5/10", engage: 0, avancement: 0, risque: "Faible", ct: "Questionnaire de satisfaction", lt: "Tableau de bord satisfaction | Synthèse des critiques et plan d'action" },
-  { domaine: "Developpement local et intérêt général", pa: "PA24", priorite: 0, referent: "", objectif: "Soutenir le dynamisme local afin de renforcer l'ancrage territorial de l'association et favoriser l'insertion.", indicateur: "Nombre d'interventions réalisées dans des écoles ou universités régionales.", cible: "6/an", engage: 0, avancement: 0, risque: "Faible", ct: "Calendrier des interventions locales", lt: "Rapport AG" },
-  { domaine: "Developpement local et intérêt général", pa: "PA25", priorite: 0, referent: "", objectif: "Favoriser le partage de connaissances afin de démocratiser les enjeux de la Supply Chain responsable auprès du plus grand nombre.", indicateur: "Taux d'événements intégrant un sujet RSO.", cible: "50%", engage: 0, avancement: 0, risque: "Faible", ct: "Programme des webinaires, Statistiques de participation.", lt: "Rapport AG, retour des questionnaires" },
-];
-// -----------------------------------------------------------------------------
+// ── Paramètres URL ─────────────────────────────────────────────────────────────
+const urlParams  = new URLSearchParams(window.location.search);
+const URL_DATE   = urlParams.get('date')  || null;
+const URL_MODE   = urlParams.get('mode')  || null;  // 'edit' ou null
+const URL_EMBED  = urlParams.get('embed') === 'true';
 
-// --- CHANGE_DATA -------------------------------------------------------------
-const CHANGE_DATA = [];
-// -----------------------------------------------------------------------------
+const EDIT_MODE  = URL_DATE !== null && URL_MODE === 'edit';
+const CR_MODE    = URL_DATE !== null && URL_MODE !== 'edit';
+const EMBED_MODE = URL_EMBED;
 
-// --- MODE --------------------------------------------------------------------
-const MODE = "lecture"; // valeurs : "lecture" | "edition" | "cr"
-// -----------------------------------------------------------------------------
+// Chemins des fichiers JSON (relatifs à AssistantIA/)
+const DATA_FILE    = URL_DATE
+  ? RESOURCE + '/historique/data-'    + URL_DATE + '.json'
+  : null; // sans date : on cherche le plus récent via /list
+const CHANGES_FILE = URL_DATE
+  ? RESOURCE + '/historique/changes-' + URL_DATE + '.json'
+  : null;
 
-// --- APPLY -------------------------------------------------------------------
-function applyPatch(htmlFile, patch) {
-  // Cle primaire : pa — Champs editables : engage, referent, avancement, risque (+ note hors DATA)
-  const newEntries = [];
-  for (const mod of (patch.modifications || [])) {
-    const entry = {};
-    for (const field of ['engage', 'referent', 'avancement', 'risque']) {
-      if (mod[field] !== undefined) entry[field] = mod[field];
-    }
-    if (mod.note !== undefined) entry.note = mod.note;
-    if (Object.keys(entry).length > 0) newEntries.push({ pa: mod.pa, ...entry });
-  }
-  const newBlock = '// --- CHANGE_DATA -------------------------------------------------------------\n'
-    + 'const CHANGE_DATA = ' + JSON.stringify(newEntries, null, 2) + ';\n'
-    + '// -----------------------------------------------------------------------------';
-  return htmlFile.replace(
-    /\/\/ --- CHANGE_DATA -+\nconst CHANGE_DATA = \[[\s\S]*?\];\n\/\/ -+/,
-    newBlock
-  );
+// ── État global ────────────────────────────────────────────────────────────────
+let DATA    = [];   // données de référence chargées depuis data-*.json
+let CHANGES = {};   // modifications { pa: { field: {avant, apres}, note } }
+let extraReferents = [];
+let serverAvailable = false;
+
+// ── Indicateur serveur ─────────────────────────────────────────────────────────
+function setIndicator(state, label) {
+  const el = document.getElementById('server-indicator');
+  el.className = state;
+  document.getElementById('server-label').textContent = label;
 }
-// -----------------------------------------------------------------------------
 
-// --- MERGE -------------------------------------------------------------------
-function mergeChanges(htmlFile) {
-  // Fusionne CHANGE_DATA dans DATA, vide CHANGE_DATA, remet MODE a "lecture"
-  const dataMatch = htmlFile.match(/\/\/ --- SOURCE UNIQUE -+\nconst DATA = (\[[\s\S]*?\]);\n\/\/ -+/);
-  if (!dataMatch) throw new Error('Bloc SOURCE UNIQUE introuvable');
-  let data = JSON.parse(dataMatch[1]);
-  const cdMatch = htmlFile.match(/\/\/ --- CHANGE_DATA -+\nconst CHANGE_DATA = (\[[\s\S]*?\]);\n\/\/ -+/);
-  if (!cdMatch) throw new Error('Bloc CHANGE_DATA introuvable');
-  const changes = JSON.parse(cdMatch[1]);
-  for (const change of changes) {
-    const idx = data.findIndex(r => r.pa === change.pa);
-    if (idx === -1) continue;
+async function ping() {
+  try {
+    const r = await fetch(SERVER_URL + '/ping', { method: 'GET' });
+    if (r.ok) { serverAvailable = true; setIndicator('ok', 'Serveur connecte'); return true; }
+  } catch(e) {}
+  serverAvailable = false;
+  setIndicator('off', 'Serveur absent');
+  return false;
+}
+
+// ── Chargement des données ─────────────────────────────────────────────────────
+async function fetchJson(filePath) {
+  const r = await fetch(SERVER_URL + '/patch?file=' + encodeURIComponent(filePath));
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + filePath);
+  return r.json();
+}
+
+async function fetchLatestDataFile() {
+  // Utilise /list pour trouver le data-*.json le plus récent
+  const r = await fetch(SERVER_URL + '/list?prefix=' + encodeURIComponent(RESOURCE + '/historique/data-'));
+  if (!r.ok) throw new Error('Impossible de lister les fichiers data');
+  const { files } = await r.json();
+  if (!files || !files.length) throw new Error('Aucun fichier data-*.json trouve');
+  // Trier par nom décroissant (YYYY-MM-DD -> tri lexicographique = chronologique)
+  const sorted = files.sort().reverse();
+  return sorted[0]; // chemin relatif à AssistantIA/
+}
+
+async function loadData() {
+  if (!serverAvailable) {
+    // Mode GitHub Pages : utiliser les données embarquées
+    if (DATA_EMBEDDED) {
+      DATA = DATA_EMBEDDED;
+      if (CHANGES_EMBEDDED) loadChangesFromArray(CHANGES_EMBEDDED);
+      return;
+    }
+    showFatalError('Serveur non disponible — démarrez start-server.bat');
+    return;
+  }
+
+  try {
+    let dataFile = DATA_FILE;
+    if (!dataFile) {
+      dataFile = await fetchLatestDataFile();
+    }
+    const data = await fetchJson(dataFile);
+    if (!data) { showFatalError('Fichier data introuvable : ' + dataFile); return; }
+    DATA = data;
+
+    if (CHANGES_FILE) {
+      const changes = await fetchJson(CHANGES_FILE);
+      if (changes) loadChangesFromArray(changes);
+    }
+  } catch(e) {
+    setIndicator('err', 'Erreur chargement');
+    showFatalError('Erreur chargement : ' + e.message);
+    return;
+  }
+
+  afterLoad();
+}
+
+function loadChangesFromArray(arr) {
+  CHANGES = {};
+  for (const entry of arr) {
+    if (!entry.pa) continue;
+    const ch = {};
     for (const field of ['engage', 'referent', 'avancement', 'risque']) {
-      if (change[field] !== undefined) {
-        const val = change[field];
-        data[idx][field] = (val && val.apres !== undefined) ? val.apres : val;
+      if (entry[field] !== undefined) {
+        const v = entry[field];
+        if (v !== null && typeof v === 'object' && v.apres !== undefined) ch[field] = v;
+        else {
+          const orig = (DATA.find(r => r.pa === entry.pa) || {})[field];
+          ch[field] = { avant: orig, apres: v };
+        }
       }
     }
+    if (entry.note) ch.note = entry.note;
+    if (Object.keys(ch).length > 0) CHANGES[entry.pa] = ch;
   }
-  const newDataBlock = '// --- SOURCE UNIQUE ------------------------------------------------------------\n'
-    + 'const DATA = ' + JSON.stringify(data, null, 2) + ';\n'
-    + '// -----------------------------------------------------------------------------';
-  htmlFile = htmlFile.replace(/\/\/ --- SOURCE UNIQUE -+\nconst DATA = \[[\s\S]*?\];\n\/\/ -+/, newDataBlock);
-  htmlFile = htmlFile.replace(
-    /\/\/ --- CHANGE_DATA -+\nconst CHANGE_DATA = \[[\s\S]*?\];\n\/\/ -+/,
-    '// --- CHANGE_DATA -------------------------------------------------------------\nconst CHANGE_DATA = [];\n// -----------------------------------------------------------------------------'
-  );
-  htmlFile = htmlFile.replace(
-    /\/\/ --- MODE -+\nconst MODE = "[^"]*";[^\n]*/,
-    '// --- MODE --------------------------------------------------------------------\nconst MODE = "lecture"; // valeurs : "lecture" | "edition" | "cr"'
-  );
-  return htmlFile;
 }
-// -----------------------------------------------------------------------------
 
-// Runtime : deriver l'etat depuis MODE fichier + parametres URL
-const urlParams   = new URLSearchParams(window.location.search);
-const _urlReunion = urlParams.get('reunion') || urlParams.get('session') || null;
-const _urlCR      = urlParams.get('cr') === 'true';
-const _urlEmbed   = urlParams.get('embed') === 'true';
-const _patchDate  = CHANGE_DATA.length > 0 && CHANGE_DATA[0]._reunion_date ? CHANGE_DATA[0]._reunion_date : null;
-const REUNION_DATE = _urlReunion || _patchDate || null;
+function showFatalError(msg) {
+  document.getElementById('table-body').innerHTML =
+    '<tr><td colspan="8" class="empty-state">' + msg + '</td></tr>';
+}
 
-let _runtimeMode = MODE;
-if (_urlEmbed)        _runtimeMode = 'embed';
-else if (_urlCR)      _runtimeMode = 'cr';
-else if (_urlReunion) _runtimeMode = 'edition';
-
-const EDIT_MODE  = _runtimeMode === 'edition';
-const CR_MODE    = _runtimeMode === 'cr';
-const EMBED_MODE = _runtimeMode === 'embed';
-const IDB_KEY    = REUNION_DATE ? 'afrscm-patch-engagements-' + REUNION_DATE : null;
-
-// Initialiser CHANGES depuis CHANGE_DATA
-let CHANGES = {};
-let extraReferents = [];
-for (const entry of CHANGE_DATA) {
-  if (!entry.pa) continue;
-  const ch = {};
-  for (const field of ['engage', 'referent', 'avancement', 'risque']) {
-    if (entry[field] !== undefined) {
-      const v = entry[field];
-      if (v !== null && typeof v === 'object' && v.apres !== undefined) ch[field] = v;
-      else { const orig = (DATA.find(r => r.pa === entry.pa) || {})[field]; ch[field] = { avant: orig, apres: v }; }
+// ── Sauvegarde automatique des modifications ────────────────────────────────────
+async function saveChanges() {
+  if (!EDIT_MODE || !serverAvailable || !CHANGES_FILE) return;
+  // Sérialiser CHANGES en tableau pour le fichier JSON
+  const arr = Object.entries(CHANGES).map(([pa, ch]) => {
+    const entry = { pa };
+    for (const [f, v] of Object.entries(ch)) {
+      if (f === 'note') entry.note = v;
+      else entry[f] = v;
     }
-  }
-  if (entry.note) ch.note = entry.note;
-  if (Object.keys(ch).length > 0) CHANGES[entry.pa] = ch;
-}
-
-// IndexedDB — fonctionne en file:// contrairement a localStorage
-const _IDB_NAME = 'afrscm-engagements', _IDB_STORE = 'patches';
-let _idb = null;
-async function idbOpen() {
-  if (_idb) return _idb;
-  return new Promise((res, rej) => {
-    const r = indexedDB.open(_IDB_NAME, 1);
-    r.onupgradeneeded = e => e.target.result.createObjectStore(_IDB_STORE);
-    r.onsuccess = e => { _idb = e.target.result; res(_idb); };
-    r.onerror = () => rej(r.error);
+    return entry;
   });
-}
-async function idbSet(key, val) {
-  try { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction(_IDB_STORE,'readwrite'); tx.objectStore(_IDB_STORE).put(val, key); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); } catch(e) {}
-}
-async function idbGet(key) {
-  try { const db = await idbOpen(); return new Promise((res, rej) => { const r = db.transaction(_IDB_STORE,'readonly').objectStore(_IDB_STORE).get(key); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); } catch(e) { return null; }
-}
-async function idbDel(key) {
-  try { const db = await idbOpen(); return new Promise((res, rej) => { const tx = db.transaction(_IDB_STORE,'readwrite'); tx.objectStore(_IDB_STORE).delete(key); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); } catch(e) {}
-}
-
-// Activer UI selon le mode
-if (EMBED_MODE) document.body.classList.add('embed-mode');
-
-if (REUNION_DATE && (EDIT_MODE || CR_MODE)) {
-  const d = new Date(REUNION_DATE + 'T00:00:00');
-  const lbl = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  const badge = document.getElementById('reunion-badge');
-  badge.textContent = 'Reunion du ' + lbl.charAt(0).toUpperCase() + lbl.slice(1);
-  badge.style.display = '';
-}
-if (EDIT_MODE) {
-  document.getElementById('edit-indicator').style.display = '';
-  document.getElementById('patch-bar').style.display = '';
-  document.getElementById('col-edit').style.display = '';
-  document.getElementById('btn-filter-modified').style.display = '';
-  document.getElementById('btn-passer-cr').style.display = '';
-}
-if (CR_MODE) {
-  document.getElementById('cr-indicator').style.display = '';
-  document.getElementById('change-summary').classList.add('visible');
+  try {
+    const r = await fetch(SERVER_URL + '/patch?file=' + encodeURIComponent(CHANGES_FILE), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(arr, null, 2)
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    setIndicator('ok', 'Serveur connecte');
+  } catch(e) {
+    setIndicator('err', 'Erreur sauvegarde');
+  }
 }
 
-// Utilitaires
+// ── Activation UI selon le mode ────────────────────────────────────────────────
+function activateUI() {
+  if (EMBED_MODE) { document.body.classList.add('embed-mode'); return; }
+
+  if (URL_DATE) {
+    const d = new Date(URL_DATE + 'T00:00:00');
+    const lbl = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    const badge = document.getElementById('reunion-badge');
+    badge.textContent = 'Session du ' + lbl.charAt(0).toUpperCase() + lbl.slice(1);
+    badge.style.display = '';
+  }
+
+  if (EDIT_MODE) {
+    document.getElementById('edit-indicator').style.display = '';
+    document.getElementById('col-edit').style.display = '';
+    document.getElementById('btn-filter-modified').style.display = '';
+  }
+
+  if (CR_MODE) {
+    document.getElementById('cr-indicator').style.display = '';
+    document.getElementById('change-summary').classList.add('visible');
+  }
+}
+
+// ── Après chargement des données ───────────────────────────────────────────────
+function afterLoad() {
+  const engages  = DATA.filter(r => r.engage).length;
+  const domaines = new Set(DATA.map(r => r.domaine)).size;
+  document.getElementById('stat-total').textContent    = DATA.length;
+  document.getElementById('stat-engages').textContent  = engages;
+  document.getElementById('stat-domaines').textContent = domaines;
+  document.getElementById('footer-info').textContent   =
+    DATA.length + ' engagements · ' + domaines + ' domaines · AfrSCM Comite RSE'
+    + (URL_DATE ? ' · ' + URL_DATE : '');
+
+  buildDynamicFilters();
+  restoreFilters();
+  updatePatchUI();
+  updateChangeSummary();
+  renderCurrent();
+}
+
+// ── Utilitaires ────────────────────────────────────────────────────────────────
 function domainColor(d) { return DOMAIN_COLORS[d] || '#555'; }
 
 function toList(str) {
@@ -513,147 +518,62 @@ function effectiveRow(row) {
 function isModified(pa) { return !!(CHANGES[pa] && Object.keys(CHANGES[pa]).length > 0); }
 
 function allReferents() {
-  const fromData = DATA.map(r => r.referent).filter(Boolean);
-  return [...new Set([...fromData, ...extraReferents])].sort();
+  const fromData    = DATA.map(r => r.referent).filter(Boolean);
+  const fromChanges = Object.values(CHANGES).map(c => c.referent && c.referent.apres).filter(Boolean);
+  return [...new Set([...fromData, ...fromChanges, ...extraReferents])].sort();
 }
 
 function fieldLabel(f) { return { engage:'Statut', referent:'Referent', avancement:'Avancement', risque:'Risque' }[f] || f; }
 function fieldDisplay(f, v) {
-  if (f === 'engage') return v ? 'Engage' : 'Non engage';
+  if (f === 'engage')     return v ? 'Engage' : 'Non engage';
   if (f === 'avancement') return Math.round((v || 0) * 100) + '%';
   return v || '—';
 }
 
-// Patch storage (IndexedDB)
-function savePatchToStorage() {
-  if (!IDB_KEY) return;
-  idbSet(IDB_KEY, { changes: CHANGES, extraReferents });
-}
-
-function savePatchNote(pa, note) {
+// ── Modifications ──────────────────────────────────────────────────────────────
+function recordChange(pa, field, avant, apres) {
   if (!CHANGES[pa]) CHANGES[pa] = {};
-  if (note.trim()) CHANGES[pa].note = note.trim(); else delete CHANGES[pa].note;
-  if (Object.keys(CHANGES[pa]).length === 0) delete CHANGES[pa];
-  savePatchToStorage(); updatePatchUI(); updateChangeSummary();
+  const original = DATA.find(r => r.pa === pa)[field];
+  if (apres === original || String(apres) === String(original)) {
+    delete CHANGES[pa][field];
+    if (Object.keys(CHANGES[pa]).length === 0) delete CHANGES[pa];
+  } else {
+    CHANGES[pa][field] = { avant, apres };
+  }
+  saveChanges(); updatePatchUI(); updateChangeSummary();
 }
 
-window.importPatch = function(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const patch = JSON.parse(e.target.result);
-      for (const mod of (patch.modifications || [])) {
-        if (!mod.pa) continue;
-        if (!CHANGES[mod.pa]) CHANGES[mod.pa] = {};
-        for (const field of ['engage', 'referent', 'avancement', 'risque']) {
-          if (mod[field] !== undefined) {
-            const orig = (DATA.find(r => r.pa === mod.pa) || {})[field];
-            const val = mod[field];
-            if (val !== null && typeof val === 'object' && val.apres !== undefined) CHANGES[mod.pa][field] = val;
-            else CHANGES[mod.pa][field] = { avant: orig, apres: val };
-          }
-        }
-        if (mod.note !== undefined) CHANGES[mod.pa].note = mod.note;
-        if (Object.keys(CHANGES[mod.pa]).length === 0) delete CHANGES[mod.pa];
-      }
-      if (patch.nouveaux_referents) extraReferents = [...new Set([...extraReferents, ...patch.nouveaux_referents])];
-      savePatchToStorage(); updatePatchUI(); updateChangeSummary(); renderCurrent();
-      alert('Patch importe : ' + Object.keys(CHANGES).length + ' engagement(s) modifie(s).');
-    } catch(err) {
-      alert('Erreur lors de la lecture du patch : ' + err.message);
-    }
-    input.value = '';
-  };
-  reader.readAsText(file);
-};
+function saveNote(pa, note) {
+  if (!CHANGES[pa]) CHANGES[pa] = {};
+  if (note.trim()) CHANGES[pa].note = note.trim();
+  else delete CHANGES[pa].note;
+  if (Object.keys(CHANGES[pa]).length === 0) delete CHANGES[pa];
+  saveChanges(); updatePatchUI(); updateChangeSummary();
+}
 
-window.clearPatch = function() {
+window.clearChanges = function() {
   if (!confirm('Effacer toutes les modifications en cours ?')) return;
   CHANGES = {}; extraReferents = [];
-  if (IDB_KEY) idbDel(IDB_KEY);
+  if (serverAvailable && CHANGES_FILE) {
+    // Écrire un tableau vide plutôt que supprimer — conserve la révision ouverte
+    fetch(SERVER_URL + '/patch?file=' + encodeURIComponent(CHANGES_FILE), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '[]'
+    }).catch(() => {});
+  }
   updatePatchUI(); updateChangeSummary(); closeEditPanel(); renderCurrent();
 };
 
-window.passerCR = function() {
-  if (!confirm('Passer en mode CR ? Les modifications seront figees (lecture seule).')) return;
-  const url = new URL(window.location.href);
-  url.searchParams.set('cr', 'true');
-  if (REUNION_DATE) url.searchParams.set('reunion', REUNION_DATE);
-  window.location.href = url.toString();
-};
-
-window.exportPatch = function() {
-  const nb = Object.keys(CHANGES).length;
-  if (!nb) return;
-  const patch = {
-    date_reunion: REUNION_DATE,
-    exporte_le: new Date().toISOString().slice(0,10),
-    nouveaux_referents: extraReferents.length ? extraReferents : undefined,
-    modifications: Object.entries(CHANGES).map(([pa, champs]) => {
-      const entry = { pa };
-      for (const [f,v] of Object.entries(champs)) { if (f==='note') entry.note=v; else entry[f]=v; }
-      return entry;
-    })
-  };
-  const blob = new Blob([JSON.stringify(patch, null, 2)], { type:'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'patch-engagements-' + (REUNION_DATE || new Date().toISOString().slice(0,10)) + '.json';
-  a.click();
-  if (IDB_KEY) idbDel(IDB_KEY);
-  alert('Patch exporte (' + nb + ' modification' + (nb>1?'s':'') + '). Le patch local a ete efface.');
-};
-
-async function checkStoredPatch() {
-  if (!IDB_KEY) return;
-  const stored = await idbGet(IDB_KEY);
-  if (!stored) return;
-  const ch = stored.changes || stored;
-  if (Object.keys(ch).length === 0) return;
-  const nb = Object.keys(ch).length;
-  document.getElementById('modal-restore-msg').textContent =
-    'Un patch non exporte contient ' + nb + ' modification' + (nb>1?'s':'') + ' pour la reunion du ' + REUNION_DATE + '. Voulez-vous le restaurer ?';
-  document.getElementById('modal-restore').style.display = '';
-  window._storedPatch = stored;
-}
-
-window.dismissRestore = function() {
-  document.getElementById('modal-restore').style.display = 'none';
-  if (IDB_KEY) idbDel(IDB_KEY);
-};
-
-window.doRestore = function() {
-  const p = window._storedPatch || {};
-  const raw = p.changes || p;
-  CHANGES = {};
-  for (const [pa, champs] of Object.entries(raw)) {
-    const ch = {};
-    for (const [f,v] of Object.entries(champs)) {
-      if (f === 'note') { ch.note = v; continue; }
-      if (v !== null && typeof v === 'object' && v.apres !== undefined) ch[f] = v;
-      else { const orig = (DATA.find(r => r.pa === pa) || {})[f]; ch[f] = { avant: orig, apres: v }; }
-    }
-    CHANGES[pa] = ch;
-  }
-  extraReferents = p.extraReferents || [];
-  document.getElementById('modal-restore').style.display = 'none';
-  updatePatchUI(); updateChangeSummary(); renderCurrent();
-};
-
-// Patch UI & change summary
+// ── Patch UI ───────────────────────────────────────────────────────────────────
 function updatePatchUI() {
   if (!EDIT_MODE) return;
   const nb = Object.keys(CHANGES).length;
-  document.getElementById('patch-info').textContent = nb === 0
-    ? 'Aucune modification'
-    : nb + ' engagement' + (nb>1?'s':'') + ' modifie' + (nb>1?'s':'');
-  document.getElementById('btn-export-patch').disabled = nb === 0;
-  document.getElementById('btn-passer-cr').style.display = nb > 0 ? '' : 'none';
-  document.getElementById('btn-filter-modified').style.display = nb > 0 ? '' : 'none';
+  const btnMod = document.getElementById('btn-filter-modified');
+  if (btnMod) btnMod.style.display = nb > 0 ? '' : 'none';
 }
 
+// ── Change summary ─────────────────────────────────────────────────────────────
 function updateChangeSummary() {
   const el = document.getElementById('change-summary-inner');
   if (!el) return;
@@ -664,35 +584,97 @@ function updateChangeSummary() {
     return;
   }
   if (EDIT_MODE) document.getElementById('change-summary').classList.add('visible');
-  let rows = '';
-  for (const [pa, champs] of Object.entries(CHANGES)) {
-    const dataRow = DATA.find(r => r.pa === pa);
-    const color = domainColor(dataRow ? dataRow.domaine : '');
-    for (const [field, val] of Object.entries(champs)) {
-      if (field === 'note') {
-        rows += '<div class="cs-row"><span class="cs-pa"><span class="pa-tag" style="background:' + color + '">' + pa + '</span></span><span class="cs-field">Note</span><span class="cs-note">' + val + '</span></div>';
-      } else {
-        rows += '<div class="cs-row"><span class="cs-pa"><span class="pa-tag" style="background:' + color + '">' + pa + '</span></span><span class="cs-field">' + fieldLabel(field) + '</span><span class="cs-avant">' + fieldDisplay(field, val.avant) + '</span><span class="cs-arrow">-&gt;</span><span class="cs-apres">' + fieldDisplay(field, val.apres) + '</span></div>';
+
+  const filteredPas = new Set(getFiltered().map(r => r.pa));
+  const visibleChanges = Object.entries(CHANGES).filter(([pa]) => filteredPas.has(pa));
+
+  const grouped = {};
+  for (const row of DATA) {
+    if (!visibleChanges.find(([pa]) => pa === row.pa)) continue;
+    if (!grouped[row.domaine]) grouped[row.domaine] = [];
+    grouped[row.domaine].push(row);
+  }
+
+  const date = URL_DATE ? ' — ' + URL_DATE : '';
+  const suffix = visibleChanges.length < nb
+    ? ' <span style="font-size:0.72rem;color:var(--muted);font-weight:400;">(' + visibleChanges.length + '/' + nb + ' selon filtre)</span>'
+    : '';
+
+  let html = '<h3 id="cs-heading"><span>Modifications' + date + suffix + '</span>'
+    + '<span class="cs-toggle" id="cs-toggle-btn">▲ Reduire</span></h3>'
+    + '<div class="cs-body" id="cs-body">';
+
+  for (const [domaine, rows] of Object.entries(grouped)) {
+    const color = domainColor(domaine);
+    html += '<div style="margin-bottom:1.1rem;">'
+      + '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;padding-bottom:0.3rem;border-bottom:2px solid ' + color + ';">'
+      + '<div style="width:10px;height:10px;border-radius:50%;background:' + color + ';flex-shrink:0;"></div>'
+      + '<span style="font-family:\'DM Serif Display\',serif;font-size:0.88rem;color:' + color + ';">' + domaine + '</span>'
+      + '</div>';
+    for (const row of rows) {
+      const ch = CHANGES[row.pa] || {};
+      html += '<div class="cs-pa-card" data-pa="' + row.pa + '" style="background:var(--modified);border:1px solid var(--modified-border);border-radius:6px;padding:0.6rem 0.8rem;margin-bottom:0.5rem;cursor:pointer;transition:box-shadow 0.15s;">'
+        + '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.45rem;">'
+        + '<span class="pa-tag" style="background:' + color + '">' + row.pa + '</span>'
+        + '<span style="font-size:0.75rem;color:var(--muted);line-height:1.4;flex:1;">' + row.objectif + '</span>'
+        + '</div>';
+      const fields = ['engage','referent','avancement','risque'].filter(f => ch[f] !== undefined);
+      if (fields.length) {
+        html += '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:' + (ch.note ? '0.45rem' : '0') + ';">';
+        for (const field of fields) {
+          html += '<div style="background:white;border:1px solid var(--modified-border);border-radius:4px;padding:0.2rem 0.5rem;font-size:0.72rem;">'
+            + '<span style="text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-size:0.63rem;">' + fieldLabel(field) + '</span>'
+            + '<div style="display:flex;align-items:center;gap:0.3rem;margin-top:0.1rem;">'
+            + '<span style="color:var(--muted);text-decoration:line-through;">' + fieldDisplay(field, ch[field].avant) + '</span>'
+            + '<span style="color:var(--muted);">→</span>'
+            + '<span style="color:var(--accent);font-weight:600;">' + fieldDisplay(field, ch[field].apres) + '</span>'
+            + '</div></div>';
+        }
+        html += '</div>';
       }
+      if (ch.note) {
+        html += '<div style="border-top:1px solid var(--modified-border);padding-top:0.4rem;font-size:0.75rem;color:var(--muted);font-style:italic;line-height:1.5;">'
+          + '<span style="text-transform:uppercase;letter-spacing:0.05em;font-size:0.62rem;font-style:normal;">Note</span><br>' + ch.note + '</div>';
+      }
+      html += '</div>';
     }
+    html += '</div>';
   }
-  const date = REUNION_DATE ? ' — Reunion du ' + REUNION_DATE : '';
-  el.innerHTML = '<h3>Modifications de la session' + date + '</h3>' + rows;
+  html += '</div>';
+  el.innerHTML = html;
+
+  let _csCollapsed = false;
+  const heading  = el.querySelector('#cs-heading');
+  const body     = el.querySelector('#cs-body');
+  const toggleBtn = el.querySelector('#cs-toggle-btn');
+  if (body) body.style.maxHeight = body.scrollHeight + 'px';
+  if (heading) heading.addEventListener('click', () => {
+    _csCollapsed = !_csCollapsed;
+    if (_csCollapsed) { body.style.maxHeight = '0'; body.classList.add('collapsed'); toggleBtn.textContent = '▼ Developper'; }
+    else { body.classList.remove('collapsed'); body.style.maxHeight = body.scrollHeight + 'px'; toggleBtn.textContent = '▲ Reduire'; }
+  });
+  el.querySelectorAll('.cs-pa-card[data-pa]').forEach(card => {
+    card.addEventListener('mouseenter', () => card.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)');
+    card.addEventListener('mouseleave', () => card.style.boxShadow = '');
+    card.addEventListener('click', (e) => { e.stopPropagation(); selectPaFromSummary(card.dataset.pa); });
+  });
 }
 
-function recordChange(pa, field, avant, apres) {
-  if (!CHANGES[pa]) CHANGES[pa] = {};
-  const original = DATA.find(r => r.pa === pa)[field];
-  if (apres === original || String(apres) === String(original)) {
-    delete CHANGES[pa][field];
-    if (Object.keys(CHANGES[pa]).length === 0) delete CHANGES[pa];
-  } else {
-    CHANGES[pa][field] = { avant, apres };
-  }
-  savePatchToStorage(); updatePatchUI(); updateChangeSummary();
+function selectPaFromSummary(pa) {
+  const row = DATA.find(r => r.pa === pa);
+  if (!row) return;
+  filters.domaine = row.domaine;
+  const sel = document.getElementById('select-domaine');
+  if (sel) sel.value = row.domaine;
+  persistFilters();
+  selectedPa = pa;
+  renderCurrent();
+  const tr = document.querySelector('#table-body tr[data-pa="' + pa + '"]');
+  if (tr) { tr.classList.add('selected'); tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  showDetail(effectiveRow(row));
 }
 
-// Filtres
+// ── Filtres ────────────────────────────────────────────────────────────────────
 let currentView = 'table', selectedPa = null, editPa = null;
 let filters = { statut: 'all', domaine: 'all', referent: 'all' };
 let sortCol = 'pa', sortDir = 1;
@@ -709,17 +691,29 @@ function restoreFilters() {
   if (d) { filters.domaine = d; const sel = document.getElementById('select-domaine'); if (sel) sel.value = d; }
 }
 
+function rebuildReferentFilters() {
+  const referents = allReferents();
+  const rg = document.getElementById('filter-referent-group');
+  rg.innerHTML = '<span class="group-label">Referent :</span>';
+  rg.appendChild(makeFilterBtn('Tous',           'referent', 'all',      filters.referent === 'all'));
+  rg.appendChild(makeFilterBtn('Avec referent',  'referent', '__some__', filters.referent === '__some__'));
+  rg.appendChild(makeFilterBtn('Sans referent',  'referent', '__none__', filters.referent === '__none__'));
+  referents.forEach(r => rg.appendChild(makeFilterBtn(r, 'referent', r, filters.referent === r)));
+  rg.style.display = '';
+}
+
 function buildDynamicFilters() {
   const domaines = [...new Set(DATA.map(r => r.domaine))];
   const sel = document.getElementById('select-domaine');
   domaines.forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; sel.appendChild(o); });
   sel.addEventListener('change', () => { filters.domaine = sel.value; persistFilters(); renderCurrent(); });
-  const referents = allReferents();
-  const rg = document.getElementById('filter-referent-group');
-  rg.innerHTML = '<span class="group-label">Referent :</span>';
-  rg.appendChild(makeFilterBtn('Tous', 'referent', 'all', true));
-  referents.forEach(r => rg.appendChild(makeFilterBtn(r, 'referent', r, false)));
-  if (!referents.length) rg.style.display = 'none';
+  rebuildReferentFilters();
+  document.querySelectorAll('.filter-btn[data-type="statut"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn[data-type="statut"]').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active'); filters.statut = btn.dataset.val; renderCurrent();
+    });
+  });
 }
 
 function makeFilterBtn(label, type, val, active) {
@@ -734,22 +728,17 @@ function makeFilterBtn(label, type, val, active) {
   return b;
 }
 
-document.querySelectorAll('.filter-btn[data-type="statut"]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn[data-type="statut"]').forEach(x => x.classList.remove('active'));
-    btn.classList.add('active'); filters.statut = btn.dataset.val; renderCurrent();
-  });
-});
-
 function getFiltered() {
   return DATA.filter(r => {
     const eff = effectiveRow(r);
-    if (filters.statut === 'engage'     && !eff.engage)        return false;
-    if (filters.statut === 'non-engage' &&  eff.engage)        return false;
-    if (filters.statut === 'priorite'   && !r.priorite)        return false;
-    if (filters.statut === 'modified'   && !isModified(r.pa))  return false;
-    if (filters.domaine  !== 'all' && r.domaine    !== filters.domaine)  return false;
-    if (filters.referent !== 'all' && eff.referent !== filters.referent) return false;
+    if (filters.statut === 'engage'     && !eff.engage)       return false;
+    if (filters.statut === 'non-engage' &&  eff.engage)       return false;
+    if (filters.statut === 'priorite'   && !r.priorite)       return false;
+    if (filters.statut === 'modified'   && !isModified(r.pa)) return false;
+    if (filters.domaine !== 'all' && r.domaine !== filters.domaine) return false;
+    if (filters.referent === '__none__' && eff.referent)  return false;
+    if (filters.referent === '__some__' && !eff.referent) return false;
+    if (filters.referent !== 'all' && filters.referent !== '__none__' && filters.referent !== '__some__' && eff.referent !== filters.referent) return false;
     return true;
   });
 }
@@ -771,7 +760,7 @@ function getSorted(rows) {
   });
 }
 
-// Rendu tableau
+// ── Rendu tableau ──────────────────────────────────────────────────────────────
 function renderTable() {
   const rows  = getSorted(getFiltered());
   const tbody = document.getElementById('table-body');
@@ -783,33 +772,42 @@ function renderTable() {
     const eff = effectiveRow(r), color = domainColor(r.domaine);
     const pct = Math.round((eff.avancement || 0) * 100);
     const mod = isModified(r.pa);
-    const engageBadge = eff.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
+    const engageBadge   = eff.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
     const prioriteBadge = r.priorite ? ' <span class="badge-sm badge-priorite">P1</span>' : '';
-    const modBadge = mod ? ' <span class="badge-sm badge-modified">modifie</span>' : '';
-    const referentCell = eff.referent ? '<span class="badge-sm badge-referent">' + eff.referent + '</span>' : '<span style="color:var(--muted);font-size:0.7rem;">-</span>';
-    const editBtn = EDIT_MODE ? '<td><button class="btn-edit-row" data-pa="' + r.pa + '" title="Modifier">&#9998;</button></td>' : '<td style="display:none"></td>';
+    const modBadge      = mod ? ' <span class="badge-sm badge-modified">modifie</span>' : '';
+    const referentCell  = eff.referent ? '<span class="badge-sm badge-referent">' + eff.referent + '</span>' : '<span style="color:var(--muted);font-size:0.7rem;">-</span>';
+    const editBtn       = EDIT_MODE ? '<td><button class="btn-edit-row" data-pa="' + r.pa + '" title="Modifier">&#9998;</button></td>' : '<td style="display:none"></td>';
     return '<tr class="row-eng' + (selectedPa === r.pa ? ' selected' : '') + (mod ? ' row-modified' : '') + '" data-pa="' + r.pa + '">'
       + '<td><span class="pa-tag" style="background:' + color + '">' + r.pa + '</span></td>'
-      + '<td><span class="dom-chip" style="background:' + color + '; max-width:120px; overflow:hidden; text-overflow:ellipsis;" title="' + r.domaine + '">' + r.domaine.split(' ').slice(0,2).join(' ') + '...</span></td>'
+      + '<td><span class="dom-chip" style="background:' + color + ';max-width:120px;overflow:hidden;text-overflow:ellipsis;" title="' + r.domaine + '">' + r.domaine.split(' ').slice(0,2).join(' ') + '...</span></td>'
       + '<td><div class="obj-text" title="' + r.objectif + '">' + r.objectif + '</div></td>'
       + '<td>' + engageBadge + prioriteBadge + modBadge + '</td>'
       + '<td>' + referentCell + '</td>'
       + '<td><div class="mini-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:' + pct + '%"></div></div><span class="mini-pct">' + pct + '%</span></div></td>'
       + '<td><span class="risk-badge risk-' + eff.risque + '">' + eff.risque + '</span></td>'
-      + editBtn
-      + '</tr>';
+      + editBtn + '</tr>';
   }).join('');
 
   tbody.querySelectorAll('tr.row-eng').forEach(tr => {
     tr.addEventListener('click', (e) => {
       if (e.target.closest('.btn-edit-row')) return;
       const pa = tr.dataset.pa;
+      if (selectedPa === pa) {
+        selectedPa = null;
+        tbody.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+        hideDetail(); filters.domaine = 'all';
+        const sel = document.getElementById('select-domaine'); if (sel) sel.value = 'all';
+        persistFilters(); renderCurrent(); return;
+      }
       tbody.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
       tr.classList.add('selected'); selectedPa = pa;
       const row = DATA.find(r => r.pa === pa);
-      showDetail(effectiveRow(row));
+      filters.domaine = row.domaine;
+      const sel = document.getElementById('select-domaine'); if (sel) sel.value = row.domaine;
+      persistFilters(); showDetail(effectiveRow(row));
       if (editPa && EDIT_MODE) { editPa = pa; openEditPanel(row); }
       else if (editPa && CR_MODE) { editPa = pa; openCRPanel(row); }
+      renderCurrent();
     });
   });
 
@@ -841,8 +839,8 @@ function showDetail(row) {
   let badges = row.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
   if (row.priorite) badges += ' <span class="badge-sm badge-priorite">Priorite 1</span>';
   if (row.referent) badges += ' <span class="badge-sm badge-referent">' + row.referent + '</span>';
-  const avancementBlock = pct > 0 ? '<div class="detail-avancement"><div class="bar-label"><span>Avancement</span><span>' + pct + '%</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' : '';
-  const indicateurBlock = row.indicateur ? '<div class="info-block full"><label>Indicateur</label><p>' + toList(row.indicateur) + '</p>' + (row.cible ? '<div><span class="indicateur-val">Cible : ' + row.cible + '</span></div>' : '') + '</div>' : '';
+  const avancementBlock  = pct > 0 ? '<div class="detail-avancement"><div class="bar-label"><span>Avancement</span><span>' + pct + '%</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' : '';
+  const indicateurBlock  = row.indicateur ? '<div class="info-block full"><label>Indicateur</label><p>' + toList(row.indicateur) + '</p>' + (row.cible ? '<div><span class="indicateur-val">Cible : ' + row.cible + '</span></div>' : '') + '</div>' : '';
   const ctBlock = row.ct ? '<div class="info-block"><label>Livrables court terme</label><p>' + toList(row.ct) + '</p></div>' : '';
   const ltBlock = row.lt ? '<div class="info-block"><label>Livrables long terme</label><p>' + toList(row.lt) + '</p></div>' : '';
   document.getElementById('detail-card-inner').innerHTML =
@@ -860,9 +858,12 @@ function showDetail(row) {
 }
 
 function hideDetail() { document.getElementById('detail-panel').style.display = 'none'; }
-window.closeDetail = function() { selectedPa = null; hideDetail(); document.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected')); };
+window.closeDetail = function() {
+  selectedPa = null; hideDetail();
+  document.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+};
 
-// Panneau edition
+// ── Panneau édition ────────────────────────────────────────────────────────────
 function buildRefSelect(pa, currentVal) {
   const refs = allReferents();
   let options = '<option value=""' + (currentVal === '' ? ' selected' : '') + '>- non assigne -</option>';
@@ -870,7 +871,7 @@ function buildRefSelect(pa, currentVal) {
   options += '<option value="__new__">+ Nouveau referent...</option>';
   return '<select class="edit-select" id="edit-referent" onchange="handleReferentChange(\'' + pa + '\', this.value)">' + options + '</select>'
     + '<div class="new-ref-wrap" id="new-ref-wrap" style="display:none">'
-    + '<input class="new-ref-input" id="new-ref-input" type="text" placeholder="Prenom Nom" autocomplete="off">'
+    + '<input class="new-ref-input" id="new-ref-input" type="text" placeholder="Prenom Nom" autocomplete="off" data-pa="' + pa + '">'
     + '<button class="btn-new-ref-ok" onclick="confirmNewReferent(\'' + pa + '\')">OK</button>'
     + '<button class="btn-new-ref-cancel" onclick="cancelNewReferent()">X</button>'
     + '</div>';
@@ -878,35 +879,34 @@ function buildRefSelect(pa, currentVal) {
 
 function openEditPanel(row) {
   const eff = effectiveRow(row), color = domainColor(row.domaine);
-  const currentNote = (CHANGES[row.pa] || {}).note || '';
-  const currentAvPct = Math.round((eff.avancement || 0) * 100);
+  const ch = CHANGES[row.pa] || {};
+  const currentNote   = ch.note || '';
+  const currentAvPct  = Math.round((eff.avancement || 0) * 100);
+  function mCls(f) { return ch[f] !== undefined ? ' field-modified' : ''; }
   document.getElementById('edit-panel').innerHTML =
-    '<div class="edit-panel-header">'
-    + '<span class="pa-tag" style="background:' + color + '">' + row.pa + '</span>'
+    '<div class="edit-panel-header"><span class="pa-tag" style="background:' + color + '">' + row.pa + '</span>'
     + '<div class="ep-title">' + row.objectif + '</div>'
-    + '<button class="btn-close-edit" onclick="closeEditPanel()">X</button>'
-    + '</div>'
+    + '<button class="btn-close-edit" onclick="closeEditPanel()">X</button></div>'
     + '<div class="edit-panel-body">'
-    + '<div class="edit-field"><label>Statut engagement</label><div class="toggle-engage">'
+    + '<div class="edit-field' + mCls('engage') + '"><label>Statut engagement</label><div class="toggle-engage">'
     + '<button class="toggle-btn ' + (eff.engage ? 'on' : 'off') + '" id="tog-engage-on" onclick="toggleEngage(\'' + row.pa + '\', 1)">Engage</button>'
     + '<button class="toggle-btn ' + (!eff.engage ? 'on' : 'off') + '" id="tog-engage-off" onclick="toggleEngage(\'' + row.pa + '\', 0)">Non engage</button>'
     + '</div></div>'
-    + '<div class="edit-field"><label>Referent</label>' + buildRefSelect(row.pa, eff.referent) + '</div>'
-    + '<div class="edit-field"><label>Avancement</label><div class="slider-wrap">'
+    + '<div class="edit-field' + mCls('referent') + '"><label>Referent</label>' + buildRefSelect(row.pa, eff.referent) + '</div>'
+    + '<div class="edit-field' + mCls('avancement') + '"><label>Avancement</label><div class="slider-wrap">'
     + '<input type="range" min="0" max="100" step="5" value="' + currentAvPct + '" id="edit-avancement"'
     + ' oninput="document.getElementById(\'edit-av-val\').textContent=this.value+\'%\'"'
     + ' onchange="changeAvancement(\'' + row.pa + '\', this.value)">'
-    + '<span class="slider-val" id="edit-av-val">' + currentAvPct + '%</span>'
-    + '</div></div>'
-    + '<div class="edit-field"><label>Niveau de risque</label><select class="edit-select" onchange="changeRisque(\'' + row.pa + '\', this.value)">'
+    + '<span class="slider-val" id="edit-av-val">' + currentAvPct + '%</span></div></div>'
+    + '<div class="edit-field' + mCls('risque') + '"><label>Niveau de risque</label>'
+    + '<select class="edit-select" onchange="changeRisque(\'' + row.pa + '\', this.value)">'
     + '<option value="Faible"' + (eff.risque === 'Faible' ? ' selected' : '') + '>Faible</option>'
     + '<option value="Moyen"'  + (eff.risque === 'Moyen'  ? ' selected' : '') + '>Moyen</option>'
     + '<option value="Eleve"'  + (eff.risque === 'Eleve'  ? ' selected' : '') + '>Eleve</option>'
     + '</select></div>'
-    + '<div class="edit-field"><label>Note de seance</label>'
+    + '<div class="edit-field' + (currentNote ? ' field-modified' : '') + '"><label>Note de seance</label>'
     + '<textarea class="edit-note" placeholder="Decisions, commentaires..." onchange="changeNote(\'' + row.pa + '\', this.value)">' + currentNote + '</textarea>'
-    + '</div>'
-    + '</div>'
+    + '</div></div>'
     + '<div class="edit-panel-footer"><button class="btn-cancel-edit" onclick="closeEditPanel()">Fermer</button></div>';
   document.getElementById('edit-col').style.display = '';
   showDetail(eff);
@@ -918,14 +918,13 @@ function openCRPanel(row) {
   function diffField(label, field) {
     if (!ch[field]) return '';
     return '<div class="edit-field diff-field"><div class="diff-label">' + label + '</div>'
-      + '<div><span class="diff-avant">' + fieldDisplay(field, ch[field].avant) + '</span> -> <span class="diff-apres">' + fieldDisplay(field, ch[field].apres) + '</span></div></div>';
+      + '<div><span class="diff-avant">' + fieldDisplay(field, ch[field].avant) + '</span> → <span class="diff-apres">' + fieldDisplay(field, ch[field].apres) + '</span></div></div>';
   }
   document.getElementById('edit-panel').innerHTML =
     '<div class="edit-panel-header" style="background:var(--cr-border)">'
     + '<span class="pa-tag" style="background:rgba(255,255,255,0.25)">' + row.pa + '</span>'
     + '<div class="ep-title">' + row.objectif + '</div>'
-    + '<button class="btn-close-edit" onclick="closeEditPanel()">X</button>'
-    + '</div>'
+    + '<button class="btn-close-edit" onclick="closeEditPanel()">X</button></div>'
     + '<div class="edit-panel-body">'
     + diffField('Statut engagement', 'engage')
     + diffField('Referent', 'referent')
@@ -933,8 +932,7 @@ function openCRPanel(row) {
     + diffField('Niveau de risque', 'risque')
     + (ch.note ? '<div class="edit-field"><div class="diff-label">Note de seance</div><p style="font-size:0.78rem;color:var(--muted);font-style:italic;">' + ch.note + '</p></div>' : '')
     + (!Object.keys(ch).length ? '<p style="font-size:0.82rem;color:var(--muted);">Aucune modification sur cet engagement.</p>' : '')
-    + '</div>'
-    + '<div class="edit-panel-footer"><button class="btn-cancel-edit" onclick="closeEditPanel()">Fermer</button></div>';
+    + '</div><div class="edit-panel-footer"><button class="btn-cancel-edit" onclick="closeEditPanel()">Fermer</button></div>';
   document.getElementById('edit-col').style.display = '';
   showDetail(eff);
 }
@@ -946,9 +944,15 @@ function closeEditPanel() {
 }
 
 window.handleReferentChange = function(pa, val) {
-  if (val === '__new__') { document.getElementById('new-ref-wrap').style.display = 'flex'; document.getElementById('new-ref-input').focus(); return; }
+  if (val === '__new__') {
+    document.getElementById('new-ref-wrap').style.display = 'flex';
+    const inp = document.getElementById('new-ref-input');
+    inp.focus();
+    inp.onkeydown = (e) => { if (e.key === 'Enter') confirmNewReferent(inp.dataset.pa); };
+    return;
+  }
   document.getElementById('new-ref-wrap').style.display = 'none';
-  recordChange(pa, 'referent', DATA.find(r => r.pa === pa).referent, val); renderTable();
+  recordChange(pa, 'referent', DATA.find(r => r.pa === pa).referent, val); renderCurrent();
 };
 window.confirmNewReferent = function(pa) {
   const input = document.getElementById('new-ref-input'), nom = input.value.trim();
@@ -959,7 +963,7 @@ window.confirmNewReferent = function(pa) {
   sel.insertBefore(newOpt, sel.querySelector('option[value="__new__"]'));
   document.getElementById('new-ref-wrap').style.display = 'none';
   recordChange(pa, 'referent', DATA.find(r => r.pa === pa).referent, nom);
-  savePatchToStorage(); renderTable();
+  rebuildReferentFilters(); renderCurrent();
 };
 window.cancelNewReferent = function() {
   const sel = document.getElementById('edit-referent');
@@ -968,19 +972,19 @@ window.cancelNewReferent = function() {
 };
 window.toggleEngage = function(pa, val) {
   recordChange(pa, 'engage', DATA.find(r => r.pa === pa).engage, val);
-  document.getElementById('tog-engage-on').className  = 'toggle-btn ' + (val  ? 'on' : 'off');
+  document.getElementById('tog-engage-on').className  = 'toggle-btn ' + ( val ? 'on' : 'off');
   document.getElementById('tog-engage-off').className = 'toggle-btn ' + (!val ? 'on' : 'off');
-  renderTable();
+  renderCurrent();
 };
 window.changeAvancement = function(pa, val) {
-  recordChange(pa, 'avancement', DATA.find(r => r.pa === pa).avancement, parseInt(val) / 100); renderTable();
+  recordChange(pa, 'avancement', DATA.find(r => r.pa === pa).avancement, parseInt(val) / 100); renderCurrent();
 };
 window.changeRisque = function(pa, val) {
-  recordChange(pa, 'risque', DATA.find(r => r.pa === pa).risque, val); renderTable();
+  recordChange(pa, 'risque', DATA.find(r => r.pa === pa).risque, val); renderCurrent();
 };
-window.changeNote = function(pa, val) { savePatchNote(pa, val); };
+window.changeNote = function(pa, val) { saveNote(pa, val); };
 
-// Vue cartes
+// ── Vue cartes ─────────────────────────────────────────────────────────────────
 function renderCards() {
   const rows = getFiltered(), container = document.getElementById('cards-content');
   if (!rows.length) { container.innerHTML = '<div class="empty-state">Aucun engagement trouve.</div>'; return; }
@@ -991,7 +995,7 @@ function renderCards() {
     const color = domainColor(domain);
     html += '<div class="domain-section"><div class="domain-header"><div class="domain-badge" style="background:' + color + '"></div>'
       + '<div class="domain-title">' + domain + '</div>'
-      + '<div class="domain-count">' + items.length + ' engagement' + (items.length>1?'s':'') + '</div></div>'
+      + '<div class="domain-count">' + items.length + ' engagement' + (items.length > 1 ? 's' : '') + '</div></div>'
       + '<div class="cards-grid">' + items.map(r => renderCard(effectiveRow(r), isModified(r.pa), r)).join('') + '</div></div>';
   }
   container.innerHTML = html;
@@ -1007,7 +1011,7 @@ function renderCard(row, modified, origRow) {
   if (CR_MODE && modified && origRow) {
     const ch = CHANGES[origRow.pa] || {};
     const diffs = ['engage','referent','avancement','risque'].filter(f => ch[f])
-      .map(f => '<span style="font-size:0.72rem;">' + fieldLabel(f) + ': <span style="color:var(--muted);text-decoration:line-through">' + fieldDisplay(f, ch[f].avant) + '</span> -> <span style="color:var(--accent);font-weight:600">' + fieldDisplay(f, ch[f].apres) + '</span></span>')
+      .map(f => '<span style="font-size:0.72rem;">' + fieldLabel(f) + ': <span style="color:var(--muted);text-decoration:line-through">' + fieldDisplay(f, ch[f].avant) + '</span> → <span style="color:var(--accent);font-weight:600">' + fieldDisplay(f, ch[f].apres) + '</span></span>')
       .join(' · ');
     if (diffs) diffBlock = '<div style="padding:0.3rem 1rem 0.5rem;font-size:0.72rem;color:var(--muted);border-top:1px solid var(--border)">' + diffs + '</div>';
   }
@@ -1033,25 +1037,23 @@ window.setView = function(v) {
   renderCurrent();
 };
 
-function renderCurrent() { if (currentView === 'table') renderTable(); else renderCards(); }
-
-// Init
-const engages  = DATA.filter(r => r.engage).length;
-const domaines = new Set(DATA.map(r => r.domaine)).size;
-document.getElementById('stat-total').textContent    = DATA.length;
-document.getElementById('stat-engages').textContent  = engages;
-document.getElementById('stat-domaines').textContent = domaines;
-document.getElementById('footer-info').textContent   = DATA.length + ' engagements · ' + domaines + ' domaines · AfrSCM Comite RSE';
-
-buildDynamicFilters();
-restoreFilters();
-renderCurrent();
-updateChangeSummary();
-
-if (EDIT_MODE) {
-  updatePatchUI();
-  checkStoredPatch();
+function renderCurrent() {
+  if (currentView === 'table') renderTable(); else renderCards();
+  updateChangeSummary();
 }
+
+// ── Démarrage ──────────────────────────────────────────────────────────────────
+async function init() {
+  activateUI();
+  const ok = await ping();
+  if (!ok && !DATA_EMBEDDED) {
+    showFatalError('Serveur non disponible — démarrez start-server.bat');
+    return;
+  }
+  await loadData();
+}
+
+init();
 </script>
 </body>
 </html>

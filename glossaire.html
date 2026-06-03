@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossaire — ComiteRSE-AfrSCM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:           #f5f3ee;
+    --surface:      #ffffff;
+    --border:       #d8d4cc;
+    --border-strong:#a09890;
+    --text:         #1a1815;
+    --text-muted:   #7a746c;
+    --accent:       #2d5a8e;
+    --accent-light: #e8eff7;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--text);
+    padding: 32px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  header {
+    border-bottom: 2px solid var(--border-strong);
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+  header .org {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  header h1 {
+    font-family: var(--mono);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+  }
+  header .meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* Nav domaines */
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .nav-link {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid #c4d8ef;
+    padding: 4px 10px;
+    border-radius: 3px;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: background 0.15s;
+  }
+  .nav-link:hover { background: #d4e6f7; }
+
+  /* Domaine */
+  .domain {
+    margin-bottom: 40px;
+  }
+  .domain-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  .domain-header h2 {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .domain-count {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+  }
+  .domain-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+
+  /* Termes */
+  .terms {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .term {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 3px;
+  }
+  .term:hover { border-color: var(--border-strong); }
+
+  .term-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .term-name {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .term-anchor {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--border-strong);
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .term:hover .term-anchor { opacity: 1; }
+
+  .term-def {
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .term-extra {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin-right: 4px;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+    padding-top: 16px;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 16px; }
+    footer { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="org">AfrSCM — Comite RSE</div>
+  <h1>Glossaire</h1>
+  <div class="meta">23 termes · 5 domaines · Genere le 30 mai 2026</div>
+</header>
+
+<nav>
+  <a href="#association-et-gouvernance" class="nav-link">Association et gouvernance</a>
+      <a href="#label-et-certification" class="nav-link">Label et certification</a>
+      <a href="#engagements-et-plan-d-actions" class="nav-link">Engagements et plan d'actions</a>
+      <a href="#reunions-et-instances" class="nav-link">Reunions et instances</a>
+      <a href="#roles" class="nav-link">Roles</a>
+</nav>
+
+
+      <section class="domain" id="association-et-gouvernance">
+        <div class="domain-header">
+          <h2>Association et gouvernance</h2>
+          <span class="domain-count">5 termes</span>
+        </div>
+        <p class="domain-desc">Termes relatifs a l'AfrSCM en tant qu'organisation : structure, instances de decision, et fonctionnement associatif. Pertinent pour toute tache liee a la gouvernance, aux decisions, ou aux communications officielles.</p>
+        <div class="terms">
+        <div class="term" id="afrscm">
+          <div class="term-header">
+            <span class="term-name">AfrSCM</span>
+            <a class="term-anchor" href="#afrscm" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Association Francophone de Supply Chain Management. Association de benevoles dont le Comite RSE pilote la demarche de responsabilite societale dans le cadre du Label Lucie ISO 26000.</p>
+          
+        </div>
+        <div class="term" id="ca">
+          <div class="term-header">
+            <span class="term-name">CA</span>
+            <a class="term-anchor" href="#ca" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Conseil d'Administration de l'AfrSCM. Instance de decision principale de l'association. Le Comite RSE lui rend compte a chaque seance via une presentation de suivi.</p>
+          
+        </div>
+        <div class="term" id="ag">
+          <div class="term-header">
+            <span class="term-name">AG</span>
+            <a class="term-anchor" href="#ag" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Assemblee Generale de l'AfrSCM. Instance annuelle de l'association. Le Comite RSE y presente un bilan de la demarche RSE.</p>
+          
+        </div>
+        <div class="term" id="comite-rse">
+          <div class="term-header">
+            <span class="term-name">Comite RSE</span>
+            <a class="term-anchor" href="#comite-rse" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Groupe de travail benevole charge de piloter les engagements Lucie ISO 26000 de l'AfrSCM. Compose de membres volontaires avec un engagement minimum d'un an et un taux d'assiduite requis de 50%.</p>
+          
+        </div>
+        <div class="term" id="responsable">
+          <div class="term-header">
+            <span class="term-name">Responsable</span>
+            <a class="term-anchor" href="#responsable" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Membre du Comite RSE en charge du pilotage operationnel et de l'interaction avec l'Assistant IA. Interlocuteur principal pour toutes les decisions et validations.</p>
+          
+        </div>
+        </div>
+      </section>
+
+      <section class="domain" id="label-et-certification">
+        <div class="domain-header">
+          <h2>Label et certification</h2>
+          <span class="domain-count">6 termes</span>
+        </div>
+        <p class="domain-desc">Termes relatifs au Label Lucie et au processus de certification ISO 26000. Pertinent pour toute tache liee a l'audit, aux engagements formels, ou aux echanges avec l'organisme certificateur.</p>
+        <div class="terms">
+        <div class="term" id="label-lucie">
+          <div class="term-header">
+            <span class="term-name">Label Lucie</span>
+            <a class="term-anchor" href="#label-lucie" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Label francais de responsabilite societale des organisations, base sur le referentiel ISO 26000. L'AfrSCM detient ce label depuis 2 ans et est en cours de renouvellement.</p>
+          
+        </div>
+        <div class="term" id="iso-26000">
+          <div class="term-header">
+            <span class="term-name">ISO 26000</span>
+            <a class="term-anchor" href="#iso-26000" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Norme internationale de responsabilite societale des organisations. Referentiel de base du Label Lucie. Definit 7 questions centrales et des domaines d'action associes.</p>
+          
+        </div>
+        <div class="term" id="renouvellement">
+          <div class="term-header">
+            <span class="term-name">Renouvellement</span>
+            <a class="term-anchor" href="#renouvellement" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Processus de reconduction du Label Lucie, impliquant un nouvel audit par l'organisme certificateur. Contexte actuel du projet — processus en cours, qualifie de complique dans les notes internes.</p>
+          
+        </div>
+        <div class="term" id="audit-lucie">
+          <div class="term-header">
+            <span class="term-name">Audit Lucie</span>
+            <a class="term-anchor" href="#audit-lucie" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Evaluation formelle conduite par l'organisme certificateur pour verifier la conformite aux engagements Lucie ISO 26000. Le dernier rapport d'audit (R2) est la reference pour le renouvellement en cours.</p>
+          
+        </div>
+        <div class="term" id="organisme-certificateur">
+          <div class="term-header">
+            <span class="term-name">Organisme certificateur</span>
+            <a class="term-anchor" href="#organisme-certificateur" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Structure externe mandatee pour evaluer et delivrer le Label Lucie. Relation qualifiee de tendue — pousse a l'achat de conseil, approche retenue : pragmatique et autonome.</p>
+          
+        </div>
+        <div class="term" id="lucie-progress">
+          <div class="term-header">
+            <span class="term-name">Lucie Progress</span>
+            <a class="term-anchor" href="#lucie-progress" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Plateforme de l'organisme certificateur utilisee pour le suivi des indicateurs et des engagements Lucie. Source des exports d'indicateurs.</p>
+          
+        </div>
+        </div>
+      </section>
+
+      <section class="domain" id="engagements-et-plan-d-actions">
+        <div class="domain-header">
+          <h2>Engagements et plan d'actions</h2>
+          <span class="domain-count">5 termes</span>
+        </div>
+        <p class="domain-desc">Termes relatifs aux engagements RSE pris dans le cadre du Label Lucie, au plan d'actions et aux indicateurs de suivi. Pertinent pour toute tache liee aux engagements, livrables, KPI ou scorecard.</p>
+        <div class="terms">
+        <div class="term" id="engagement">
+          <div class="term-header">
+            <span class="term-name">Engagement</span>
+            <a class="term-anchor" href="#engagement" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Action ou disposition formellement prise par l'AfrSCM dans le cadre du Label Lucie ISO 26000. Les engagements sont suivis dans un fichier scorecard Excel et representes dans `ressources/engagements/index.html`.</p>
+          
+        </div>
+        <div class="term" id="plan-d-actions-pa">
+          <div class="term-header">
+            <span class="term-name">Plan d'actions (PA)</span>
+            <a class="term-anchor" href="#plan-d-actions-pa" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Document structurant l'ensemble des engagements et actions RSE de l'AfrSCM, avec indicateurs associes. Fichier central : `Engagements/AfrSCM - Label Lucie PA et Engagements - Scorecard.xlsx`.</p>
+          
+        </div>
+        <div class="term" id="kpi">
+          <div class="term-header">
+            <span class="term-name">KPI</span>
+            <a class="term-anchor" href="#kpi" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Indicateur cle de performance utilise pour mesurer l'avancement des engagements Lucie. Presentes au CA et a l'AG.</p>
+          
+        </div>
+        <div class="term" id="scorecard">
+          <div class="term-header">
+            <span class="term-name">Scorecard</span>
+            <a class="term-anchor" href="#scorecard" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Tableau de bord synthetique des engagements Lucie, leur statut d'avancement et leurs indicateurs. Voir aussi : Plan d'actions.</p>
+          
+        </div>
+        <div class="term" id="parties-prenantes">
+          <div class="term-header">
+            <span class="term-name">Parties prenantes</span>
+            <a class="term-anchor" href="#parties-prenantes" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Acteurs internes et externes pris en compte dans la demarche RSE de l'AfrSCM (administrateurs, formateurs, partenaires...). Font l'objet d'une cartographie et d'un questionnaire dedies.</p>
+          
+        </div>
+        </div>
+      </section>
+
+      <section class="domain" id="reunions-et-instances">
+        <div class="domain-header">
+          <h2>Reunions et instances</h2>
+          <span class="domain-count">4 termes</span>
+        </div>
+        <p class="domain-desc">Termes relatifs a l'organisation des reunions du Comite RSE et a leurs livrables. Pertinent pour toute tache liee a la preparation, la prise de notes ou le compte rendu d'une reunion.</p>
+        <div class="terms">
+        <div class="term" id="reunion-comite-rse">
+          <div class="term-header">
+            <span class="term-name">Reunion Comite RSE</span>
+            <a class="term-anchor" href="#reunion-comite-rse" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Seance de travail du Comite RSE. Tenue a minima avant chaque CA. Chaque reunion a un dossier dedie dans `AssistantIA/reunions/YYYY-MM-DD/`.</p>
+          
+        </div>
+        <div class="term" id="odj">
+          <div class="term-header">
+            <span class="term-name">OdJ</span>
+            <a class="term-anchor" href="#odj" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Ordre du jour d'une reunion. Prepara et envoye aux membres avant la seance. Modele disponible dans `Comite RSE/Modele_ODJ_Comite_RSE_AfrSCM.docx`.</p>
+          
+        </div>
+        <div class="term" id="cr">
+          <div class="term-header">
+            <span class="term-name">CR</span>
+            <a class="term-anchor" href="#cr" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Compte rendu d'une reunion. Redige apres la seance. Modele disponible dans `Comite RSE/Modele_CR_Comite_RSE_AfrSCM.docx`.</p>
+          
+        </div>
+        <div class="term" id="point-ca">
+          <div class="term-header">
+            <span class="term-name">Point CA</span>
+            <a class="term-anchor" href="#point-ca" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Presentation de suivi RSE faite au Conseil d'Administration. Basee sur le template `Comite RSE/Modele AfrSCM - Point RSE CA.pptx`.</p>
+          
+        </div>
+        </div>
+      </section>
+
+      <section class="domain" id="roles">
+        <div class="domain-header">
+          <h2>Roles</h2>
+          <span class="domain-count">3 termes</span>
+        </div>
+        <p class="domain-desc">Termes relatifs aux acteurs du Comite RSE et a leurs responsabilites. Pertinent pour toute tache liee aux membres, contacts ou gouvernance interne. **Source unique pour les fiches detaillees :** `AssistantIA/membres.html`.</p>
+        <div class="terms">
+        <div class="term" id="membre-du-comite-rse">
+          <div class="term-header">
+            <span class="term-name">Membre du Comite RSE</span>
+            <a class="term-anchor" href="#membre-du-comite-rse" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Benevole participant aux travaux du Comite RSE. Engagement minimum d'un an, assiduite requise &gt;= 50%. N'a pas acces direct a l'Assistant IA.</p>
+          
+        </div>
+        <div class="term" id="administrateur-afrscm">
+          <div class="term-header">
+            <span class="term-name">Administrateur AfrSCM</span>
+            <a class="term-anchor" href="#administrateur-afrscm" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Membre du Conseil d'Administration de l'AfrSCM. Cible des formations RSE et signataire potentiel de la charte administrateur.</p>
+          
+        </div>
+        <div class="term" id="formateur-afrscm">
+          <div class="term-header">
+            <span class="term-name">Formateur AfrSCM</span>
+            <a class="term-anchor" href="#formateur-afrscm" title="Lien direct">#</a>
+          </div>
+          <p class="term-def">Formateur certifie de l'AfrSCM. Cible des formations RSE et signataire potentiel de la charte formateur.</p>
+          
+        </div>
+        </div>
+      </section>
+
+<footer>
+  <span>ComiteRSE-AfrSCM</span>
+  <span>Source : GLOSSARY.md</span>
+</footer>
+
+</body>
+</html>
