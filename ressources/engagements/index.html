@@ -28,8 +28,20 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
   body.embed-mode header, body.embed-mode .toolbar,
-  body.embed-mode main, body.embed-mode footer { display: none !important; }
+  body.embed-mode main, body.embed-mode footer,
+  body.embed-mode .breadcrumb { display: none !important; }
   body.embed-mode #change-summary { display: block !important; padding: 0; }
+
+  .breadcrumb {
+    font-family: monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    padding: 6px 2.5rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
 
   header {
     background: var(--accent); color: white;
@@ -210,8 +222,9 @@
 </head>
 <body>
 
+<div id="breadcrumb" class="breadcrumb"></div>
+
 <header>
-  <div class="logo-zone">
     <h1>Engagements Lucie ISO 26000</h1>
     <div class="sub">AfrSCM — Comite RSE - Renouvellement Label</div>
   </div>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reunions — Comite RSE AfrSCM</title>
+<title>Réunion — Comité RSE AfrSCM</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
   :root {
@@ -25,52 +25,27 @@
   #server-indicator.off .dot{background:var(--amber);}
   #server-indicator.err .dot{background:var(--red);}
 
-  .breadcrumb{font-family:var(--mono);font-size:.7rem;color:var(--text-muted);margin-bottom:18px;}
-  .breadcrumb a{color:var(--accent);text-decoration:none;}
-  .breadcrumb a:hover{text-decoration:underline;}
+  /* ── Breadcrumb ── */
+  #breadcrumb{font-family:var(--mono);font-size:.7rem;color:var(--text-muted);margin-bottom:18px;}
+  #breadcrumb a{color:var(--accent);text-decoration:none;}
+  #breadcrumb a:hover{text-decoration:underline;}
+  #breadcrumb span{color:var(--text-muted);}
 
   /* ── Header ── */
   header{border-bottom:2px solid var(--border-strong);padding-bottom:14px;margin-bottom:28px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
   header .header-main{flex:1;}
   header .meta{font-family:var(--mono);font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
   header h1{font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--accent);}
-  header .sub{font-size:.78rem;color:var(--text-muted);margin-top:4px;}
   .edit-indicator{background:var(--amber);color:white;font-family:var(--mono);font-size:.65rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:3px;white-space:nowrap;align-self:flex-start;margin-top:4px;}
   .prepare-indicator{background:var(--blue);color:white;font-family:var(--mono);font-size:.65rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:3px;white-space:nowrap;align-self:flex-start;margin-top:4px;}
 
-  /* ── Edit bar (mode edit/prepare) ── */
+  /* ── Edit bar ── */
   .edit-bar{background:var(--amber-light);border:1px solid var(--amber-border);border-radius:4px;padding:6px 14px;margin-bottom:16px;display:none;align-items:center;gap:12px;}
   .edit-bar .edit-info{font-family:var(--mono);font-size:.72rem;color:var(--amber);font-weight:600;flex:1;}
   .btn-edit-bar{border:1.5px solid var(--amber-border);background:white;border-radius:4px;padding:4px 12px;font-size:.72rem;font-family:var(--sans);color:var(--amber);cursor:pointer;font-weight:600;transition:all .15s;}
   .btn-edit-bar:hover{background:var(--amber);color:white;}
 
-  /* ── Vue liste ── */
-  #view-list{}
-  .reunion-list{list-style:none;}
-  .reunion-item{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--border-strong);border-radius:3px;padding:12px 16px;margin-bottom:8px;text-decoration:none;color:var(--text);transition:border-color .15s,box-shadow .15s;cursor:pointer;}
-  .reunion-item:hover{border-left-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.07);}
-  .reunion-item.planifiee{border-left-color:var(--blue);}
-  .reunion-item.encours{border-left-color:var(--orange);}
-  .reunion-item.terminee{border-left-color:var(--green);}
-  .reunion-date{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--accent);white-space:nowrap;min-width:100px;}
-  .reunion-info{flex:1;}
-  .reunion-title{font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:2px;}
-  .reunion-desc{font-size:.75rem;color:var(--text-muted);}
-  .badge{display:inline-block;font-family:var(--mono);font-size:.65rem;font-weight:600;padding:2px 8px;border-radius:2px;white-space:nowrap;}
-  .badge-planifiee{background:var(--blue-bg);color:var(--blue);}
-  .badge-encours{background:var(--orange-bg);color:var(--orange);}
-  .badge-terminee{background:var(--green-bg);color:var(--green);}
-  .empty-state{text-align:center;padding:2rem;color:var(--text-muted);font-size:.88rem;font-style:italic;}
-
-  /* ── Vue reunion (detail) ── */
-  #view-reunion{display:none;}
-
-  /* breadcrumb reunion */
-  .breadcrumb-reunion{font-family:var(--mono);font-size:.7rem;color:var(--text-muted);margin-bottom:18px;}
-  .breadcrumb-reunion a{color:var(--accent);text-decoration:none;cursor:pointer;}
-  .breadcrumb-reunion a:hover{text-decoration:underline;}
-
-  /* header reunion */
+  /* ── Header réunion ── */
   .reunion-header{border-bottom:2px solid var(--border-strong);padding-bottom:14px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
   .reunion-header .header-main{flex:1;}
   .reunion-header .meta{font-family:var(--mono);font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
@@ -88,17 +63,19 @@
   .presence-chip.absent  .pres-dot{background:var(--red);}
   .statut-select{font-family:var(--mono);font-size:.7rem;font-weight:600;padding:3px 8px;border-radius:2px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;outline:none;margin-left:10px;vertical-align:middle;}
   .statut-badge{display:inline-block;font-family:var(--mono);font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:2px;margin-left:10px;vertical-align:middle;}
+  .badge-terminee{background:var(--green-bg);color:var(--green);}
+  .badge-encours{background:var(--orange-bg);color:var(--orange);}
+  .badge-planifiee{background:var(--blue-bg);color:var(--blue);}
 
-  /* layout OdJ */
+  /* ── Layout OdJ ── */
   .odj-layout{display:flex;gap:20px;align-items:flex-start;}
   .odj-col{flex:1;min-width:0;}
   .note-col{width:360px;flex-shrink:0;position:sticky;top:1rem;display:none;}
-
   .section{background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:20px;}
   .section-header{background:var(--text);color:#fff;font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;}
   .section-body{padding:14px;}
 
-  /* tableau OdJ */
+  /* ── Tableau OdJ ── */
   .odj-table{width:100%;border-collapse:collapse;font-size:.83rem;}
   .odj-table th{font-family:var(--mono);font-size:.64rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
   .odj-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
@@ -125,7 +102,6 @@
   .res-list li a{display:inline-block;font-family:var(--mono);font-size:.62rem;font-weight:600;padding:2px 6px;border-radius:2px;text-decoration:none;white-space:nowrap;transition:opacity .1s;background:var(--blue-bg);color:var(--blue);}
   .res-list li a:hover{opacity:.75;}
   .res-list li a.res-support-precedent{background:var(--amber-light);color:var(--amber);border:1px solid var(--amber-border);}
-  .res-list li a.res-support-precedent:hover{opacity:.8;}
   .res-sp-badge{display:inline-block;font-size:.55rem;font-weight:700;background:var(--amber);color:white;padding:1px 4px;border-radius:2px;margin-left:4px;vertical-align:middle;letter-spacing:.04em;}
   .res-none{font-family:var(--mono);font-size:.62rem;color:var(--text-muted);font-style:italic;}
   .timer-bar{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-family:var(--mono);font-size:.7rem;color:var(--text-muted);}
@@ -134,7 +110,7 @@
   .btn-note-row:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
   .btn-note-row.has-note{border-color:var(--noted);color:var(--accent);background:var(--noted);font-weight:600;}
 
-  /* panneau notes */
+  /* ── Panneau notes ── */
   .note-panel{background:var(--surface);border:2px solid var(--accent);border-radius:6px;overflow:hidden;animation:slideIn .18s ease;}
   @keyframes slideIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
   .note-panel-header{background:var(--accent);color:white;padding:8px 12px;display:flex;align-items:center;gap:8px;}
@@ -172,7 +148,7 @@
   .btn-close-panel{border:1px solid var(--border);background:transparent;border-radius:3px;padding:4px 10px;font-size:.72rem;font-family:var(--sans);color:var(--text-muted);cursor:pointer;}
   .btn-close-panel:hover{border-color:var(--red);color:var(--red);}
 
-  /* recap bas de page */
+  /* ── Récap ── */
   .bottom-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:0;}
   .recap-list{list-style:none;}
   .recap-item{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);align-items:flex-start;font-size:.82rem;}
@@ -180,7 +156,6 @@
   .ri-icon{flex-shrink:0;font-size:.8rem;padding-top:1px;color:var(--green);font-weight:700;}
   .ri-body{flex:1;line-height:1.4;}
   .ri-point{font-family:var(--mono);font-size:.6rem;color:var(--text-muted);margin-left:4px;background:var(--bg);border:1px solid var(--border);padding:1px 4px;border-radius:2px;white-space:nowrap;flex-shrink:0;align-self:center;}
-  .ri-pill{font-family:var(--mono);font-size:.6rem;font-weight:600;padding:1px 5px;border-radius:2px;flex-shrink:0;align-self:center;}
   .ri-ech{font-family:var(--mono);font-size:.6rem;color:var(--text-muted);flex-shrink:0;align-self:center;}
   .pill-remi{background:var(--blue-bg);color:var(--blue);}
   .pill-comite{background:var(--green-bg);color:var(--green);}
@@ -190,7 +165,7 @@
   .btn-recap-del:hover{color:var(--red);}
   .placeholder{font-size:.78rem;color:var(--text-muted);font-style:italic;padding:8px 0;}
 
-  /* engagements embed */
+  /* ── Engagements embed ── */
   #engagements-embed{display:none;margin-top:20px;}
   body.mode-cr #engagements-embed{display:block;}
   .engagements-embed-header{display:flex;align-items:center;gap:10px;background:var(--text);color:#fff;font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;border-radius:4px 4px 0 0;}
@@ -199,11 +174,11 @@
   .btn-refresh-embed:hover{background:rgba(255,255,255,.15);color:white;border-color:white;}
   #engagements-iframe{width:100%;border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;display:block;}
 
-  /* mode CR */
-  .btn-mode-cr{position:fixed;bottom:18px;right:18px;z-index:50;border:1.5px solid var(--border-strong);background:var(--surface);border-radius:4px;padding:5px 13px;font-family:var(--mono);font-size:.68rem;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.08);display:none;}
+  /* ── Mode CR ── */
+  .btn-mode-cr{position:fixed;bottom:18px;right:18px;z-index:50;border:1.5px solid var(--border-strong);background:var(--surface);border-radius:4px;padding:5px 13px;font-family:var(--mono);font-size:.68rem;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.08);}
   .btn-mode-cr:hover{border-color:var(--accent);color:var(--accent);}
   .btn-mode-cr.active{background:var(--accent);color:white;border-color:var(--accent);}
-  body.mode-cr.panel-open .note-col { display:block !important; }
+  body.mode-cr.panel-open .note-col{display:block !important;}
   body.mode-cr .odj-layout{display:block;}
   body.mode-cr.panel-open .odj-layout{display:flex;}
   .cr-note-block{display:none;margin-top:8px;padding:8px 10px;background:#fafaf8;border-left:3px solid var(--border-strong);border-radius:0 3px 3px 0;font-size:.78rem;line-height:1.6;color:var(--text);white-space:pre-wrap;}
@@ -211,17 +186,15 @@
   .cr-title{display:none;font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--text);text-align:center;padding:10px 0 14px;letter-spacing:.04em;border-bottom:1px solid var(--border);margin-bottom:18px;}
   body.mode-cr .cr-title{display:block;}
 
-  /* mode prepare */
-  .prepare-field{margin-bottom:8px;}
-  .prepare-field label{display:block;font-family:var(--mono);font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:3px;}
-  .prepare-field input,.prepare-field select,.prepare-field textarea{width:100%;border:1px solid var(--border);border-radius:3px;padding:5px 8px;font-size:.82rem;font-family:var(--sans);color:var(--text);outline:none;background:#fdfcfa;}
-  .prepare-field input:focus,.prepare-field select:focus,.prepare-field textarea:focus{border-color:var(--accent);background:white;}
+  /* ── Mode prépare ── */
   .presence-toggle{display:inline-flex;gap:4px;flex-wrap:wrap;margin-top:4px;}
   .presence-btn{border:1.5px solid var(--border);background:transparent;border-radius:3px;padding:2px 8px;font-size:.68rem;font-family:var(--mono);font-weight:600;cursor:pointer;transition:all .12s;}
   .presence-btn.active-present{background:var(--green-bg);border-color:#b0d9bf;color:var(--green);}
   .presence-btn.active-excuse{background:var(--amber-light);border-color:var(--amber-border);color:var(--amber);}
   .odj-statut-select{font-family:var(--mono);font-size:.68rem;border:1px solid var(--border);border-radius:2px;padding:1px 5px;background:var(--surface);outline:none;cursor:pointer;}
   .odj-statut-select.reporte{background:var(--bg);color:var(--text-muted);}
+
+  .empty-state{text-align:center;padding:3rem 2rem;color:var(--text-muted);font-size:.88rem;font-style:italic;}
 
   @media(max-width:700px){
     .bottom-layout{grid-template-columns:1fr;}
@@ -237,102 +210,78 @@
   <span id="server-label">Serveur...</span>
 </div>
 
-<!-- ── VUE LISTE ── -->
-<div id="view-list">
-  <div class="breadcrumb">
-    <a href="../index.html" target="_blank">Tableau de bord</a> · Reunions
-  </div>
-  <header>
-    <div class="header-main">
-      <div class="meta">Comite RSE AfrSCM</div>
-      <h1>Reunions du Comite RSE</h1>
-      <div class="sub" id="list-sub">Chargement...</div>
-    </div>
-  </header>
-  <ul class="reunion-list" id="reunion-list">
-    <li class="empty-state">Chargement des reunions...</li>
-  </ul>
+<div id="breadcrumb"></div>
+
+<div class="edit-bar" id="edit-bar">
+  <div class="edit-info" id="edit-info">Modifications en cours</div>
+  <button class="btn-edit-bar" onclick="clearChanges()">Effacer les modifications</button>
 </div>
 
-<!-- ── VUE REUNION ── -->
-<div id="view-reunion">
-  <div class="breadcrumb-reunion">
-    <a onclick="showList()">Tableau de bord</a> ·
-    <a onclick="showList()">Reunions</a> ·
-    <span id="bc-date"></span>
+<div class="reunion-header">
+  <div class="header-main">
+    <div class="meta" id="r-meta">Comité RSE</div>
+    <h2 id="r-titre">
+      ---
+      <span id="statut-display" class="statut-badge"></span>
+      <select id="statut-select" class="statut-select" style="display:none" onchange="changeStatut(this.value)">
+        <option value="En cours">En cours</option>
+        <option value="Terminée">Terminée</option>
+      </select>
+    </h2>
+    <div class="participants" id="participants-zone"></div>
   </div>
+  <div id="mode-indicator" style="display:none"></div>
+</div>
 
-  <div class="edit-bar" id="edit-bar">
-    <div class="edit-info" id="edit-info">Modifications en cours</div>
-    <button class="btn-edit-bar" onclick="clearChanges()">Effacer les modifications</button>
-  </div>
+<div class="cr-title" id="cr-title"></div>
 
-  <div class="reunion-header">
-    <div class="header-main">
-      <div class="meta" id="r-meta">Comite RSE</div>
-      <h2 id="r-titre">
-        ---
-        <span id="statut-display" class="statut-badge"></span>
-        <select id="statut-select" class="statut-select" style="display:none" onchange="changeStatut(this.value)">
-          <option value="En cours">En cours</option>
-          <option value="Terminee">Terminee</option>
-        </select>
-      </h2>
-      <div class="participants" id="participants-zone"></div>
-    </div>
-    <div id="mode-indicator" style="display:none"></div>
-  </div>
-
-  <div class="cr-title" id="cr-title"></div>
-
-  <div class="odj-layout">
-    <div class="odj-col">
-      <div class="section">
-        <div class="section-header">Ordre du jour</div>
-        <div class="section-body">
-          <table class="odj-table">
-            <thead>
-              <tr>
-                <th class="num">#</th>
-                <th>Point</th>
-                <th class="duree">Duree</th>
-                <th class="resp">Resp.</th>
-                <th class="ressources">Ressources</th>
-                <th class="note-col-cell" id="th-note"></th>
-              </tr>
-            </thead>
-            <tbody id="odj-tbody"></tbody>
-          </table>
-          <div class="timer-bar" id="timer-bar"></div>
-        </div>
+<div class="odj-layout">
+  <div class="odj-col">
+    <div class="section">
+      <div class="section-header">Ordre du jour</div>
+      <div class="section-body">
+        <table class="odj-table">
+          <thead>
+            <tr>
+              <th class="num">#</th>
+              <th>Point</th>
+              <th class="duree">Durée</th>
+              <th class="resp">Resp.</th>
+              <th class="ressources">Ressources</th>
+              <th class="note-col-cell" id="th-note"></th>
+            </tr>
+          </thead>
+          <tbody id="odj-tbody"></tbody>
+        </table>
+        <div class="timer-bar" id="timer-bar"></div>
       </div>
     </div>
-    <div class="note-col" id="note-col">
-      <div class="note-panel" id="note-panel"></div>
-    </div>
   </div>
-
-  <div class="bottom-layout">
-    <div class="section">
-      <div class="section-header">Decisions prises</div>
-      <div class="section-body"><ul class="recap-list" id="dec-recap"></ul></div>
-    </div>
-    <div class="section">
-      <div class="section-header">Actions</div>
-      <div class="section-body"><ul class="recap-list" id="action-recap"></ul></div>
-    </div>
+  <div class="note-col" id="note-col">
+    <div class="note-panel" id="note-panel"></div>
   </div>
-
-  <div id="engagements-embed">
-    <div class="engagements-embed-header">
-      <span>Engagements — modifications de la seance</span>
-      <button class="btn-refresh-embed" onclick="refreshEmbed()">&#8635; Actualiser</button>
-    </div>
-    <iframe id="engagements-iframe" src="" frameborder="0" scrolling="no"></iframe>
-  </div>
-
-  <button class="btn-mode-cr" id="btn-mode-cr" onclick="toggleCR()">Mode CR</button>
 </div>
+
+<div class="bottom-layout">
+  <div class="section">
+    <div class="section-header">Décisions prises</div>
+    <div class="section-body"><ul class="recap-list" id="dec-recap"></ul></div>
+  </div>
+  <div class="section">
+    <div class="section-header">Actions</div>
+    <div class="section-body"><ul class="recap-list" id="action-recap"></ul></div>
+  </div>
+</div>
+
+<div id="engagements-embed">
+  <div class="engagements-embed-header">
+    <span>Engagements — modifications de la séance</span>
+    <button class="btn-refresh-embed" onclick="refreshEmbed()">&#8635; Actualiser</button>
+  </div>
+  <iframe id="engagements-iframe" src="" frameborder="0" scrolling="no"></iframe>
+</div>
+
+<button class="btn-mode-cr" id="btn-mode-cr" onclick="toggleCR()">Mode CR</button>
 
 
 </body>

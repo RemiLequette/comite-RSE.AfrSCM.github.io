@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membres — Comité RSE AfrSCM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #f5f3ee; --surface: #ffffff; --border: #d8d4cc; --border-strong: #a09890;
+    --text: #1a1815; --text-muted: #7a746c; --accent: #2d5a8e; --accent-light: #e8eff7;
+    --green: #2e7d52; --green-bg: #eaf4ee; --orange: #b85c00; --orange-bg: #fdf0e0;
+    --blue: #1a5296; --blue-bg: #e8f0fb;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: var(--sans); color: var(--text); padding: 28px; max-width: 960px; margin: 0 auto; }
+
+  .breadcrumb { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); margin-bottom: 18px; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  header { border-bottom: 2px solid var(--border-strong); padding-bottom: 14px; margin-bottom: 28px; }
+  header .org { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  header h1 { font-family: var(--mono); font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+  header .sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* Grille de cartes */
+  .membres-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 600px) { .membres-grid { grid-template-columns: 1fr; } }
+
+  .membre-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: #fff;
+  }
+  .av-remi     { background: var(--accent); }
+  .av-laetitia { background: var(--green); }
+  .av-francois { background: var(--orange); }
+  .av-claire   { background: #7a3d8e; }
+
+  .card-header-info { flex: 1; }
+  .card-nom { font-family: var(--mono); font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .card-role {
+    display: inline-block;
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .role-responsable { background: var(--blue-bg);   color: var(--blue); }
+  .role-sponsor     { background: var(--green-bg);  color: var(--green); }
+  .role-academique  { background: var(--orange-bg); color: var(--orange); }
+  .role-pro         { background: #f0e8f7;           color: #7a3d8e; }
+
+  .card-body { padding: 14px 16px; }
+
+  .field { margin-bottom: 10px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+  .field-value { font-size: 0.82rem; line-height: 1.5; color: var(--text); }
+  .field-value a { color: var(--accent); text-decoration: none; }
+  .field-value a:hover { text-decoration: underline; }
+  .field-value.missing { color: var(--text-muted); font-style: italic; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+
+  footer {
+    margin-top: 32px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<div id="breadcrumb" class="breadcrumb"></div>
+
+<header>
+  <div class="org">AfrSCM · Comité RSE</div>
+  <h1>Membres du Comité</h1>
+  <div class="sub">4 membres · mis à jour le 2026-06-02</div>
+</header>
+
+<div class="membres-grid">
+
+  <!-- Rémi -->
+  <div class="membre-card">
+    <div class="card-header">
+      <div class="avatar av-remi">RL</div>
+      <div class="card-header-info">
+        <div class="card-nom" data-nom="Rémi Lequette">Rémi Lequette</div>
+        <span class="card-role role-responsable">Responsable du comité</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Mission</div>
+        <div class="field-value">Anime les sessions, garantit le respect du calendrier et coordonne les travaux.</div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <div class="field-label">Organisme</div>
+          <div class="field-value">Adhérent et ancien membre du bureau AfrSCM</div>
+        </div>
+        <div class="field">
+          <div class="field-label">Contexte</div>
+          <div class="field-value">Retraité — industrie logiciels d'optimisation des Supply Chain</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <div class="field-label">Email</div>
+          <div class="field-value"><a href="mailto:lequette@gmail.com">lequette@gmail.com</a></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Téléphone</div>
+          <div class="field-value">+33 629 495 135</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Laetitia -->
+  <div class="membre-card">
+    <div class="card-header">
+      <div class="avatar av-laetitia">LB</div>
+      <div class="card-header-info">
+        <div class="card-nom" data-nom="Laetitia Balac-Ruscher">Laetitia Balac-Ruscher</div>
+        <span class="card-role role-sponsor">Sponsor CA</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Mission</div>
+        <div class="field-value">Assure le lien stratégique avec le Conseil d'Administration.</div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <div class="field-label">Organisme</div>
+          <div class="field-value">Présidente AfrSCM</div>
+        </div>
+        <div class="field">
+          <div class="field-label">Contexte</div>
+          <div class="field-value missing">À compléter</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <div class="field-label">Email</div>
+          <div class="field-value">
+            <a href="mailto:laetitia.ruscher@gmail.com">laetitia.ruscher@gmail.com</a><br>
+            <a href="mailto:president@afrscm.fr">president@afrscm.fr</a>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Téléphone</div>
+          <div class="field-value missing">À compléter</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- François -->
+  <div class="membre-card">
+    <div class="card-header">
+      <div class="avatar av-francois">FM</div>
+      <div class="card-header-info">
+        <div class="card-nom" data-nom="François Marmier">François Marmier</div>
+        <span class="card-role role-academique">Membre actif — Académique</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Mission</div>
+        <div class="field-value missing">À compléter — apporte XXX</div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <div class="field-label">Organisme</div>
+          <div class="field-value">Adhérent AfrSCM au titre de l'Université de Strasbourg</div>
+        </div>
+        <div class="field">
+          <div class="field-label">Contexte</div>
+          <div class="field-value missing">À compléter</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <div class="field-label">Email</div>
+          <div class="field-value"><a href="mailto:marmier@unistra.fr">marmier@unistra.fr</a></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Téléphone</div>
+          <div class="field-value missing">À compléter</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Claire -->
+  <div class="membre-card">
+    <div class="card-header">
+      <div class="avatar av-claire">CP</div>
+      <div class="card-header-info">
+        <div class="card-nom" data-nom="Claire Pannetier">Claire Pannetier</div>
+        <span class="card-role role-pro">Membre actif — Professionnelle SCM</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <div class="field-label">Mission</div>
+        <div class="field-value">Participe au comité RSE</div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <div class="field-label">Organisme</div>
+          <div class="field-value">Adhérente individuelle AfrSCM</div>
+        </div>
+        <div class="field">
+          <div class="field-label">Contexte</div>
+          <div class="field-value">Responsable Planning (Planification-Ordonnancement) &amp; gestion de la sous-traitance chez John Crane</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <div class="field-label">Email</div>
+          <div class="field-value"><a href="mailto:clairepannetier@hotmail.fr">clairepannetier@hotmail.fr</a></div>
+        </div>
+        <div class="field">
+          <div class="field-label">Téléphone</div>
+          <div class="field-value">06.71.31.57.64</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>AfrSCM · Comité RSE · 2026</span>
+  <span>Champs en italique = à compléter après la réunion du 27/05</span>
+</footer>
+
+<script>
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+const BC_TITLE    = 'Membres';
+const BC_FALLBACK = '../index.html';
+
+function bcRender() {
+  const raw = new URLSearchParams(window.location.search).get('breadcrumb') || '';
+  const el  = document.getElementById('breadcrumb');
+  if (!el) return;
+  if (!raw) {
+    el.innerHTML = '<a href="' + BC_FALLBACK + '">Tableau de bord</a> &rsaquo; <span>' + BC_TITLE + '</span>';
+    return;
+  }
+  const crumbs = raw.split('|').map(p => {
+    const i = p.indexOf(':');
+    return { nom: decodeURIComponent(p.slice(0, i)), lien: decodeURIComponent(p.slice(i + 1)) };
+  });
+  const links = crumbs.map(c => '<a href="' + _esc(c.lien) + '">' + _esc(c.nom) + '</a>');
+  links.push('<span>' + _esc(BC_TITLE) + '</span>');
+  el.innerHTML = links.join(' &rsaquo; ');
+}
+function navTo(targetUrl) {
+  const bcRaw   = new URLSearchParams(window.location.search).get('breadcrumb') || '';
+  const pathRaw = new URLSearchParams(window.location.search).get('path') || '';
+  const crumbs  = bcRaw ? bcRaw.split('|').map(p => {
+    const i = p.indexOf(':');
+    return { nom: decodeURIComponent(p.slice(0, i)), lien: decodeURIComponent(p.slice(i + 1)) };
+  }) : [];
+  const pathCourant = pathRaw ? pathRaw.split('/').filter(Boolean) : [];
+  const inverse = [];
+  const segments = targetUrl.replace(/\?.*$/, '').split('/');
+  segments.pop();
+  for (const seg of segments) {
+    if (seg === '..') { inverse.unshift(pathCourant.pop() || ''); }
+    else if (seg)     { inverse.unshift('..'); pathCourant.push(seg); }
+  }
+  const inv = inverse.filter(Boolean).join('/');
+  const newCrumbs = crumbs.map(c => ({ nom: c.nom, lien: inv ? inv + '/' + c.lien : c.lien }));
+  const myFile = window.location.pathname.split('/').pop();
+  newCrumbs.push({ nom: BC_TITLE, lien: inv ? inv + '/' + myFile : myFile });
+  const bcStr  = newCrumbs.map(c => encodeURIComponent(c.nom) + ':' + encodeURIComponent(c.lien)).join('|');
+  const pathStr = pathCourant.join('/');
+  const sep = targetUrl.includes('?') ? '&' : '?';
+  return targetUrl + sep + 'breadcrumb=' + bcStr + '&path=' + pathStr;
+}
+function _esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+document.addEventListener('DOMContentLoaded', bcRender);
+// ── Fin breadcrumb ────────────────────────────────────────────────────────────
+</script>
+</body>
+</html>

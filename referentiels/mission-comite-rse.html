@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission du Comité RSE — AfrSCM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+  :root {
+    --bg: #f5f3ee; --surface: #ffffff; --border: #d8d4cc; --border-strong: #a09890;
+    --text: #1a1815; --text-muted: #7a746c; --accent: #2d5a8e; --accent-light: #e8eff7;
+    --green: #2e7d52; --green-bg: #eaf4ee; --orange: #b85c00; --orange-bg: #fdf0e0;
+    --blue: #1a5296; --blue-bg: #e8f0fb;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: var(--sans); color: var(--text); padding: 28px; max-width: 760px; margin: 0 auto; }
+  .breadcrumb { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); margin-bottom: 18px; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  header { border-bottom: 2px solid var(--border-strong); padding-bottom: 14px; margin-bottom: 28px; }
+  header h1 { font-family: var(--mono); font-size: 1.1rem; font-weight: 600; color: var(--accent); }
+  header .meta { margin-top: 6px; font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); }
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+  .section-header { background: var(--text); color: #fff; font-family: var(--mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; }
+  .section-body { padding: 16px 20px; }
+  .item-list { list-style: none; }
+  .item-list li { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; line-height: 1.5; align-items: flex-start; }
+  .item-list li:last-child { border-bottom: none; }
+  .item-list li::before { content: "->"; font-family: var(--mono); font-size: 0.8rem; color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .composition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .composition-grid { grid-template-columns: 1fr; } }
+  .membre-card { background: var(--bg); border: 1px solid var(--border); border-radius: 3px; padding: 10px 14px; font-size: 0.82rem; line-height: 1.5; }
+  .membre-card .role { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .regle { font-size: 0.82rem; line-height: 1.6; color: var(--text-muted); padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .regle:last-child { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<div id="breadcrumb" class="breadcrumb"></div>
+
+<script>
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+const BC_TITLE    = 'Mission';
+const BC_FALLBACK = '../index.html';
+
+function bcRender() {
+  const raw = new URLSearchParams(window.location.search).get('breadcrumb') || '';
+  const el  = document.getElementById('breadcrumb');
+  if (!el) return;
+  if (!raw) {
+    el.innerHTML = '<a href="' + BC_FALLBACK + '">Tableau de bord</a> &rsaquo; <span>' + BC_TITLE + '</span>';
+    return;
+  }
+  const crumbs = raw.split('|').map(p => {
+    const i = p.indexOf(':');
+    return { nom: decodeURIComponent(p.slice(0, i)), lien: decodeURIComponent(p.slice(i + 1)) };
+  });
+  const links = crumbs.map(c => '<a href="' + _esc(c.lien) + '">' + _esc(c.nom) + '</a>');
+  links.push('<span>' + _esc(BC_TITLE) + '</span>');
+  el.innerHTML = links.join(' &rsaquo; ');
+}
+function navTo(targetUrl) {
+  const bcRaw   = new URLSearchParams(window.location.search).get('breadcrumb') || '';
+  const pathRaw = new URLSearchParams(window.location.search).get('path') || '';
+  const crumbs  = bcRaw ? bcRaw.split('|').map(p => {
+    const i = p.indexOf(':');
+    return { nom: decodeURIComponent(p.slice(0, i)), lien: decodeURIComponent(p.slice(i + 1)) };
+  }) : [];
+  const pathCourant = pathRaw ? pathRaw.split('/').filter(Boolean) : [];
+  const inverse = [];
+  const segments = targetUrl.replace(/\?.*$/, '').split('/');
+  segments.pop();
+  for (const seg of segments) {
+    if (seg === '..') { inverse.unshift(pathCourant.pop() || ''); }
+    else if (seg)     { inverse.unshift('..'); pathCourant.push(seg); }
+  }
+  const inv = inverse.filter(Boolean).join('/');
+  const newCrumbs = crumbs.map(c => ({ nom: c.nom, lien: inv ? inv + '/' + c.lien : c.lien }));
+  const myFile = window.location.pathname.split('/').pop();
+  newCrumbs.push({ nom: BC_TITLE, lien: inv ? inv + '/' + myFile : myFile });
+  const bcStr  = newCrumbs.map(c => encodeURIComponent(c.nom) + ':' + encodeURIComponent(c.lien)).join('|');
+  const pathStr = pathCourant.join('/');
+  const sep = targetUrl.includes('?') ? '&' : '?';
+  return targetUrl + sep + 'breadcrumb=' + bcStr + '&path=' + pathStr;
+}
+function _esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+document.addEventListener('DOMContentLoaded', bcRender);
+// ── Fin breadcrumb ────────────────────────────────────────────────────────────
+</script>
+
+<header>
+  <h1>Mission du Comite RSE — AfrSCM</h1>
+  <div class="meta">Valide en reunion du 27/05/2026</div>
+</header>
+
+<div class="section">
+  <div class="section-header">Mission</div>
+  <div class="section-body">
+    <ul class="item-list">
+      <li>Animer la demarche RSE — piloter et garantir l'application des engagements du Label Lucie ISO 26000 vis-a-vis de l'ensemble des parties prenantes, dans le cadre de la strategie RSE de l'association.</li>
+      <li>Deployer des plans d'actions RSE — proposer, suivre et evaluer les actions des membres de l'association et de leurs partenaires.</li>
+      <li>Garantir la formation aux principes de la RSE — assurer la sensibilisation et suivre les formations des administrateur·rice·s et formateur·rice·s de l'association.</li>
+      <li>Assurer le suivi — organiser et garantir le suivi regulier a travers des KPI partages et des suivis de plans d'actions.</li>
+      <li>Rendre compte — presenter a chaque Conseil d'Administration et Assemblee Generale les avancees, les resultats et les prochaines etapes de la demarche.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">Composition</div>
+  <div class="section-body">
+    <div class="composition-grid">
+      <div class="membre-card">
+        <div class="role">Referent·e RSE</div>
+        En charge de l'animation du Comite, designe·e par le Conseil d'Administration.
+      </div>
+      <div class="membre-card">
+        <div class="role">Representant·e CA</div>
+        Un·e representant·e du Conseil d'Administration.
+      </div>
+      <div class="membre-card">
+        <div class="role">Representant·e Formateurs</div>
+        Un·e representant·e des formateurs approuve·e par le Conseil d'Administration.
+      </div>
+    </div>
+    <div style="margin-top: 14px;">
+      <div class="regle">Trois membres minimum.</div>
+      <div class="regle">Les membres se reunissent a minima avant chaque Conseil d'Administration en vue de rendre compte de la demarche RSE.</div>
+      <div class="regle">Les membres s'engagent a participer au Comite RSE pour 1 an minimum. Une assiduite inferieure a 50 % sur 1 an exclut le membre du Comite.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">Livrables</div>
+  <div class="section-body">
+    <ul class="item-list">
+      <li>Plan d'actions, KPI associes et tout document de reference necessaires a la labelisation Lucie ISO 26000.</li>
+      <li>Comptes rendus des reunions du comite mis a disposition des parties prenantes devant y avoir acces.</li>
+      <li>Presentation du suivi de la demarche et des KPI associes pour chaque Conseil d'Administration et Assemblee Generale.</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
