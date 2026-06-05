@@ -256,6 +256,131 @@
   <span>Dossier versionné sous Git — hors diffusion</span>
 </footer>
 
+<script>
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+// index.html est la racine — pas de breadcrumb entrant, path = ""
+// Propage breadcrumb+path vers toutes les pages filles via navTo
 
+const BC_TITLE = 'Tableau de bord'; // nom de cette page dans la pile des enfants
+
+function navTo(targetUrl) {
+  const bcRaw   = new URLSearchParams(window.location.search).get('breadcrumb') || '';
+  const pathRaw = new URLSearchParams(window.location.search).get('path') || '';
+  const crumbs  = bcRaw ? bcRaw.split('|').map(p => {
+    const i = p.indexOf(':');
+    return { nom: decodeURIComponent(p.slice(0, i)), lien: decodeURIComponent(p.slice(i + 1)) };
+  }) : [];
+  const pathCourant = pathRaw ? pathRaw.split('/').filter(Boolean) : [];
+  const inverse = [];
+  const segments = targetUrl.replace(/\?.*$/, '').split('/');
+  segments.pop(); // enlever le nom de fichier
+  for (const seg of segments) {
+    if (seg === '..') { inverse.unshift(pathCourant.pop() || ''); }
+    else if (seg)     { inverse.unshift('..'); pathCourant.push(seg); }
+  }
+  const inv = inverse.filter(Boolean).join('/');
+  const newCrumbs = crumbs.map(c => ({ nom: c.nom, lien: inv ? inv + '/' + c.lien : c.lien }));
+  const myFile = window.location.pathname.split('/').pop();
+  newCrumbs.push({ nom: BC_TITLE, lien: inv ? inv + '/' + myFile : myFile });
+  const bcStr  = newCrumbs.map(c => encodeURIComponent(c.nom) + ':' + encodeURIComponent(c.lien)).join('|');
+  const pathStr = pathCourant.join('/');
+  const sep = targetUrl.includes('?') ? '&' : '?';
+  return targetUrl + sep + 'breadcrumb=' + bcStr + '&path=' + pathStr;
+}
+
+// Injecte navTo sur tous les liens internes (cartes et liens dynamiques)
+document.addEventListener('DOMContentLoaded', function() {
+  // Liens statiques — selectionnes par href ou id
+  const LIENS = [
+    'a[href="referentiels/mission-comite-rse.html"]',
+    'a[href="referentiels/charte-comite-rse.html"]',
+    'a[href="referentiels/membres.html"]',
+    'a[href="ressources/engagements/index.html"]',
+    'a[href="ressources/engagements/historique/index.html"]',
+    'a[href="reunions/historique/index.html"]',
+    'a[href="suivi/index.html"]',
+    'a[href="suivi/historique/index.html"]',
+    'a[href="glossaire.html"]',
+    'a[href="reunions/index.html?date=2026-05-27"]',
+  ];
+  LIENS.forEach(function(sel) {
+    document.querySelectorAll(sel).forEach(function(el) {
+      el.removeAttribute('target');
+      el.setAttribute('href', navTo(el.getAttribute('href')));
+    });
+  });
+});
+// ── Fin navigation breadcrumb ─────────────────────────────────────────────────
+
+// Construit le chemin absolu du dossier AssistantIA/ depuis l'URL de la page
+// http://localhost:3000/C:/Users/.../AssistantIA/index.html -> C:/Users/.../AssistantIA/
+const BASE = window.location.pathname.replace(/^\//, '').replace(/[^/]+$/, '');
+
+(async function() {
+  const SERVER = 'http://localhost:3000';
+  const HIST_DIR = BASE + 'ressources/engagements/historique';
+  try {
+    const ping = await fetch(SERVER + '/ping');
+    if (!ping.ok) return;
+    const dirRes = await fetch(SERVER + '/dir?path=' + encodeURIComponent(HIST_DIR));
+    if (!dirRes.ok) return;
+    const { entries } = await dirRes.json();
+    if (!entries) return;
+    // Trouver le data-*.json le plus recent
+    const dates = entries
+      .map(e => { const m = e.name.match(/^data-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+      .filter(Boolean).sort().reverse();
+    if (!dates.length) return;
+    const date = dates[0];
+    // Verifier si un changes-*.json de meme date existe
+    const changesPath = HIST_DIR + '/changes-' + date + '.json';
+    const changesRes = await fetch(SERVER + '/file?path=' + encodeURIComponent(changesPath));
+    if (changesRes.status !== 200) return;
+    // Revision en cours detectee — mettre la carte en highlight
+    const card = document.getElementById('card-revisions');
+    if (!card) return;
+    card.classList.remove('accent-green');
+    card.classList.add('accent-amber');
+    card.querySelector('.card-title').textContent = '⚡ Révisions des engagements';
+    card.querySelector('.card-desc').textContent = 'Révision en cours · ' + date;
+    // Ajouter le lien direct
+    const link = document.createElement('a');
+    link.className = 'card-link-inline';
+    link.href = navTo('ressources/engagements/index.html?date=' + date, 'Tableau de bord', window.location.pathname.replace(/^\//, ''));
+    link.textContent = '→ Ouvrir la révision en cours';
+    link.addEventListener('click', e => e.stopPropagation());
+    card.appendChild(link);
+  } catch(e) {}
+})();
+
+// --- Detection revision ouverte : suivi ---
+(async function() {
+  const SERVER = 'http://localhost:3000';
+  const HIST_DIR = BASE + 'suivi/historique';
+  try {
+    const ping = await fetch(SERVER + '/ping');
+    if (!ping.ok) return;
+    const dirRes = await fetch(SERVER + '/dir?path=' + encodeURIComponent(HIST_DIR));
+    if (!dirRes.ok) return;
+    const { entries } = await dirRes.json();
+    if (!entries) return;
+    const dates = entries
+      .map(e => { const m = e.name.match(/^data-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+      .filter(Boolean).sort().reverse();
+    if (!dates.length) return;
+    const latest = dates[0];
+    const changesPath = HIST_DIR + '/changes-' + latest + '.json';
+    const changesRes = await fetch(SERVER + '/file?path=' + encodeURIComponent(changesPath));
+    const card = document.getElementById('card-suivi');
+    if (!card) return;
+    if (changesRes.ok) {
+      card.classList.remove('accent-blue');
+      card.classList.add('accent-amber');
+      card.querySelector('.card-title').textContent = '\u26a1 Suivi d\u00e9cisions & actions';
+      card.querySelector('.card-desc').textContent = 'R\u00e9vision en cours \u00b7 ' + latest;
+    }
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>

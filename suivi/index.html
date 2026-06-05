@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi — Decisions et actions · Comite RSE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --border: #d8d4cc;
+    --border-strong: #a09890;
+    --text: #1a1815;
+    --text-muted: #7a746c;
+    --accent: #2d5a8e;
+    --accent-light: #e8eff7;
+    --green: #2e7d52;
+    --green-bg: #eaf4ee;
+    --orange: #b85c00;
+    --orange-bg: #fdf0e0;
+    --blue: #1a5296;
+    --blue-bg: #e8f0fb;
+    --red: #c0392b;
+    --red-bg: #fdf0ee;
+    --amber: #b85c00;
+    --amber-bg: #fdf0e0;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--text);
+    padding: 32px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* ---- Header ---- */
+  header {
+    border-bottom: 2px solid var(--border-strong);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  header .left .org {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  header .left h1 {
+    font-family: var(--mono);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  header .left .sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  header .right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #server-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    flex-shrink: 0;
+  }
+  #server-dot.ok  { background: var(--green); }
+  #server-dot.err { background: var(--red); }
+  #server-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+  }
+  .back-link {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent);
+  }
+  .back-link:hover { border-bottom-style: solid; }
+
+  /* ---- Filtres globaux ---- */
+  .global-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .global-bar label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .global-bar select {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 3px 6px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: var(--surface);
+    color: var(--text);
+  }
+  .global-bar .sep { flex: 1; }
+  .global-bar .btn-hist {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: var(--surface);
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .global-bar .btn-hist:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---- Filtres inline dans h2 ---- */
+  .sec-filters {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+  }
+  .sec-filters label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--border-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .sec-filters select {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    padding: 1px 5px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  /* ---- Sections ---- */
+  section { margin-bottom: 32px; }
+  section h2 {
+    cursor: pointer;
+    user-select: none;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  section h2 .toggle-icon {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--border-strong);
+    transition: transform 0.2s;
+  }
+  section h2.collapsed .toggle-icon { transform: rotate(-90deg); }
+  section .section-body { overflow: hidden; transition: none; }
+  section h2.collapsed + .section-body { display: none; }
+  section h2 .count {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    background: var(--border);
+    color: var(--text-muted);
+    padding: 1px 6px;
+    border-radius: 10px;
+  }
+
+  /* ---- Table commune ---- */
+  .tbl-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border-strong);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:hover { background: var(--accent-light); }
+  tbody td {
+    padding: 8px 10px;
+    vertical-align: top;
+    line-height: 1.45;
+  }
+  td.id-cell {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  td.point-cell {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  td.date-cell {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  td.resp-cell {
+    white-space: nowrap;
+    font-size: 0.75rem;
+  }
+  td.ech-cell {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    white-space: nowrap;
+  }
+  td.ech-cell.overdue { color: var(--red); font-weight: 600; }
+
+  /* ---- Badges statut ---- */
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .badge-encours  { background: var(--blue-bg);   color: var(--blue); }
+  .badge-reportee { background: var(--amber-bg);  color: var(--amber); }
+  .badge-fait     { background: var(--green-bg);  color: var(--green); }
+  .badge-abandonne{ background: #f0f0f0;          color: #888; }
+
+  /* ---- Notes / lien decisions ---- */
+  td.texte-cell { max-width: 360px; }
+  td.texte-cell .notes {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .lien-badge {
+    display: inline-block;
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    padding: 1px 6px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .lien-badge.amende   { border-color: var(--amber); color: var(--amber); }
+  .lien-badge.remplace { border-color: var(--red);   color: var(--red); }
+  .lien-badge.caduque  { border-color: #aaa;         color: #aaa; }
+
+  /* ---- Etat vide / loading ---- */
+  .empty-state {
+    text-align: center;
+    padding: 40px 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  /* ---- Banner revision ouverte ---- */
+  #revision-banner {
+    display: none;
+    background: var(--orange-bg);
+    border: 1px solid var(--orange);
+    border-radius: 3px;
+    padding: 8px 14px;
+    margin-bottom: 18px;
+    font-size: 0.78rem;
+    color: var(--orange);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #revision-banner .pill {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    background: var(--orange);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  /* ---- Breadcrumb ---- */
+  .breadcrumb {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { color: var(--text-muted); }
+
+  /* ---- Footer ---- */
+  footer {
+    margin-top: 36px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div id="breadcrumb" class="breadcrumb"></div>
+
+<header>
+  <div class="left">
+    <div class="org">Comite RSE AfrSCM</div>
+    <h1>Suivi — Decisions &amp; Actions</h1>
+    <div class="sub" id="header-sub">Chargement...</div>
+  </div>
+  <div class="right">
+    <div id="server-dot"></div>
+    <span id="server-label">serveur...</span>
+    <a class="back-link" href="../index.html">&#8592; Tableau de bord</a>
+  </div>
+</header>
+
+<div id="revision-banner" style="display:none">
+  <span class="pill">REVISION EN COURS</span>
+  <span id="banner-text"></span>
+</div>
+
+<div class="global-bar">
+  <label for="filter-reunion">Reunion</label>
+  <select id="filter-reunion"><option value="">Toutes</option></select>
+  <div class="sep"></div>
+  <a class="btn-hist" href="historique/index.html">Historique des revisions</a>
+</div>
+
+<!-- ACTIONS -->
+<section>
+  <h2 id="h2-actions" onclick="toggleSection('actions')">
+    Actions
+    <span class="count" id="count-actions">0</span>
+    <span class="sec-filters" onclick="event.stopPropagation()">
+      <label for="filter-statut">Statut</label>
+      <select id="filter-statut">
+        <option value="">Tous</option>
+        <option value="En cours">En cours</option>
+        <option value="Reportee">Reportee</option>
+        <option value="Fait">Fait</option>
+        <option value="Abandonnee">Abandonnee</option>
+      </select>
+      <label for="filter-resp">Resp.</label>
+      <select id="filter-resp"><option value="">Tous</option></select>
+    </span>
+    <span class="toggle-icon">&#9660;</span>
+  </h2>
+  <div class="section-body"><div class="tbl-wrap">
+    <table id="tbl-actions">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Point</th>
+          <th>Reunion</th>
+          <th>Description</th>
+          <th>Responsable</th>
+          <th>Echeance</th>
+          <th>Statut</th>
+          <th>Avancement</th>
+        </tr>
+      </thead>
+      <tbody id="body-actions">
+        <tr><td colspan="8" class="empty-state">Chargement...</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+</section>
+
+<!-- DECISIONS -->
+<section>
+  <h2 id="h2-decisions" onclick="toggleSection('decisions')">
+    Decisions
+    <span class="count" id="count-decisions">0</span>
+    <span class="sec-filters" onclick="event.stopPropagation()">
+      <label for="fd-lien">Lien</label>
+      <select id="fd-lien">
+        <option value="">Tous</option>
+        <option value="none">Sans lien</option>
+        <option value="any">Avec lien</option>
+        <option value="amende">Amende</option>
+        <option value="remplace">Remplace</option>
+        <option value="caduque">Caduque</option>
+      </select>
+    </span>
+    <span class="toggle-icon">&#9660;</span>
+  </h2>
+  <div class="section-body"><div class="tbl-wrap">
+    <table id="tbl-decisions">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Point</th>
+          <th>Reunion</th>
+          <th>Decision</th>
+          <th>Notes</th>
+          <th>Lien</th>
+        </tr>
+      </thead>
+      <tbody id="body-decisions">
+        <tr><td colspan="6" class="empty-state">Chargement...</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+</section>
+
+<footer>
+  <span id="footer-left">AfrSCM · Comite RSE · Suivi decisions &amp; actions</span>
+  <span id="footer-right">—</span>
+</footer>
+
+<script>
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+const BC_TITLE    = 'Suivi';
+const BC_FALLBACK = '../index.html';
+function bcRender(){const raw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const el=document.getElementById('breadcrumb');if(!el)return;if(!raw){el.innerHTML='<a href="'+BC_FALLBACK+'">Tableau de bord</a> &rsaquo; <span>'+BC_TITLE+'</span>';return;}const crumbs=raw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};});const links=crumbs.map(c=>'<a href="'+_bcEsc(c.lien)+'">'+_bcEsc(c.nom)+'</a>');links.push('<span>'+_bcEsc(BC_TITLE)+'</span>');el.innerHTML=links.join(' &rsaquo; ');}
+function navTo(targetUrl){const bcRaw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const pathRaw=new URLSearchParams(window.location.search).get('path')||'';const crumbs=bcRaw?bcRaw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};}):[]; const pathCourant=pathRaw?pathRaw.split('/').filter(Boolean):[];const inverse=[];const segments=targetUrl.replace(/\?.*$/,'').split('/');segments.pop();for(const seg of segments){if(seg==='..'){inverse.unshift(pathCourant.pop()||'');}else if(seg){inverse.unshift('..');pathCourant.push(seg);}}const inv=inverse.filter(Boolean).join('/');const newCrumbs=crumbs.map(c=>({nom:c.nom,lien:inv?inv+'/'+c.lien:c.lien}));const myFile=window.location.pathname.split('/').pop();newCrumbs.push({nom:BC_TITLE,lien:inv?inv+'/'+myFile:myFile});const bcStr=newCrumbs.map(c=>encodeURIComponent(c.nom)+':'+encodeURIComponent(c.lien)).join('|');const pathStr=pathCourant.join('/');const sep=targetUrl.includes('?')?'&':'?';return targetUrl+sep+'breadcrumb='+bcStr+'&path='+pathStr;}
+function _bcEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+document.addEventListener('DOMContentLoaded', function(){ bcRender();
+  const histLink = document.querySelector('a.btn-hist[href="historique/index.html"]');
+  if (histLink) { histLink.removeAttribute('target'); histLink.href = navTo('historique/index.html'); }
+});
+// ── Fin breadcrumb ────────────────────────────────────────────────────────────
+
+// ---- Embedded variables (replaced by export-github-pages.js) ----
+const DATA_EMBEDDED    = {
+  "actions": [
+    {
+      "id": "a-2026-05-27-1",
+      "reunion_date": "2026-05-27",
+      "point_id": "n8",
+      "resp": "Remi",
+      "description": "Rediger et diffuser le CR de la reunion",
+      "echeance": "2026-05-28",
+      "statut": "Fait",
+      "avancement": ""
+    },
+    {
+      "id": "a-2026-05-27-2",
+      "reunion_date": "2026-05-27",
+      "point_id": "n1",
+      "resp": "Claire",
+      "description": "Completer fiche membre",
+      "echeance": "2026-07-31",
+      "statut": "En cours",
+      "avancement": ""
+    },
+    {
+      "id": "a-2026-05-27-3",
+      "reunion_date": "2026-05-27",
+      "point_id": "n1",
+      "resp": "Laetitia",
+      "description": "Completer fiche membre",
+      "echeance": "2026-07-31",
+      "statut": "En cours",
+      "avancement": ""
+    },
+    {
+      "id": "a-2026-05-27-4",
+      "reunion_date": "2026-05-27",
+      "point_id": "n2",
+      "resp": "Laetitia",
+      "description": "Porter au bureau la demande d'adresse mail comite-rse",
+      "echeance": null,
+      "statut": "En cours",
+      "avancement": ""
+    },
+    {
+      "id": "a-2026-05-27-5",
+      "reunion_date": "2026-05-27",
+      "point_id": "n3",
+      "resp": "Remi",
+      "description": "Faire signer la charte aux membres",
+      "echeance": "2026-06-30",
+      "statut": "En cours",
+      "avancement": ""
+    },
+    {
+      "id": "a-2026-05-27-6",
+      "reunion_date": "2026-05-27",
+      "point_id": "n3",
+      "resp": "Laetitia",
+      "description": "Explorer mise en contact Francois - formateurs",
+      "echeance": null,
+      "statut": "En cours",
+      "avancement": ""
+    },
+    {
+      "id": "a-2026-05-27-7",
+      "reunion_date": "2026-05-27",
+      "point_id": "n5",
+      "resp": "Laetitia",
+      "description": "Partager Vision, Mission, Valeurs AfrSCM",
+      "echeance": null,
+      "statut": "En cours",
+      "avancement": ""
+    },
+    {
+      "id": "a-2026-05-27-8",
+      "reunion_date": "2026-05-27",
+      "point_id": "n8",
+      "resp": "Remi",
+      "description": "Organiser une demo de l'outillage via IA",
+      "echeance": null,
+      "statut": "En cours",
+      "avancement": ""
+    }
+  ],
+  "decisions": [
+    {
+      "id": "d-2026-05-27-1",
+      "reunion_date": "2026-05-27",
+      "point_id": "n3",
+      "texte": "Charte et missions Comite RSE approuves",
+      "notes": "",
+      "lien": null
+    },
+    {
+      "id": "d-2026-05-27-2",
+      "reunion_date": "2026-05-27",
+      "point_id": "n5",
+      "texte": "Couvrir la globalite des risques",
+      "notes": "",
+      "lien": null
+    },
+    {
+      "id": "d-2026-05-27-3",
+      "reunion_date": "2026-05-27",
+      "point_id": "n5",
+      "texte": "Associer le bureau et le CA a la recherche de partenaires brainstorming",
+      "notes": "",
+      "lien": null
+    },
+    {
+      "id": "d-2026-05-27-4",
+      "reunion_date": "2026-05-27",
+      "point_id": "n4",
+      "texte": "On adopte la denomination RSE (pas RSO)",
+      "notes": "",
+      "lien": null
+    }
+  ]
+};
+const CHANGES_EMBEDDED = null;
+
+// ── Chemin absolu de base (AssistantIA/) depuis l'URL servie
+// http://localhost:3000/C:/Users/.../AssistantIA/suivi/index.html
+//   -> BASE = "C:/Users/.../AssistantIA/"
+const BASE = window.location.pathname.replace(/^\//, '').replace(/suivi\/[^/]*$/, '');
+
+// ---- Config ----
+const SERVER      = 'http://localhost:3000';
+const ARTIFACT    = 'suivi';
+
+// ---- State ----
+let data    = { actions: [], decisions: [] };
+let changes = { actions_new: [], actions_updates: [], decisions_new: [], decisions_updates: [] };
+let mergedActions    = [];
+let mergedDecisions  = [];
+let revisionDate     = null;
+
+// ---- URL params ----
+const params = new URLSearchParams(window.location.search);
+const urlDate = params.get('date');
+
+// ---- Filters ----
+let filterReunion = '';
+let filterStatut  = '';
+let filterResp    = '';
+let filterDecReunion = '';
+let filterDecLien    = '';
+
+// ---- Init ----
+(async function init() {
+  await checkServer();
+  await loadData();
+  buildMerged();
+  populateFilters();
+  renderAll();
+  updateHeader();
+})();
+
+// --- LOCAL-SERVER-START --- [github-pages stub]
+var serverOk = false;
+async function checkServer() {
+  var dot = document.getElementById('server-dot');
+  var lbl = document.getElementById('server-label');
+  if (dot) dot.style.display = 'none';
+  if (lbl) lbl.style.display = 'none';
+  return false;
+}
+// --- LOCAL-SERVER-END ---
+
+// ---- Load data ----
+async function loadData() {
+  // GitHub Pages mode
+  if (!serverOk) {
+    if (DATA_EMBEDDED) {
+      data = DATA_EMBEDDED;
+      if (CHANGES_EMBEDDED) changes = CHANGES_EMBEDDED;
+    } else {
+      setLoadingError('Serveur local absent. Lancez start-server.bat pour utiliser cette page en local.');
+    }
+    return;
+  }
+
+  try {
+    // Find most recent data file (or use urlDate)
+    let targetDate = urlDate;
+    if (!targetDate) {
+      const histDir = BASE + ARTIFACT + '/historique';
+      const dirRes = await fetch(SERVER + '/dir?path=' + encodeURIComponent(histDir));
+      if (dirRes.ok) {
+        const { entries } = await dirRes.json();
+        const dates = (entries || [])
+          .map(e => { const m = e.name.match(/^data-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+          .filter(Boolean).sort().reverse();
+        if (dates.length) targetDate = dates[0];
+      }
+    }
+
+    if (!targetDate) {
+      setLoadingError('Aucune donnee trouvee dans historique/.');
+      return;
+    }
+
+    revisionDate = targetDate;
+    const histBase = BASE + ARTIFACT + '/historique/';
+
+    // Load data
+    const dataRes = await fetch(SERVER + '/file?path=' + encodeURIComponent(histBase + 'data-' + targetDate + '.json'));
+    if (dataRes.ok) {
+      data = await dataRes.json();
+    }
+
+    // Load changes if exists
+    const changesRes = await fetch(SERVER + '/file?path=' + encodeURIComponent(histBase + 'changes-' + targetDate + '.json'));
+    if (changesRes.ok) {
+      changes = await changesRes.json();
+      // Show revision banner
+      const banner = document.getElementById('revision-banner');
+      banner.style.display = 'flex';
+      document.getElementById('banner-text').textContent =
+        'Revision ouverte pour le ' + fmtDate(targetDate) + ' — modifications non encore clôturees.';
+    }
+  } catch(e) {
+    setLoadingError('Erreur de chargement : ' + e.message);
+  }
+}
+
+// ---- Merge data + changes ----
+function buildMerged() {
+  // Actions : start from data, apply updates, append new
+  const actMap = {};
+  (data.actions || []).forEach(a => actMap[a.id] = { ...a });
+  (changes.actions_updates || []).forEach(u => {
+    if (actMap[u.id]) Object.assign(actMap[u.id], u);
+  });
+  mergedActions = Object.values(actMap);
+  (changes.actions_new || []).forEach(a => mergedActions.push({ ...a }));
+
+  // Decisions : start from data, apply updates, append new
+  const decMap = {};
+  (data.decisions || []).forEach(d => decMap[d.id] = { ...d });
+  (changes.decisions_updates || []).forEach(u => {
+    if (decMap[u.id]) Object.assign(decMap[u.id], u);
+  });
+  mergedDecisions = Object.values(decMap);
+  (changes.decisions_new || []).forEach(d => mergedDecisions.push({ ...d }));
+
+  // Sort by id (date + seq)
+  mergedActions.sort((a, b) => a.id.localeCompare(b.id));
+  mergedDecisions.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+// ---- Populate filter dropdowns ----
+function populateFilters() {
+  const reunions = [...new Set([
+    ...mergedActions.map(a => a.reunion_date),
+    ...mergedDecisions.map(d => d.reunion_date)
+  ])].sort().reverse();
+
+  const selReunion = document.getElementById('filter-reunion');
+  reunions.forEach(r => {
+    const o = document.createElement('option');
+    o.value = r; o.textContent = fmtDate(r);
+    selReunion.appendChild(o);
+  });
+  selReunion.addEventListener('change', e => { filterReunion = e.target.value; renderAll(); });
+
+  // Filtre statut actions
+  document.getElementById('filter-statut').addEventListener('change', e => {
+    filterStatut = e.target.value; renderAll();
+  });
+
+  // Filtre responsable actions
+  const resps = [...new Set(mergedActions.map(a => a.resp).filter(Boolean))].sort();
+  const selResp = document.getElementById('filter-resp');
+  resps.forEach(r => {
+    const o = document.createElement('option');
+    o.value = r; o.textContent = r;
+    selResp.appendChild(o);
+  });
+  selResp.addEventListener('change', e => { filterResp = e.target.value; renderAll(); });
+
+  // Filtre lien decisions
+  document.getElementById('fd-lien').addEventListener('change', e => { filterDecLien = e.target.value; renderAll(); });
+}
+
+// ---- Render ----
+function renderAll() {
+  renderActions();
+  renderDecisions();
+}
+
+function renderActions() {
+  const tbody = document.getElementById('body-actions');
+  const today = todayStr();
+
+  let rows = mergedActions.filter(a => {
+    if (filterReunion && a.reunion_date !== filterReunion) return false;
+    if (filterStatut  && a.statut !== filterStatut) return false;
+    if (filterResp    && a.resp !== filterResp) return false;
+    return true;
+  });
+
+  document.getElementById('count-actions').textContent = rows.length;
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Aucune action.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(a => {
+    const overdue = a.echeance && a.echeance < today && a.statut !== 'Fait' && a.statut !== 'Abandonnee';
+    return `<tr>
+      <td class="id-cell">${esc(a.id)}</td>
+      <td class="point-cell">${esc(a.point_id || '')}</td>
+      <td class="date-cell">${fmtDate(a.reunion_date)}</td>
+      <td>${esc(a.description || '')}</td>
+      <td class="resp-cell">${esc(a.resp || '')}</td>
+      <td class="ech-cell${overdue ? ' overdue' : ''}">${a.echeance ? fmtDate(a.echeance) : '—'}</td>
+      <td>${badgeStatut(a.statut)}</td>
+      <td><span style="font-size:0.73rem;color:var(--text-muted)">${esc(a.avancement || '')}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderDecisions() {
+  const tbody = document.getElementById('body-decisions');
+
+  let rows = mergedDecisions.filter(d => {
+    if (filterReunion && d.reunion_date !== filterReunion) return false;
+    if (filterDecLien === 'none' && d.lien) return false;
+    if (filterDecLien === 'any'  && !d.lien) return false;
+    if (filterDecLien === 'amende'   && d.lien?.type !== 'amende')   return false;
+    if (filterDecLien === 'remplace' && d.lien?.type !== 'remplace') return false;
+    if (filterDecLien === 'caduque'  && d.lien?.type !== 'caduque')  return false;
+    return true;
+  });
+
+  document.getElementById('count-decisions').textContent = rows.length;
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Aucune decision.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(d => {
+    const lienHtml = d.lien
+      ? `<span class="lien-badge ${esc(d.lien.type)}">${esc(d.lien.type)} ${esc(d.lien.ref)}</span>`
+      : '<span style="color:var(--border-strong);font-size:0.7rem">—</span>';
+    return `<tr>
+      <td class="id-cell">${esc(d.id)}</td>
+      <td class="point-cell">${esc(d.point_id || '')}</td>
+      <td class="date-cell">${fmtDate(d.reunion_date)}</td>
+      <td class="texte-cell">${esc(d.texte || '')}</td>
+      <td><span style="font-size:0.73rem;color:var(--text-muted);font-style:italic">${esc(d.notes || '')}</span></td>
+      <td>${lienHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ---- Header ----
+function updateHeader() {
+  const sub = document.getElementById('header-sub');
+  const fr  = document.getElementById('footer-right');
+  if (revisionDate) {
+    sub.textContent = 'Reference : ' + fmtDate(revisionDate);
+    fr.textContent  = 'data-' + revisionDate + '.json';
+  } else if (!serverOk && DATA_EMBEDDED) {
+    sub.textContent = 'Mode hors-ligne — donnees integrees';
+    fr.textContent  = 'GitHub Pages';
+  } else {
+    sub.textContent = 'Aucune donnee chargee';
+    fr.textContent  = '—';
+  }
+}
+
+// ---- Helpers ----
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const [y, m, d] = iso.split('-');
+  return d + '/' + m + '/' + y;
+}
+
+function todayStr() {
+  return new Date().toISOString().slice(0,10);
+}
+
+function badgeStatut(s) {
+  const map = {
+    'En cours':    'badge-encours',
+    'Reportee':    'badge-reportee',
+    'Reportée':    'badge-reportee',
+    'Fait':        'badge-fait',
+    'Abandonnee':  'badge-abandonne',
+    'Abandonnée':  'badge-abandonne',
+  };
+  const cls = map[s] || 'badge-encours';
+  return `<span class="badge ${cls}">${esc(s || '—')}</span>`;
+}
+
+function toggleSection(name) {
+  const h2 = document.getElementById('h2-' + name);
+  if (h2) h2.classList.toggle('collapsed');
+}
+
+function setLoadingError(msg) {
+  document.getElementById('body-actions').innerHTML =
+    `<tr><td colspan="8" class="empty-state">${esc(msg)}</td></tr>`;
+  document.getElementById('body-decisions').innerHTML =
+    `<tr><td colspan="6" class="empty-state">${esc(msg)}</td></tr>`;
+}
+</script>
+</body>
+</html>

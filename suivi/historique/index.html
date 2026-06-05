@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historique des revisions — Suivi · Comite RSE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --border: #d8d4cc;
+    --border-strong: #a09890;
+    --text: #1a1815;
+    --text-muted: #7a746c;
+    --accent: #2d5a8e;
+    --accent-light: #e8eff7;
+    --green: #2e7d52;
+    --green-bg: #eaf4ee;
+    --orange: #b85c00;
+    --orange-bg: #fdf0e0;
+    --red: #c0392b;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--text);
+    padding: 32px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  header {
+    border-bottom: 2px solid var(--border-strong);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  header .left .org {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  header .left h1 {
+    font-family: var(--mono);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  header .left .sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  .back-link {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent);
+  }
+  .back-link:hover { border-bottom-style: solid; }
+
+  /* ---- Server indicator ---- */
+  .srv {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  #server-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+  #server-dot.ok  { background: var(--green); }
+  #server-dot.err { background: var(--red); }
+  #server-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+  }
+
+  /* ---- Revision list ---- */
+  .rev-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rev-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border-strong);
+    border-radius: 3px;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .rev-card:hover {
+    border-left-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+  .rev-card.open {
+    border-left-color: var(--orange);
+    background: var(--orange-bg);
+  }
+  .rev-card.open:hover { border-left-color: var(--orange); }
+
+  .rev-date {
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+    min-width: 90px;
+  }
+  .rev-card.open .rev-date { color: var(--orange); }
+
+  .rev-status {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .status-closed { background: var(--green-bg);  color: var(--green); }
+  .status-open   { background: var(--orange);    color: white; }
+
+  .rev-info {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    flex: 1;
+  }
+
+  .rev-link {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* ---- Empty / loading ---- */
+  .empty-state {
+    text-align: center;
+    padding: 40px 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  /* ---- Breadcrumb ---- */
+  .breadcrumb {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { color: var(--text-muted); }
+
+  footer {
+    margin-top: 36px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<div id="breadcrumb" class="breadcrumb"></div>
+
+<header>
+  <div class="left">
+    <div class="org">Comite RSE AfrSCM</div>
+    <h1>Historique des révisions</h1>
+    <div class="sub">Suivi décisions &amp; actions — toutes les révisions</div>
+  </div>
+  <a class="back-link" href="../index.html">&#8592; Suivi</a>
+</header>
+
+<div class="srv">
+  <div id="server-dot"></div>
+  <span id="server-label">serveur...</span>
+</div>
+
+<div id="rev-container">
+  <div class="empty-state">Chargement...</div>
+</div>
+
+<footer>
+  <span>AfrSCM · Comite RSE · Historique suivi</span>
+  <span id="footer-count">—</span>
+</footer>
+
+<script>
+// ---- Embedded variable (replaced by export-github-pages.js) ----
+const REVISIONS_EMBEDDED = [
+  {
+    "date": "2026-05-27",
+    "open": false
+  }
+];
+
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+const BC_TITLE    = 'Historique suivi';
+const BC_FALLBACK = '../../index.html';
+function bcRender(){const raw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const el=document.getElementById('breadcrumb');if(!el)return;if(!raw){el.innerHTML='<a href="'+BC_FALLBACK+'">Tableau de bord</a> &rsaquo; <span>'+BC_TITLE+'</span>';return;}const crumbs=raw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};});const links=crumbs.map(c=>'<a href="'+_bcEsc(c.lien)+'">'+_bcEsc(c.nom)+'</a>');links.push('<span>'+_bcEsc(BC_TITLE)+'</span>');el.innerHTML=links.join(' &rsaquo; ');}
+function navTo(targetUrl){const bcRaw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const pathRaw=new URLSearchParams(window.location.search).get('path')||'';const crumbs=bcRaw?bcRaw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};}):[]; const pathCourant=pathRaw?pathRaw.split('/').filter(Boolean):[];const inverse=[];const segments=targetUrl.replace(/\?.*$/,'').split('/');segments.pop();for(const seg of segments){if(seg==='..'){inverse.unshift(pathCourant.pop()||'');}else if(seg){inverse.unshift('..');pathCourant.push(seg);}}const inv=inverse.filter(Boolean).join('/');const newCrumbs=crumbs.map(c=>({nom:c.nom,lien:inv?inv+'/'+c.lien:c.lien}));const myFile=window.location.pathname.split('/').pop();newCrumbs.push({nom:BC_TITLE,lien:inv?inv+'/'+myFile:myFile});const bcStr=newCrumbs.map(c=>encodeURIComponent(c.nom)+':'+encodeURIComponent(c.lien)).join('|');const pathStr=pathCourant.join('/');const sep=targetUrl.includes('?')?'&':'?';return targetUrl+sep+'breadcrumb='+bcStr+'&path='+pathStr;}
+function _bcEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+document.addEventListener('DOMContentLoaded', bcRender);
+// ── Fin breadcrumb ────────────────────────────────────────────────────────────
+
+// ── Chemin absolu de base (AssistantIA/) depuis l'URL servie
+// http://localhost:3000/C:/Users/.../AssistantIA/suivi/historique/index.html
+//   -> BASE = "C:/Users/.../AssistantIA/"
+const BASE = window.location.pathname.replace(/^\//, '').replace(/suivi\/historique\/[^/]*$/, '');
+
+const SERVER   = 'http://localhost:3000';
+const ARTIFACT = 'suivi';
+
+(async function init() {
+  const serverOk = await checkServer();
+  let revisions  = [];
+
+  if (!serverOk) {
+    if (REVISIONS_EMBEDDED) {
+      revisions = REVISIONS_EMBEDDED;
+    } else {
+      render([]);
+      setStatus('Serveur local absent. Lancez start-server.bat.');
+      return;
+    }
+  } else {
+    revisions = await loadRevisions();
+  }
+
+  render(revisions);
+  document.getElementById('footer-count').textContent = revisions.length + ' revision(s)';
+})();
+
+// --- LOCAL-SERVER-START --- [github-pages stub]
+var serverOk = false;
+async function checkServer() {
+  var dot = document.getElementById('server-dot');
+  var lbl = document.getElementById('server-label');
+  if (dot) dot.style.display = 'none';
+  if (lbl) lbl.style.display = 'none';
+  return false;
+}
+// --- LOCAL-SERVER-END ---
+
+async function loadRevisions() {
+  try {
+    const histDir = BASE + ARTIFACT + '/historique';
+    const dirRes = await fetch(SERVER + '/dir?path=' + encodeURIComponent(histDir));
+    if (!dirRes.ok) return [];
+    const { entries } = await dirRes.json();
+    if (!entries || !entries.length) return [];
+
+    // Extract dates from data-*.json filenames
+    const dates = entries
+      .map(e => { const m = e.name.match(/^data-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+      .filter(Boolean).sort().reverse();
+
+    // Les dates des changes-*.json présents
+    const changesDates = new Set(
+      entries
+        .map(e => { const m = e.name.match(/^changes-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+        .filter(Boolean)
+    );
+
+    return dates.map(date => ({ date, open: changesDates.has(date) }));
+  } catch(e) {
+    return [];
+  }
+}
+
+function render(revisions) {
+  const container = document.getElementById('rev-container');
+
+  if (!revisions.length) {
+    container.innerHTML = '<div class="empty-state">Aucune revision trouvee.</div>';
+    return;
+  }
+
+  container.innerHTML = '<div class="rev-list">' +
+    revisions.map(rev => {
+      const label  = rev.open ? 'En cours' : 'Cloturee';
+      const cls    = rev.open ? 'open' : '';
+      const stCls  = rev.open ? 'status-open' : 'status-closed';
+      const info   = rev.open
+        ? 'Modifications en cours, non encore clôturees'
+        : 'Revision validee — donnees de reference';
+      const url    = navTo('../index.html?date=' + rev.date);
+      return `<a class="rev-card ${cls}" href="${url}">
+        <span class="rev-date">${fmtDate(rev.date)}</span>
+        <span class="rev-status ${stCls}">${label}</span>
+        <span class="rev-info">${info}</span>
+        <span class="rev-link">Consulter &rarr;</span>
+      </a>`;
+    }).join('') +
+  '</div>';
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const [y, m, d] = iso.split('-');
+  return d + '/' + m + '/' + y;
+}
+
+function setStatus(msg) {
+  document.getElementById('rev-container').innerHTML =
+    '<div class="empty-state">' + msg + '</div>';
+}
+</script>
+</body>
+</html>

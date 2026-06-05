@@ -70,12 +70,12 @@
   .view-btn { background: transparent; border: none; padding: 0.28rem 0.75rem; font-size: 0.73rem; font-family: 'DM Sans', sans-serif; color: var(--muted); cursor: pointer; transition: all 0.15s; }
   .view-btn.active { background: var(--accent); color: white; }
 
-  main { padding: 1.5rem 2.5rem; max-width: 1600px; margin: 0 auto; }
+  main { padding: 0.6rem 2.5rem 1.5rem; max-width: 1600px; margin: 0 auto; }
   .main-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
   .main-layout .table-col { flex: 1; min-width: 0; }
   .main-layout .edit-col { width: 360px; flex-shrink: 0; position: sticky; top: 1rem; }
 
-  .table-wrap { overflow-x: auto; }
+  .table-hint { font-size: 0.67rem; color: var(--muted); font-style: italic; padding: 0.35rem 0.8rem 0.3rem; background: var(--bg); border-bottom: 1px solid var(--border); }
   table.eng-table { width: 100%; border-collapse: collapse; font-size: 0.81rem; background: var(--surface); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
   table.eng-table thead th { background: var(--bg); border-bottom: 2px solid var(--border); padding: 0.5rem 0.8rem; text-align: left; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); white-space: nowrap; cursor: pointer; user-select: none; }
   table.eng-table thead th:hover { color: var(--accent); }
@@ -274,6 +274,7 @@
     <div class="main-layout">
       <div class="table-col">
         <div class="table-wrap">
+          <div class="table-hint">Sélectionner un engagement pour visualiser sa carte tout en filtrant le Domaine. Re-sélectionner le même pour enlever le filtre.</div>
           <table class="eng-table">
             <thead>
               <tr>
@@ -302,6 +303,1042 @@
 
 <footer id="footer-info"></footer>
 
+<script>
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+const BC_TITLE    = 'Engagements';
+const BC_FALLBACK = '../../index.html';
+function bcRender(){const raw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const el=document.getElementById('breadcrumb');if(!el)return;if(!raw){el.innerHTML='<a href="'+BC_FALLBACK+'">Tableau de bord</a> &rsaquo; <span>'+BC_TITLE+'</span>';return;}const crumbs=raw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};});const links=crumbs.map(c=>'<a href="'+_bcEsc(c.lien)+'">'+_bcEsc(c.nom)+'</a>');links.push('<span>'+_bcEsc(BC_TITLE)+'</span>');el.innerHTML=links.join(' &rsaquo; ');}
+function navTo(targetUrl){const bcRaw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const pathRaw=new URLSearchParams(window.location.search).get('path')||'';const crumbs=bcRaw?bcRaw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};}):[]; const pathCourant=pathRaw?pathRaw.split('/').filter(Boolean):[];const inverse=[];const segments=targetUrl.replace(/\?.*$/,'').split('/');segments.pop();for(const seg of segments){if(seg==='..'){inverse.unshift(pathCourant.pop()||'');}else if(seg){inverse.unshift('..');pathCourant.push(seg);}}const inv=inverse.filter(Boolean).join('/');const newCrumbs=crumbs.map(c=>({nom:c.nom,lien:inv?inv+'/'+c.lien:c.lien}));const myFile=window.location.pathname.split('/').pop();newCrumbs.push({nom:BC_TITLE,lien:inv?inv+'/'+myFile:myFile});const bcStr=newCrumbs.map(c=>encodeURIComponent(c.nom)+':'+encodeURIComponent(c.lien)).join('|');const pathStr=pathCourant.join('/');const sep=targetUrl.includes('?')?'&':'?';return targetUrl+sep+'breadcrumb='+bcStr+'&path='+pathStr;}
+function _bcEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+document.addEventListener('DOMContentLoaded', function(){ bcRender();
+  const histLink = document.querySelector('a[href*="historique/index.html"]');
+  if (histLink) { histLink.removeAttribute('target'); histLink.href = navTo(histLink.getAttribute('href')); }
+});
+// ── Fin breadcrumb ────────────────────────────────────────────────────────────
 
+// ── Données embarquées (injectées par export-github-pages.js pour GitHub Pages) ──
+const DATA_EMBEDDED    = [
+  {
+    "domaine": "Gouvernance responsable",
+    "pa": "PA01",
+    "priorite": 1,
+    "referent": "",
+    "objectif": "Structurer la gouvernance RSO afin de garantir la cohérence entre les valeurs de l'association et ses décisions stratégiques.",
+    "indicateur": "Signature des chartes administrateurs 100% | Présence au comité RSE 75%",
+    "cible": "75%",
+    "engage": 1,
+    "avancement": 0.4,
+    "risque": "Faible",
+    "ct": "Chartes comité RSO Administrateurs et Formateurs intégrant un volet RSO",
+    "lt": "Matrice de matérialité et Strategie RSO formalisée | Synthèse du questionnaire des parties prenantes"
+  },
+  {
+    "domaine": "Gouvernance responsable",
+    "pa": "PA02",
+    "priorite": 1,
+    "referent": "",
+    "objectif": "Cartographier et piloter les risques afin de sécuriser la pérennité économique et opérationnelle de l'association.",
+    "indicateur": "Taux de couverture des risques critiques par un plan d'action.",
+    "cible": "90%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Analyse SWOT, Cartographie des risques.",
+    "lt": "Feuille de route pluriannuelle des developpements et pistes d'innovation | Plan d'actions de maitrise des risques et suivi à jour"
+  },
+  {
+    "domaine": "Droits des personnes",
+    "pa": "PA03",
+    "priorite": 1,
+    "referent": "Laetitia",
+    "objectif": "Sécuriser l'éthique des relations afin de garantir un environnement de travail et d'échange mutuel sans harcèlement ni discrimination.",
+    "indicateur": "Taux de membres du Bureau/CA sensibilisés à la procédure d'alerte. | Nombre d'événements tenus conformément à la charte (70%)",
+    "cible": "100%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Procédure d'alerte formalisée, Désignation du référent éthique.",
+    "lt": "Support de communication aux parties prenantes | Charte des evenements"
+  },
+  {
+    "domaine": "Droits des personnes",
+    "pa": "PA04",
+    "priorite": 1,
+    "referent": "Laetitia",
+    "objectif": "Promouvoir activement la diversité afin de refléter la richesse des métiers de la Supply Chain et assurer l'égalité des chances.",
+    "indicateur": "Part du genre le moins représenté au sein du CA.",
+    "cible": "40%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Guide \"questions interdites\" (document de référence interne)",
+    "lt": "Tableau de suivi de la composition du CA et du Bureau | Modèles de contrats intégrant la clause non-discrimination"
+  },
+  {
+    "domaine": "Droits des personnes",
+    "pa": "PA05",
+    "priorite": 0,
+    "referent": "Remi",
+    "objectif": "Fiabiliser la gestion des données afin de garantir la vie privée des membres et la conformité stricte au RGPD.",
+    "indicateur": "Taux de conformité du registre de traitement (auto-évaluation CNIL).",
+    "cible": "90%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Nomination d'un référent RGPD | Registre des traitements de données (modèle CNIL) | Cartographie des flux de données | Tableau de suivi des mises à jour du registre | Attestation de conformité RGPD du prestataire informatique",
+    "lt": "Clauses RGPD dans les contrats | Procédure de suppression / anonymisation des données | Registre de suppression des données | Relevé de conformité transmis au CA annuellement | Rapport annuel de conformité RGPD | Grille d'autoévaluation CNIL | Guide de bonnes pratiques RGPD"
+  },
+  {
+    "domaine": "Relations et conditions de travail responsables",
+    "pa": "PA07",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Clarifier les rôles et parcours afin de favoriser l'engagement durable et le bien-être des administrateurs et formateurs.",
+    "indicateur": "Taux de satisfaction globale des collaborateurs (Baromètre QVT).",
+    "cible": "80%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Fiches de poste validées et diffusées | Parcours administrateurs mis à jour | Rapport d'étonnement et plan d'actions associé.",
+    "lt": "Calendrier et compte rendu des moments conviviaux | Sondage QVT et mini-baromètre interne | Témoignages valorisant les actions QVT dans la newsletter"
+  },
+  {
+    "domaine": "Relations et conditions de travail responsables",
+    "pa": "PA08",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Fluidifier la communication interne afin de renforcer l'adhésion des parties prenantes aux projets de l'association.",
+    "indicateur": "Taux de participation aux enquêtes de consultation interne.",
+    "cible": "70%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Questionnaire d'enquête parties prenantes internes | Rapport de diagnostic sur la communication | Calendrier annuel des réunions | Procédure ou charte de communication interne | Modèle de compte rendu partagé | Fiche de rôle du référent communication",
+    "lt": "Synthèse des résultats et plan d'amélioration | Calendrier annuel des réunions | Procédure ou charte de communication interne"
+  },
+  {
+    "domaine": "Relations et conditions de travail responsables",
+    "pa": "PA09",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Anticiper les risques santé/sécurité afin de protéger l'intégrité physique et mentale des intervenants lors des événements.",
+    "indicateur": "Pourcentage d'événements majeurs ayant fait l'objet d'un brief sécurité.",
+    "cible": "100%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Cartographie des RPS, Fiche \"Minute Prévention\", Check-list sécurité.",
+    "lt": "Registre de suivi des incidents et actions correctives | Synthèse annuelle Santé et sécurité présentée au CA"
+  },
+  {
+    "domaine": "Relations et conditions de travail responsables",
+    "pa": "PA10",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Professionnaliser la gouvernance RSO afin de doter les élus des compétences nécessaires au pilotage de la transition.",
+    "indicateur": "% d'administrateur-es ayant répondu au questionnaire 90% | % d'administrateur-es ayant suivi la formation 90%",
+    "cible": "4h/élu",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Questionnaire besoin formation",
+    "lt": "Feuille de présence et retour formation, synthèse annuelle"
+  },
+  {
+    "domaine": "Environnement",
+    "pa": "PA12",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Sélectionner des certifications et des serious games promouvant l'éco-conception et l'économie circulaire afin de promouvoir les supply chains responsables.",
+    "indicateur": "Visibilité de la page web 40/mois | Suivi des webinaires 5 personnes/mois",
+    "cible": "",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Plan de communication intégrant la RSO | Page web SC responsable",
+    "lt": "Synthèse annuelle SC responsable"
+  },
+  {
+    "domaine": "Environnement",
+    "pa": "PA13",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Optimiser l'usage des ressources afin de tendre vers la sobriété numérique et matérielle de l'association.",
+    "indicateur": "Réduction de la consommation de ressources (matériel de bureau)",
+    "cible": "-20%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Diagnostic des consommations, Guide des écogestes numériques.",
+    "lt": "Rapport annuel consommation"
+  },
+  {
+    "domaine": "Environnement",
+    "pa": "PA14",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Réduire les nuisances liées aux événements afin de minimiser l'impact direct sur l'environnement.",
+    "indicateur": "Taux annuel d'événements conformes au guide de minimisation des impacts environnement",
+    "cible": "80%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Éco-guide de l'association pour les évènements | Référence au guide dans les chartes",
+    "lt": "Rapport annuel de suivi des évènements"
+  },
+  {
+    "domaine": "Environnement",
+    "pa": "PA15",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Piloter l'empreinte carbone afin de définir une trajectoire de décarbonation réaliste pour les activités de l'association.",
+    "indicateur": "Nombre d'événements ayant fait l'objet d'un calcul d'empreinte carbone.",
+    "cible": "5",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Guide de calcul de l'empreinte carbone pour les évènements",
+    "lt": "Rapport annuel d'impact carbone"
+  },
+  {
+    "domaine": "Ethique dans les relations d'affaires",
+    "pa": "PA17",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Cadrer les pratiques de concurrence afin de protéger la propriété intellectuelle et garantir une déontologie exemplaire.",
+    "indicateur": "Taux de chartes enseignants signées intégrant le volet copyright.",
+    "cible": "95%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Chartes enseignants mises à jour et signées",
+    "lt": "Rapport à l'AG"
+  },
+  {
+    "domaine": "Ethique dans les relations d'affaires",
+    "pa": "PA18",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Engager les fournisseurs dans la RSO afin de diffuser les bonnes pratiques sur l'ensemble de la chaîne de valeur.",
+    "indicateur": "Part des contrats fournisseurs incluant une clause de responsabilité sociétale.",
+    "cible": "70%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Modèle de contrat avec clauses RSO, Formulaire évaluation fournisseur.",
+    "lt": "Contrats signés | Rapport de suivi"
+  },
+  {
+    "domaine": "Ethique dans les relations d'affaires",
+    "pa": "PA19",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Équilibrer les relations partenaires afin de prévenir tout risque de dépendance économique réciproque.",
+    "indicateur": "Délai moyen de paiement des fournisseurs (en jours).",
+    "cible": "< 30 j",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Grille d'analyse de dépendance",
+    "lt": "Reporting comptable délais de paiement."
+  },
+  {
+    "domaine": "Intérets des consommateurs",
+    "pa": "PA21",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Garantir la sécurité des services afin de prévenir tout incident lors des formations et protéger la santé des adhérents.",
+    "indicateur": "Événements conformes au guide.",
+    "cible": "100%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Guide de prévention des risques",
+    "lt": "Rapport de suivi des évènements"
+  },
+  {
+    "domaine": "Intérets des consommateurs",
+    "pa": "PA22",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Monitorer la satisfaction client afin de garantir une amélioration continue de la qualité pédagogique des offres.",
+    "indicateur": "Score moyen de satisfaction (CSAT) sur les formations.",
+    "cible": "8,5/10",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Questionnaire de satisfaction",
+    "lt": "Tableau de bord satisfaction | Synthèse des critiques et plan d'action"
+  },
+  {
+    "domaine": "Developpement local et intérêt général",
+    "pa": "PA24",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Soutenir le dynamisme local afin de renforcer l'ancrage territorial de l'association et favoriser l'insertion.",
+    "indicateur": "Nombre d'interventions réalisées dans des écoles ou universités régionales.",
+    "cible": "6/an",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Calendrier des interventions locales",
+    "lt": "Rapport AG"
+  },
+  {
+    "domaine": "Developpement local et intérêt général",
+    "pa": "PA25",
+    "priorite": 0,
+    "referent": "",
+    "objectif": "Favoriser le partage de connaissances afin de démocratiser les enjeux de la Supply Chain responsable auprès du plus grand nombre.",
+    "indicateur": "Taux d'événements intégrant un sujet RSO.",
+    "cible": "50%",
+    "engage": 0,
+    "avancement": 0,
+    "risque": "Faible",
+    "ct": "Programme des webinaires, Statistiques de participation.",
+    "lt": "Rapport AG, retour des questionnaires"
+  }
+];
+const CHANGES_EMBEDDED = null;
+
+// ── Chemin absolu de base (AssistantIA/) depuis l'URL servie
+// http://localhost:3000/C:/Users/.../AssistantIA/ressources/engagements/index.html
+//   -> BASE = "C:/Users/.../AssistantIA/"
+const BASE = window.location.pathname.replace(/^\//, '').replace(/ressources\/engagements\/[^/]*$/, '');
+
+// ── Configuration ──────────────────────────────────────────────────────────────
+const SERVER_URL  = 'http://localhost:3000';
+const RESOURCE    = 'ressources/engagements';
+
+const DOMAIN_COLORS = {
+  'Gouvernance responsable':                         '#2e5e3e',
+  'Droits des personnes':                            '#6e3a1a',
+  'Relations et conditions de travail responsables': '#1a3e6e',
+  'Environnement':                                   '#3a6e1a',
+  "Ethique dans les relations d'affaires":           '#5e1a5e',
+  'Interets des consommateurs':                      '#1a5e5e',
+  'Developpement local et interet general':          '#5e4a1a',
+};
+
+// ── Paramètres URL ─────────────────────────────────────────────────────────────
+const urlParams  = new URLSearchParams(window.location.search);
+const URL_DATE   = urlParams.get('date')  || null;
+const URL_MODE   = urlParams.get('mode')  || null;  // 'edit' ou null
+const URL_EMBED  = urlParams.get('embed') === 'true';
+
+const EDIT_MODE  = URL_DATE !== null && URL_MODE === 'edit';
+const CR_MODE    = URL_DATE !== null && URL_MODE !== 'edit';
+const EMBED_MODE = URL_EMBED;
+
+// Chemins des fichiers JSON (absolus)
+const DATA_FILE    = URL_DATE
+  ? BASE + RESOURCE + '/historique/data-'    + URL_DATE + '.json'
+  : null; // sans date : on cherche le plus récent via /dir
+const CHANGES_FILE = URL_DATE
+  ? BASE + RESOURCE + '/historique/changes-' + URL_DATE + '.json'
+  : null;
+
+// ── État global ────────────────────────────────────────────────────────────────
+let DATA    = [];   // données de référence chargées depuis data-*.json
+let CHANGES = {};   // modifications { pa: { field: {avant, apres}, note } }
+let extraReferents = [];
+// serverAvailable est déclaré dans le bloc LOCAL-SERVER ci-dessous
+
+// --- LOCAL-SERVER-START --- [github-pages stub]
+var serverAvailable = false;
+async function ping() { return false; }
+async function saveChanges() {}
+function setIndicator() {}
+// Masquer l'indicateur serveur — sans objet sur GitHub Pages
+document.addEventListener('DOMContentLoaded', function() {
+  var el = document.getElementById('server-indicator');
+  if (el) el.style.display = 'none';
+});
+// --- LOCAL-SERVER-END ---
+
+// ── Chargement des données ─────────────────────────────────────────────────────
+async function fetchJson(absPath) {
+  const r = await fetch(SERVER_URL + '/file?path=' + encodeURIComponent(absPath));
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + absPath);
+  return r.json();
+}
+
+async function fetchLatestDataFile() {
+  // Utilise /dir pour trouver le data-*.json le plus récent
+  const histDir = BASE + RESOURCE + '/historique';
+  const r = await fetch(SERVER_URL + '/dir?path=' + encodeURIComponent(histDir));
+  if (!r.ok) throw new Error('Impossible de lister le dossier historique');
+  const { entries } = await r.json();
+  const dates = (entries || [])
+    .map(e => { const m = e.name.match(/^data-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+    .filter(Boolean).sort().reverse();
+  if (!dates.length) throw new Error('Aucun fichier data-*.json trouve');
+  return BASE + RESOURCE + '/historique/data-' + dates[0] + '.json';
+}
+
+async function loadData() {
+  if (!serverAvailable) {
+    // Mode GitHub Pages : utiliser les données embarquées
+    if (DATA_EMBEDDED) {
+      DATA = DATA_EMBEDDED;
+      if (CHANGES_EMBEDDED) loadChangesFromArray(CHANGES_EMBEDDED);
+      afterLoad();
+      return;
+    }
+    showFatalError('Serveur non disponible — démarrez start-server.bat');
+    return;
+  }
+
+  try {
+    let dataFile = DATA_FILE;
+    if (!dataFile) {
+      dataFile = await fetchLatestDataFile();
+    }
+    const data = await fetchJson(dataFile);
+    if (!data) { showFatalError('Fichier data introuvable : ' + dataFile); return; }
+    DATA = data;
+
+    if (CHANGES_FILE) {
+      const changes = await fetchJson(CHANGES_FILE);
+      if (changes) loadChangesFromArray(changes);
+    }
+  } catch(e) {
+    setIndicator('err', 'Erreur chargement');
+    showFatalError('Erreur chargement : ' + e.message);
+    return;
+  }
+
+  afterLoad();
+}
+
+function loadChangesFromArray(arr) {
+  CHANGES = {};
+  for (const entry of arr) {
+    if (!entry.pa) continue;
+    const ch = {};
+    for (const field of ['engage', 'referent', 'avancement', 'risque']) {
+      if (entry[field] !== undefined) {
+        const v = entry[field];
+        if (v !== null && typeof v === 'object' && v.apres !== undefined) ch[field] = v;
+        else {
+          const orig = (DATA.find(r => r.pa === entry.pa) || {})[field];
+          ch[field] = { avant: orig, apres: v };
+        }
+      }
+    }
+    if (entry.note) ch.note = entry.note;
+    if (Object.keys(ch).length > 0) CHANGES[entry.pa] = ch;
+  }
+}
+
+function showFatalError(msg) {
+  document.getElementById('table-body').innerHTML =
+    '<tr><td colspan="8" class="empty-state">' + msg + '</td></tr>';
+}
+
+// ── Activation UI selon le mode ────────────────────────────────────────────────
+function activateUI() {
+  if (EMBED_MODE) { document.body.classList.add('embed-mode'); return; }
+
+  if (URL_DATE) {
+    const d = new Date(URL_DATE + 'T00:00:00');
+    const lbl = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    const badge = document.getElementById('reunion-badge');
+    badge.textContent = 'Session du ' + lbl.charAt(0).toUpperCase() + lbl.slice(1);
+    badge.style.display = '';
+  }
+
+  if (EDIT_MODE) {
+    document.getElementById('edit-indicator').style.display = '';
+    document.getElementById('col-edit').style.display = '';
+    document.getElementById('btn-filter-modified').style.display = '';
+  }
+
+  if (CR_MODE) {
+    document.getElementById('cr-indicator').style.display = '';
+    document.getElementById('change-summary').classList.add('visible');
+  }
+}
+
+// ── Après chargement des données ───────────────────────────────────────────────
+function afterLoad() {
+  const engages  = DATA.filter(r => r.engage).length;
+  const domaines = new Set(DATA.map(r => r.domaine)).size;
+  document.getElementById('stat-total').textContent    = DATA.length;
+  document.getElementById('stat-engages').textContent  = engages;
+  document.getElementById('stat-domaines').textContent = domaines;
+  document.getElementById('footer-info').textContent   =
+    DATA.length + ' engagements · ' + domaines + ' domaines · AfrSCM Comite RSE'
+    + (URL_DATE ? ' · ' + URL_DATE : '');
+
+  buildDynamicFilters();
+  restoreFilters();
+  updatePatchUI();
+  updateChangeSummary();
+  renderCurrent();
+}
+
+// ── Utilitaires ────────────────────────────────────────────────────────────────
+function domainColor(d) { return DOMAIN_COLORS[d] || '#555'; }
+
+function toList(str) {
+  if (!str) return '';
+  const items = str.split(' | ').filter(Boolean);
+  if (items.length > 1) return '<ul style="padding-left:1rem;margin:0;">' + items.map(i => '<li>' + i + '</li>').join('') + '</ul>';
+  return str;
+}
+
+function effectiveRow(row) {
+  if (!CHANGES[row.pa]) return row;
+  const c = CHANGES[row.pa];
+  return { ...row,
+    engage:     c.engage     !== undefined ? c.engage.apres     : row.engage,
+    referent:   c.referent   !== undefined ? c.referent.apres   : row.referent,
+    avancement: c.avancement !== undefined ? c.avancement.apres : row.avancement,
+    risque:     c.risque     !== undefined ? c.risque.apres     : row.risque,
+  };
+}
+
+function isModified(pa) { return !!(CHANGES[pa] && Object.keys(CHANGES[pa]).length > 0); }
+
+function allReferents() {
+  const fromData    = DATA.map(r => r.referent).filter(Boolean);
+  const fromChanges = Object.values(CHANGES).map(c => c.referent && c.referent.apres).filter(Boolean);
+  return [...new Set([...fromData, ...fromChanges, ...extraReferents])].sort();
+}
+
+function fieldLabel(f) { return { engage:'Statut', referent:'Referent', avancement:'Avancement', risque:'Risque' }[f] || f; }
+function fieldDisplay(f, v) {
+  if (f === 'engage')     return v ? 'Engage' : 'Non engage';
+  if (f === 'avancement') return Math.round((v || 0) * 100) + '%';
+  return v || '—';
+}
+
+// ── Modifications ──────────────────────────────────────────────────────────────
+function recordChange(pa, field, avant, apres) {
+  if (!CHANGES[pa]) CHANGES[pa] = {};
+  const original = DATA.find(r => r.pa === pa)[field];
+  if (apres === original || String(apres) === String(original)) {
+    delete CHANGES[pa][field];
+    if (Object.keys(CHANGES[pa]).length === 0) delete CHANGES[pa];
+  } else {
+    CHANGES[pa][field] = { avant, apres };
+  }
+  saveChanges(); updatePatchUI(); updateChangeSummary();
+}
+
+function saveNote(pa, note) {
+  if (!CHANGES[pa]) CHANGES[pa] = {};
+  if (note.trim()) CHANGES[pa].note = note.trim();
+  else delete CHANGES[pa].note;
+  if (Object.keys(CHANGES[pa]).length === 0) delete CHANGES[pa];
+  saveChanges(); updatePatchUI(); updateChangeSummary();
+}
+
+window.clearChanges = function() {
+  if (!confirm('Effacer toutes les modifications en cours ?')) return;
+  CHANGES = {}; extraReferents = [];
+  if (serverAvailable && CHANGES_FILE) {
+    // Écrire un tableau vide plutôt que supprimer — conserve la révision ouverte
+    fetch(SERVER_URL + '/file?path=' + encodeURIComponent(CHANGES_FILE), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '[]'
+    }).catch(() => {});
+  }
+  updatePatchUI(); updateChangeSummary(); closeEditPanel(); renderCurrent();
+};
+
+// ── Patch UI ───────────────────────────────────────────────────────────────────
+function updatePatchUI() {
+  if (!EDIT_MODE) return;
+  const nb = Object.keys(CHANGES).length;
+  const btnMod = document.getElementById('btn-filter-modified');
+  if (btnMod) btnMod.style.display = nb > 0 ? '' : 'none';
+}
+
+// ── Change summary ─────────────────────────────────────────────────────────────
+function updateChangeSummary() {
+  const el = document.getElementById('change-summary-inner');
+  if (!el) return;
+  const nb = Object.keys(CHANGES).length;
+  if (nb === 0) {
+    el.innerHTML = '<h3>Modifications de la session</h3><p style="font-size:0.82rem;color:var(--muted);font-style:italic;">Aucune modification enregistree.</p>';
+    if (!CR_MODE && !EMBED_MODE) document.getElementById('change-summary').classList.remove('visible');
+    return;
+  }
+  if (EDIT_MODE) document.getElementById('change-summary').classList.add('visible');
+
+  const filteredPas = new Set(getFiltered().map(r => r.pa));
+  const visibleChanges = Object.entries(CHANGES).filter(([pa]) => filteredPas.has(pa));
+
+  const grouped = {};
+  for (const row of DATA) {
+    if (!visibleChanges.find(([pa]) => pa === row.pa)) continue;
+    if (!grouped[row.domaine]) grouped[row.domaine] = [];
+    grouped[row.domaine].push(row);
+  }
+
+  const date = URL_DATE ? ' — ' + URL_DATE : '';
+  const suffix = visibleChanges.length < nb
+    ? ' <span style="font-size:0.72rem;color:var(--muted);font-weight:400;">(' + visibleChanges.length + '/' + nb + ' selon filtre)</span>'
+    : '';
+
+  let html = '<h3 id="cs-heading"><span>Modifications' + date + suffix + '</span>'
+    + '<span class="cs-toggle" id="cs-toggle-btn">▲ Reduire</span></h3>'
+    + '<div class="cs-body" id="cs-body">';
+
+  for (const [domaine, rows] of Object.entries(grouped)) {
+    const color = domainColor(domaine);
+    html += '<div style="margin-bottom:1.1rem;">'
+      + '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;padding-bottom:0.3rem;border-bottom:2px solid ' + color + ';">'
+      + '<div style="width:10px;height:10px;border-radius:50%;background:' + color + ';flex-shrink:0;"></div>'
+      + '<span style="font-family:\'DM Serif Display\',serif;font-size:0.88rem;color:' + color + ';">' + domaine + '</span>'
+      + '</div>';
+    for (const row of rows) {
+      const ch = CHANGES[row.pa] || {};
+      html += '<div class="cs-pa-card" data-pa="' + row.pa + '" style="background:var(--modified);border:1px solid var(--modified-border);border-radius:6px;padding:0.6rem 0.8rem;margin-bottom:0.5rem;cursor:pointer;transition:box-shadow 0.15s;">'
+        + '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.45rem;">'
+        + '<span class="pa-tag" style="background:' + color + '">' + row.pa + '</span>'
+        + '<span style="font-size:0.75rem;color:var(--muted);line-height:1.4;flex:1;">' + row.objectif + '</span>'
+        + '</div>';
+      const fields = ['engage','referent','avancement','risque'].filter(f => ch[f] !== undefined);
+      if (fields.length) {
+        html += '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:' + (ch.note ? '0.45rem' : '0') + ';">';
+        for (const field of fields) {
+          html += '<div style="background:white;border:1px solid var(--modified-border);border-radius:4px;padding:0.2rem 0.5rem;font-size:0.72rem;">'
+            + '<span style="text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);font-size:0.63rem;">' + fieldLabel(field) + '</span>'
+            + '<div style="display:flex;align-items:center;gap:0.3rem;margin-top:0.1rem;">'
+            + '<span style="color:var(--muted);text-decoration:line-through;">' + fieldDisplay(field, ch[field].avant) + '</span>'
+            + '<span style="color:var(--muted);">→</span>'
+            + '<span style="color:var(--accent);font-weight:600;">' + fieldDisplay(field, ch[field].apres) + '</span>'
+            + '</div></div>';
+        }
+        html += '</div>';
+      }
+      if (ch.note) {
+        html += '<div style="border-top:1px solid var(--modified-border);padding-top:0.4rem;font-size:0.75rem;color:var(--muted);font-style:italic;line-height:1.5;">'
+          + '<span style="text-transform:uppercase;letter-spacing:0.05em;font-size:0.62rem;font-style:normal;">Note</span><br>' + ch.note + '</div>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+
+  let _csCollapsed = false;
+  const heading  = el.querySelector('#cs-heading');
+  const body     = el.querySelector('#cs-body');
+  const toggleBtn = el.querySelector('#cs-toggle-btn');
+  if (body) body.style.maxHeight = body.scrollHeight + 'px';
+  if (heading) heading.addEventListener('click', () => {
+    _csCollapsed = !_csCollapsed;
+    if (_csCollapsed) { body.style.maxHeight = '0'; body.classList.add('collapsed'); toggleBtn.textContent = '▼ Developper'; }
+    else { body.classList.remove('collapsed'); body.style.maxHeight = body.scrollHeight + 'px'; toggleBtn.textContent = '▲ Reduire'; }
+  });
+  el.querySelectorAll('.cs-pa-card[data-pa]').forEach(card => {
+    card.addEventListener('mouseenter', () => card.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)');
+    card.addEventListener('mouseleave', () => card.style.boxShadow = '');
+    card.addEventListener('click', (e) => { e.stopPropagation(); selectPaFromSummary(card.dataset.pa); });
+  });
+}
+
+function selectPaFromSummary(pa) {
+  const row = DATA.find(r => r.pa === pa);
+  if (!row) return;
+  filters.domaine = row.domaine;
+  const sel = document.getElementById('select-domaine');
+  if (sel) sel.value = row.domaine;
+  persistFilters();
+  selectedPa = pa;
+  renderCurrent();
+  const tr = document.querySelector('#table-body tr[data-pa="' + pa + '"]');
+  if (tr) { tr.classList.add('selected'); tr.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  showDetail(effectiveRow(row));
+}
+
+// ── Filtres ────────────────────────────────────────────────────────────────────
+let currentView = 'table', selectedPa = null, editPa = null;
+let filters = { statut: 'all', domaine: 'all', referent: 'all' };
+let sortCol = 'pa', sortDir = 1;
+
+function persistFilters() {
+  const url = new URL(window.location.href);
+  if (filters.domaine && filters.domaine !== 'all') url.searchParams.set('domaine', filters.domaine);
+  else url.searchParams.delete('domaine');
+  history.replaceState(null, '', url);
+}
+
+function restoreFilters() {
+  const d = urlParams.get('domaine');
+  if (d) { filters.domaine = d; const sel = document.getElementById('select-domaine'); if (sel) sel.value = d; }
+}
+
+function rebuildReferentFilters() {
+  const referents = allReferents();
+  const rg = document.getElementById('filter-referent-group');
+  rg.innerHTML = '<span class="group-label">Referent :</span>';
+  rg.appendChild(makeFilterBtn('Tous',           'referent', 'all',      filters.referent === 'all'));
+  rg.appendChild(makeFilterBtn('Avec referent',  'referent', '__some__', filters.referent === '__some__'));
+  rg.appendChild(makeFilterBtn('Sans referent',  'referent', '__none__', filters.referent === '__none__'));
+  referents.forEach(r => rg.appendChild(makeFilterBtn(r, 'referent', r, filters.referent === r)));
+  rg.style.display = '';
+}
+
+function buildDynamicFilters() {
+  const domaines = [...new Set(DATA.map(r => r.domaine))];
+  const sel = document.getElementById('select-domaine');
+  domaines.forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; sel.appendChild(o); });
+  sel.addEventListener('change', () => { filters.domaine = sel.value; persistFilters(); renderCurrent(); });
+  rebuildReferentFilters();
+  document.querySelectorAll('.filter-btn[data-type="statut"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn[data-type="statut"]').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active'); filters.statut = btn.dataset.val; renderCurrent();
+    });
+  });
+}
+
+function makeFilterBtn(label, type, val, active) {
+  const b = document.createElement('button');
+  b.className = 'filter-btn' + (active ? ' active' : '');
+  if (val === 'modified') b.classList.add('modified-btn');
+  b.dataset.type = type; b.dataset.val = val; b.textContent = label;
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn[data-type="' + type + '"]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); filters[type] = val; renderCurrent();
+  });
+  return b;
+}
+
+function getFiltered() {
+  return DATA.filter(r => {
+    const eff = effectiveRow(r);
+    if (filters.statut === 'engage'     && !eff.engage)       return false;
+    if (filters.statut === 'non-engage' &&  eff.engage)       return false;
+    if (filters.statut === 'priorite'   && !r.priorite)       return false;
+    if (filters.statut === 'modified'   && !isModified(r.pa)) return false;
+    if (filters.domaine !== 'all' && r.domaine !== filters.domaine) return false;
+    if (filters.referent === '__none__' && eff.referent)  return false;
+    if (filters.referent === '__some__' && !eff.referent) return false;
+    if (filters.referent !== 'all' && filters.referent !== '__none__' && filters.referent !== '__some__' && eff.referent !== filters.referent) return false;
+    return true;
+  });
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = 1; }
+  document.querySelectorAll('th[data-col]').forEach(th => th.classList.remove('sorted'));
+  const th = document.querySelector('th[data-col="' + col + '"]');
+  if (th) { th.classList.add('sorted'); th.querySelector('.sort-arrow').textContent = sortDir === 1 ? '\u2191' : '\u2193'; }
+  renderCurrent();
+}
+
+function getSorted(rows) {
+  return [...rows].sort((a, b) => {
+    const ea = effectiveRow(a), eb = effectiveRow(b);
+    let va = ea[sortCol] != null ? ea[sortCol] : '', vb = eb[sortCol] != null ? eb[sortCol] : '';
+    if (typeof va === 'number') return (va - vb) * sortDir;
+    return String(va).localeCompare(String(vb)) * sortDir;
+  });
+}
+
+// ── Rendu tableau ──────────────────────────────────────────────────────────────
+function renderTable() {
+  const rows  = getSorted(getFiltered());
+  const tbody = document.getElementById('table-body');
+  if (selectedPa && !rows.find(r => r.pa === selectedPa)) { selectedPa = null; hideDetail(); }
+  if (editPa    && !rows.find(r => r.pa === editPa))      { closeEditPanel(); }
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Aucun engagement trouve.</td></tr>'; hideDetail(); return; }
+
+  tbody.innerHTML = rows.map(r => {
+    const eff = effectiveRow(r), color = domainColor(r.domaine);
+    const pct = Math.round((eff.avancement || 0) * 100);
+    const mod = isModified(r.pa);
+    const engageBadge   = eff.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
+    const prioriteBadge = r.priorite ? ' <span class="badge-sm badge-priorite">P1</span>' : '';
+    const modBadge      = mod ? ' <span class="badge-sm badge-modified">modifie</span>' : '';
+    const referentCell  = eff.referent ? '<span class="badge-sm badge-referent">' + eff.referent + '</span>' : '<span style="color:var(--muted);font-size:0.7rem;">-</span>';
+    const editBtn       = EDIT_MODE ? '<td><button class="btn-edit-row" data-pa="' + r.pa + '" title="Modifier">&#9998;</button></td>' : '<td style="display:none"></td>';
+    return '<tr class="row-eng' + (selectedPa === r.pa ? ' selected' : '') + (mod ? ' row-modified' : '') + '" data-pa="' + r.pa + '">'
+      + '<td><span class="pa-tag" style="background:' + color + '">' + r.pa + '</span></td>'
+      + '<td><span class="dom-chip" style="background:' + color + ';max-width:120px;overflow:hidden;text-overflow:ellipsis;" title="' + r.domaine + '">' + r.domaine.split(' ').slice(0,2).join(' ') + '...</span></td>'
+      + '<td><div class="obj-text" title="' + r.objectif + '">' + r.objectif + '</div></td>'
+      + '<td>' + engageBadge + prioriteBadge + modBadge + '</td>'
+      + '<td>' + referentCell + '</td>'
+      + '<td><div class="mini-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:' + pct + '%"></div></div><span class="mini-pct">' + pct + '%</span></div></td>'
+      + '<td><span class="risk-badge risk-' + eff.risque + '">' + eff.risque + '</span></td>'
+      + editBtn + '</tr>';
+  }).join('');
+
+  tbody.querySelectorAll('tr.row-eng').forEach(tr => {
+    tr.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-edit-row')) return;
+      const pa = tr.dataset.pa;
+      if (selectedPa === pa) {
+        selectedPa = null;
+        tbody.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+        hideDetail(); filters.domaine = 'all';
+        const sel = document.getElementById('select-domaine'); if (sel) sel.value = 'all';
+        persistFilters(); renderCurrent(); return;
+      }
+      tbody.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+      tr.classList.add('selected'); selectedPa = pa;
+      const row = DATA.find(r => r.pa === pa);
+      filters.domaine = row.domaine;
+      const sel = document.getElementById('select-domaine'); if (sel) sel.value = row.domaine;
+      persistFilters(); showDetail(effectiveRow(row));
+      if (editPa && EDIT_MODE) { editPa = pa; openEditPanel(row); }
+      else if (editPa && CR_MODE) { editPa = pa; openCRPanel(row); }
+      renderCurrent();
+    });
+  });
+
+  tbody.querySelectorAll('.btn-edit-row').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pa = btn.dataset.pa;
+      tbody.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+      const tr = tbody.querySelector('tr[data-pa="' + pa + '"]');
+      if (tr) tr.classList.add('selected'); selectedPa = pa;
+      if (editPa === pa) { closeEditPanel(); return; }
+      editPa = pa; openEditPanel(DATA.find(r => r.pa === pa));
+    });
+  });
+
+  if (CR_MODE) {
+    tbody.querySelectorAll('tr.row-modified').forEach(tr => {
+      tr.addEventListener('click', () => {
+        const pa = tr.dataset.pa;
+        if (editPa === pa) { closeEditPanel(); return; }
+        editPa = pa; openCRPanel(DATA.find(r => r.pa === pa));
+      });
+    });
+  }
+}
+
+function showDetail(row) {
+  const color = domainColor(row.domaine), pct = Math.round((row.avancement || 0) * 100);
+  let badges = row.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
+  if (row.priorite) badges += ' <span class="badge-sm badge-priorite">Priorite 1</span>';
+  if (row.referent) badges += ' <span class="badge-sm badge-referent">' + row.referent + '</span>';
+  const avancementBlock  = pct > 0 ? '<div class="detail-avancement"><div class="bar-label"><span>Avancement</span><span>' + pct + '%</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' : '';
+  const indicateurBlock  = row.indicateur ? '<div class="info-block full"><label>Indicateur</label><p>' + toList(row.indicateur) + '</p>' + (row.cible ? '<div><span class="indicateur-val">Cible : ' + row.cible + '</span></div>' : '') + '</div>' : '';
+  const ctBlock = row.ct ? '<div class="info-block"><label>Livrables court terme</label><p>' + toList(row.ct) + '</p></div>' : '';
+  const ltBlock = row.lt ? '<div class="info-block"><label>Livrables long terme</label><p>' + toList(row.lt) + '</p></div>' : '';
+  document.getElementById('detail-card-inner').innerHTML =
+    '<div class="detail-card-header"><span class="pa-tag" style="background:' + color + ';flex-shrink:0">' + row.pa + '</span><div class="detail-objectif">' + row.objectif + '</div></div>'
+    + '<div class="detail-badges-row">' + badges + '</div>'
+    + avancementBlock
+    + '<div class="detail-body">' + indicateurBlock + ctBlock + ltBlock
+    + '<div class="info-block"><label>Risque</label><span class="risk-badge risk-' + row.risque + '">' + row.risque + '</span></div>'
+    + '<div class="info-block"><label>Domaine</label><span class="dom-chip" style="background:' + color + '">' + row.domaine + '</span></div>'
+    + '</div>'
+    + '<div class="detail-close-row"><button class="btn-close-detail" onclick="closeDetail()">Fermer</button></div>';
+  const panel = document.getElementById('detail-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideDetail() { document.getElementById('detail-panel').style.display = 'none'; }
+window.closeDetail = function() {
+  selectedPa = null; hideDetail();
+  document.querySelectorAll('tr.row-eng').forEach(x => x.classList.remove('selected'));
+};
+
+// ── Panneau édition ────────────────────────────────────────────────────────────
+function buildRefSelect(pa, currentVal) {
+  const refs = allReferents();
+  let options = '<option value=""' + (currentVal === '' ? ' selected' : '') + '>- non assigne -</option>';
+  refs.forEach(r => { options += '<option value="' + r + '"' + (currentVal === r ? ' selected' : '') + '>' + r + '</option>'; });
+  options += '<option value="__new__">+ Nouveau referent...</option>';
+  return '<select class="edit-select" id="edit-referent" onchange="handleReferentChange(\'' + pa + '\', this.value)">' + options + '</select>'
+    + '<div class="new-ref-wrap" id="new-ref-wrap" style="display:none">'
+    + '<input class="new-ref-input" id="new-ref-input" type="text" placeholder="Prenom Nom" autocomplete="off" data-pa="' + pa + '">'
+    + '<button class="btn-new-ref-ok" onclick="confirmNewReferent(\'' + pa + '\')">OK</button>'
+    + '<button class="btn-new-ref-cancel" onclick="cancelNewReferent()">X</button>'
+    + '</div>';
+}
+
+function openEditPanel(row) {
+  const eff = effectiveRow(row), color = domainColor(row.domaine);
+  const ch = CHANGES[row.pa] || {};
+  const currentNote   = ch.note || '';
+  const currentAvPct  = Math.round((eff.avancement || 0) * 100);
+  function mCls(f) { return ch[f] !== undefined ? ' field-modified' : ''; }
+  document.getElementById('edit-panel').innerHTML =
+    '<div class="edit-panel-header"><span class="pa-tag" style="background:' + color + '">' + row.pa + '</span>'
+    + '<div class="ep-title">' + row.objectif + '</div>'
+    + '<button class="btn-close-edit" onclick="closeEditPanel()">X</button></div>'
+    + '<div class="edit-panel-body">'
+    + '<div class="edit-field' + mCls('engage') + '"><label>Statut engagement</label><div class="toggle-engage">'
+    + '<button class="toggle-btn ' + (eff.engage ? 'on' : 'off') + '" id="tog-engage-on" onclick="toggleEngage(\'' + row.pa + '\', 1)">Engage</button>'
+    + '<button class="toggle-btn ' + (!eff.engage ? 'on' : 'off') + '" id="tog-engage-off" onclick="toggleEngage(\'' + row.pa + '\', 0)">Non engage</button>'
+    + '</div></div>'
+    + '<div class="edit-field' + mCls('referent') + '"><label>Referent</label>' + buildRefSelect(row.pa, eff.referent) + '</div>'
+    + '<div class="edit-field' + mCls('avancement') + '"><label>Avancement</label><div class="slider-wrap">'
+    + '<input type="range" min="0" max="100" step="5" value="' + currentAvPct + '" id="edit-avancement"'
+    + ' oninput="document.getElementById(\'edit-av-val\').textContent=this.value+\'%\'"'
+    + ' onchange="changeAvancement(\'' + row.pa + '\', this.value)">'
+    + '<span class="slider-val" id="edit-av-val">' + currentAvPct + '%</span></div></div>'
+    + '<div class="edit-field' + mCls('risque') + '"><label>Niveau de risque</label>'
+    + '<select class="edit-select" onchange="changeRisque(\'' + row.pa + '\', this.value)">'
+    + '<option value="Faible"' + (eff.risque === 'Faible' ? ' selected' : '') + '>Faible</option>'
+    + '<option value="Moyen"'  + (eff.risque === 'Moyen'  ? ' selected' : '') + '>Moyen</option>'
+    + '<option value="Eleve"'  + (eff.risque === 'Eleve'  ? ' selected' : '') + '>Eleve</option>'
+    + '</select></div>'
+    + '<div class="edit-field' + (currentNote ? ' field-modified' : '') + '"><label>Note de seance</label>'
+    + '<textarea class="edit-note" placeholder="Decisions, commentaires..." onchange="changeNote(\'' + row.pa + '\', this.value)">' + currentNote + '</textarea>'
+    + '</div></div>'
+    + '<div class="edit-panel-footer"><button class="btn-cancel-edit" onclick="closeEditPanel()">Fermer</button></div>';
+  document.getElementById('edit-col').style.display = '';
+  showDetail(eff);
+}
+
+function openCRPanel(row) {
+  const eff = effectiveRow(row), color = domainColor(row.domaine);
+  const ch = CHANGES[row.pa] || {};
+  function diffField(label, field) {
+    if (!ch[field]) return '';
+    return '<div class="edit-field diff-field"><div class="diff-label">' + label + '</div>'
+      + '<div><span class="diff-avant">' + fieldDisplay(field, ch[field].avant) + '</span> → <span class="diff-apres">' + fieldDisplay(field, ch[field].apres) + '</span></div></div>';
+  }
+  document.getElementById('edit-panel').innerHTML =
+    '<div class="edit-panel-header" style="background:var(--cr-border)">'
+    + '<span class="pa-tag" style="background:rgba(255,255,255,0.25)">' + row.pa + '</span>'
+    + '<div class="ep-title">' + row.objectif + '</div>'
+    + '<button class="btn-close-edit" onclick="closeEditPanel()">X</button></div>'
+    + '<div class="edit-panel-body">'
+    + diffField('Statut engagement', 'engage')
+    + diffField('Referent', 'referent')
+    + diffField('Avancement', 'avancement')
+    + diffField('Niveau de risque', 'risque')
+    + (ch.note ? '<div class="edit-field"><div class="diff-label">Note de seance</div><p style="font-size:0.78rem;color:var(--muted);font-style:italic;">' + ch.note + '</p></div>' : '')
+    + (!Object.keys(ch).length ? '<p style="font-size:0.82rem;color:var(--muted);">Aucune modification sur cet engagement.</p>' : '')
+    + '</div><div class="edit-panel-footer"><button class="btn-cancel-edit" onclick="closeEditPanel()">Fermer</button></div>';
+  document.getElementById('edit-col').style.display = '';
+  showDetail(eff);
+}
+
+function closeEditPanel() {
+  editPa = null;
+  document.getElementById('edit-col').style.display = 'none';
+  document.getElementById('edit-panel').innerHTML = '';
+}
+
+window.handleReferentChange = function(pa, val) {
+  if (val === '__new__') {
+    document.getElementById('new-ref-wrap').style.display = 'flex';
+    const inp = document.getElementById('new-ref-input');
+    inp.focus();
+    inp.onkeydown = (e) => { if (e.key === 'Enter') confirmNewReferent(inp.dataset.pa); };
+    return;
+  }
+  document.getElementById('new-ref-wrap').style.display = 'none';
+  recordChange(pa, 'referent', DATA.find(r => r.pa === pa).referent, val); renderCurrent();
+};
+window.confirmNewReferent = function(pa) {
+  const input = document.getElementById('new-ref-input'), nom = input.value.trim();
+  if (!nom) { input.focus(); return; }
+  if (!allReferents().includes(nom)) extraReferents.push(nom);
+  const sel = document.getElementById('edit-referent');
+  const newOpt = document.createElement('option'); newOpt.value = nom; newOpt.textContent = nom; newOpt.selected = true;
+  sel.insertBefore(newOpt, sel.querySelector('option[value="__new__"]'));
+  document.getElementById('new-ref-wrap').style.display = 'none';
+  recordChange(pa, 'referent', DATA.find(r => r.pa === pa).referent, nom);
+  rebuildReferentFilters(); renderCurrent();
+};
+window.cancelNewReferent = function() {
+  const sel = document.getElementById('edit-referent');
+  sel.value = sel.querySelector('option:not([value="__new__"])').value || '';
+  document.getElementById('new-ref-wrap').style.display = 'none';
+};
+window.toggleEngage = function(pa, val) {
+  recordChange(pa, 'engage', DATA.find(r => r.pa === pa).engage, val);
+  document.getElementById('tog-engage-on').className  = 'toggle-btn ' + ( val ? 'on' : 'off');
+  document.getElementById('tog-engage-off').className = 'toggle-btn ' + (!val ? 'on' : 'off');
+  renderCurrent();
+};
+window.changeAvancement = function(pa, val) {
+  recordChange(pa, 'avancement', DATA.find(r => r.pa === pa).avancement, parseInt(val) / 100); renderCurrent();
+};
+window.changeRisque = function(pa, val) {
+  recordChange(pa, 'risque', DATA.find(r => r.pa === pa).risque, val); renderCurrent();
+};
+window.changeNote = function(pa, val) { saveNote(pa, val); };
+
+// ── Vue cartes ─────────────────────────────────────────────────────────────────
+function renderCards() {
+  const rows = getFiltered(), container = document.getElementById('cards-content');
+  if (!rows.length) { container.innerHTML = '<div class="empty-state">Aucun engagement trouve.</div>'; return; }
+  const grouped = {};
+  rows.forEach(r => { if (!grouped[r.domaine]) grouped[r.domaine] = []; grouped[r.domaine].push(r); });
+  let html = '';
+  for (const [domain, items] of Object.entries(grouped)) {
+    const color = domainColor(domain);
+    html += '<div class="domain-section"><div class="domain-header"><div class="domain-badge" style="background:' + color + '"></div>'
+      + '<div class="domain-title">' + domain + '</div>'
+      + '<div class="domain-count">' + items.length + ' engagement' + (items.length > 1 ? 's' : '') + '</div></div>'
+      + '<div class="cards-grid">' + items.map(r => renderCard(effectiveRow(r), isModified(r.pa), r)).join('') + '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+function renderCard(row, modified, origRow) {
+  const color = domainColor(row.domaine), pct = Math.round((row.avancement || 0) * 100);
+  let badges = row.engage ? '<span class="badge-sm badge-engage">Engage</span>' : '<span class="badge-sm badge-non-engage">Non engage</span>';
+  if (row.priorite) badges += '<span class="badge-sm badge-priorite">Priorite 1</span>';
+  if (row.referent) badges += '<span class="badge-sm badge-referent">' + row.referent + '</span>';
+  if (modified)     badges += '<span class="badge-sm badge-modified">modifie</span>';
+  let diffBlock = '';
+  if (CR_MODE && modified && origRow) {
+    const ch = CHANGES[origRow.pa] || {};
+    const diffs = ['engage','referent','avancement','risque'].filter(f => ch[f])
+      .map(f => '<span style="font-size:0.72rem;">' + fieldLabel(f) + ': <span style="color:var(--muted);text-decoration:line-through">' + fieldDisplay(f, ch[f].avant) + '</span> → <span style="color:var(--accent);font-weight:600">' + fieldDisplay(f, ch[f].apres) + '</span></span>')
+      .join(' · ');
+    if (diffs) diffBlock = '<div style="padding:0.3rem 1rem 0.5rem;font-size:0.72rem;color:var(--muted);border-top:1px solid var(--border)">' + diffs + '</div>';
+  }
+  const avancementBar = pct > 0 ? '<div class="avancement-bar"><div class="bar-label"><span>Avancement</span><span>' + pct + '%</span></div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' : '';
+  return '<div class="card" style="' + (modified ? 'border:2px solid var(--modified-border);background:var(--modified);' : '') + '">'
+    + '<div class="card-header"><span class="pa-tag" style="background:' + color + '">' + row.pa + '</span><div class="card-objectif">' + row.objectif + '</div></div>'
+    + '<div class="badges-row">' + badges + '</div>'
+    + avancementBar + diffBlock
+    + '<div class="card-body">'
+    + (row.indicateur ? '<div class="info-block full"><label>Indicateur</label><p>' + toList(row.indicateur) + '</p>' + (row.cible ? '<div><span class="indicateur-val">Cible : ' + row.cible + '</span></div>' : '') + '</div>' : '')
+    + (row.ct ? '<div class="info-block"><label>Livrables CT</label><p>' + toList(row.ct) + '</p></div>' : '')
+    + (row.lt ? '<div class="info-block"><label>Livrables LT</label><p>' + toList(row.lt) + '</p></div>' : '')
+    + '<div class="info-block"><label>Risque</label><span class="risk-badge risk-' + row.risque + '">' + row.risque + '</span></div>'
+    + '</div></div>';
+}
+
+window.setView = function(v) {
+  currentView = v;
+  document.getElementById('view-table').style.display = v === 'table' ? '' : 'none';
+  document.getElementById('view-cards').style.display  = v === 'cards' ? '' : 'none';
+  document.getElementById('btn-view-table').classList.toggle('active', v === 'table');
+  document.getElementById('btn-view-cards').classList.toggle('active', v === 'cards');
+  renderCurrent();
+};
+
+function renderCurrent() {
+  if (currentView === 'table') renderTable(); else renderCards();
+  updateChangeSummary();
+}
+
+// ── Démarrage ──────────────────────────────────────────────────────────────────
+async function init() {
+  activateUI();
+  const ok = await ping();
+  if (!ok && !DATA_EMBEDDED) {
+    showFatalError('Serveur non disponible — démarrez start-server.bat');
+    return;
+  }
+  await loadData();
+}
+
+init();
+</script>
 </body>
 </html>

@@ -144,6 +144,152 @@
 
 <footer id="footer-info"></footer>
 
+<script>
+// ── Données embarquées (injectées par export-github-pages.js pour GitHub Pages) ──
+const REVISIONS_EMBEDDED = [
+  {
+    "date": "2026-05-27",
+    "encours": true
+  }
+];
 
+// ── Chemin absolu de base (AssistantIA/) depuis l'URL servie
+// http://localhost:3000/C:/Users/.../AssistantIA/ressources/engagements/historique/index.html
+//   -> BASE = "C:/Users/.../AssistantIA/"
+const BASE = window.location.pathname.replace(/^\//, '').replace(/ressources\/engagements\/historique\/[^/]*$/, '');
+
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+const BC_TITLE    = 'Revisions engagements';
+const BC_FALLBACK = '../../../index.html';
+function bcRender(){const raw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const el=document.getElementById('breadcrumb');if(!el)return;if(!raw){el.innerHTML='<a href="'+BC_FALLBACK+'">Tableau de bord</a> &rsaquo; <span>'+BC_TITLE+'</span>';return;}const crumbs=raw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};});const links=crumbs.map(c=>'<a href="'+_bcEsc(c.lien)+'">'+_bcEsc(c.nom)+'</a>');links.push('<span>'+_bcEsc(BC_TITLE)+'</span>');el.innerHTML=links.join(' &rsaquo; ');}
+function navTo(targetUrl){const bcRaw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const pathRaw=new URLSearchParams(window.location.search).get('path')||'';const crumbs=bcRaw?bcRaw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};}):[]; const pathCourant=pathRaw?pathRaw.split('/').filter(Boolean):[];const inverse=[];const segments=targetUrl.replace(/\?.*$/,'').split('/');segments.pop();for(const seg of segments){if(seg==='..'){inverse.unshift(pathCourant.pop()||'');}else if(seg){inverse.unshift('..');pathCourant.push(seg);}}const inv=inverse.filter(Boolean).join('/');const newCrumbs=crumbs.map(c=>({nom:c.nom,lien:inv?inv+'/'+c.lien:c.lien}));const myFile=window.location.pathname.split('/').pop();newCrumbs.push({nom:BC_TITLE,lien:inv?inv+'/'+myFile:myFile});const bcStr=newCrumbs.map(c=>encodeURIComponent(c.nom)+':'+encodeURIComponent(c.lien)).join('|');const pathStr=pathCourant.join('/');const sep=targetUrl.includes('?')?'&':'?';return targetUrl+sep+'breadcrumb='+bcStr+'&path='+pathStr;}
+function _bcEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+document.addEventListener('DOMContentLoaded', bcRender);
+// ── Fin breadcrumb ────────────────────────────────────────────────────────────
+
+// ── Configuration ──
+const SERVER_URL = 'http://localhost:3000';
+const RESOURCE   = 'ressources/engagements';
+const HIST_DIR   = BASE + RESOURCE + '/historique';
+
+// --- LOCAL-SERVER-START --- [github-pages stub]
+var serverAvailable = false;
+async function ping() { return false; }
+async function saveChanges() {}
+function setIndicator() {}
+// Masquer l'indicateur serveur — sans objet sur GitHub Pages
+document.addEventListener('DOMContentLoaded', function() {
+  var el = document.getElementById('server-indicator');
+  if (el) el.style.display = 'none';
+});
+// --- LOCAL-SERVER-END ---
+
+// ── Construction de la liste des révisions depuis historique/ ──
+// Une révision = un data-YYYY-MM-DD.json
+// En cours  : data-*.json le plus récent + changes-*.json de même date
+// Clôturée  : data-*.json sans changes-*.json de même date (ou pas le plus récent)
+async function loadRevisions() {
+  if (!serverAvailable) {
+    if (REVISIONS_EMBEDDED) { render(REVISIONS_EMBEDDED); return; }
+    document.getElementById('container').innerHTML =
+      '<div class="empty-state">Serveur non disponible — démarrez start-server.bat</div>';
+    return;
+  }
+
+  try {
+    // Lister tous les data-*.json
+    const rData = await fetch(SERVER_URL + '/dir?path=' + encodeURIComponent(HIST_DIR));
+    if (!rData.ok) throw new Error('Impossible de lister le dossier historique');
+    const { entries } = await rData.json();
+    const dataFiles = (entries || []).filter(e => /^data-\d{4}-\d{2}-\d{2}\.json$/.test(e.name));
+    if (!dataFiles.length) {
+      document.getElementById('container').innerHTML = '<div class="empty-state">Aucune révision enregistrée.</div>';
+      document.getElementById('footer-info').textContent = 'Aucune révision · AfrSCM Comité RSE';
+      return;
+    }
+
+    // Les dates des changes-*.json présents
+    const changesDates = new Set(
+      (entries || [])
+        .map(e => { const m = e.name.match(/^changes-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+        .filter(Boolean)
+    );
+
+    // Construire les révisions : trier les data par date décroissante
+    const sorted = dataFiles
+      .map(e => { const m = e.name.match(/^data-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+      .filter(Boolean)
+      .sort()
+      .reverse();
+
+    // Le plus récent avec un changes = en cours ; tous les autres = clôturés
+    const revisions = sorted.map((date, idx) => ({
+      date,
+      etat: idx === 0 && changesDates.has(date) ? 'encours' : (idx === 0 ? 'referentiel' : 'cloturee'),
+    }));
+
+    render(revisions);
+  } catch(e) {
+    setIndicator('err', 'Erreur');
+    document.getElementById('container').innerHTML =
+      '<div class="empty-state">Erreur de chargement : ' + e.message + '</div>';
+  }
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function render(revisions) {
+  if (!revisions.length) {
+    document.getElementById('container').innerHTML = '<div class="empty-state">Aucune révision enregistrée.</div>';
+    document.getElementById('footer-info').textContent = 'Aucune révision · AfrSCM Comité RSE';
+    return;
+  }
+
+  const items = revisions.map(rev => {
+    const stateCls = rev.etat === 'encours' ? 'en-cours' : rev.etat;
+    let badge;
+    if (rev.etat === 'encours')      badge = '<span class="badge badge-encours">En cours</span>';
+    else if (rev.etat === 'referentiel') badge = '<span class="badge badge-referentiel">Référentiel courant</span>';
+    else                             badge = '<span class="badge badge-cloturee">Clôturée</span>';
+
+    const links = [];
+    if (rev.etat === 'encours') {
+      links.push('<a class="rev-link link-edit" href="' + navTo('../index.html?date=' + rev.date + '&mode=edit') + '">Editer</a>');
+      links.push('<a class="rev-link link-cr" href="' + navTo('../index.html?date=' + rev.date) + '">Voir</a>');
+    } else if (rev.etat === 'referentiel') {
+      links.push('<a class="rev-link link-cr" href="' + navTo('../index.html?date=' + rev.date) + '">Voir</a>');
+    } else {
+      links.push('<a class="rev-link link-cr" href="' + navTo('../index.html?date=' + rev.date) + '">Voir CR</a>');
+    }
+
+    return '<li class="rev-item ' + stateCls + '">'
+      + '<div class="rev-date ' + stateCls + '">' + formatDate(rev.date) + '</div>'
+      + '<div class="rev-body">'
+      + '<div class="rev-links">' + links.join('') + '</div>'
+      + '</div>'
+      + badge
+      + '</li>';
+  }).join('');
+
+  document.getElementById('container').innerHTML = '<ul class="rev-list">' + items + '</ul>';
+
+  const nb = revisions.length;
+  const enCours = revisions.filter(r => r.etat === 'encours').length;
+  document.getElementById('footer-info').textContent =
+    nb + ' révision' + (nb > 1 ? 's' : '')
+    + (enCours ? ' · 1 en cours' : '')
+    + ' · Engagements Lucie ISO 26000 · AfrSCM Comité RSE';
+}
+
+async function init() {
+  await ping();
+  await loadRevisions();
+}
+
+init();
+</script>
 </body>
 </html>

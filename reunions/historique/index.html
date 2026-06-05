@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réunions — Comité RSE AfrSCM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+  :root {
+    --bg: #f5f3ee; --surface: #ffffff; --border: #d8d4cc; --border-strong: #a09890;
+    --text: #1a1815; --text-muted: #7a746c; --accent: #2d5a8e; --accent-light: #e8eff7;
+    --green: #2e7d52; --green-bg: #eaf4ee;
+    --orange: #b85c00; --orange-bg: #fdf0e0; --orange-border: #e8c090;
+    --blue: #1a5296; --blue-bg: #e8f0fb;
+    --red: #8b1a1a;
+    --amber: #c87a1a; --amber-light: #fff8e6; --amber-border: #e6b84a;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: var(--sans); color: var(--text); padding: 28px; max-width: 860px; margin: 0 auto; }
+
+  /* ── Indicateur serveur ── */
+  #server-indicator { position: fixed; top: 12px; right: 18px; z-index: 60; display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: .65rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 3px 8px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  #server-indicator .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  #server-indicator.ok  .dot { background: var(--green); }
+  #server-indicator.off .dot { background: var(--amber); }
+  #server-indicator.err .dot { background: var(--red); }
+
+  /* ── Breadcrumb ── */
+  .breadcrumb { font-family: var(--mono); font-size: .7rem; color: var(--text-muted); margin-bottom: 16px; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { color: var(--text-muted); }
+
+  /* ── Header ── */
+  header { border-bottom: 2px solid var(--border-strong); padding-bottom: 14px; margin-bottom: 28px; }
+  header h1 { font-family: var(--mono); font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+  header .sub { font-size: .78rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── Liste des réunions ── */
+  .rev-list { list-style: none; }
+  .rev-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border-strong);
+    border-radius: 3px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color .15s, box-shadow .15s;
+    cursor: pointer;
+  }
+  .rev-item:hover { border-left-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+  .rev-item.preparation { border-left-color: var(--blue); }
+  .rev-item.en-cours    { border-left-color: var(--orange); }
+  .rev-item.terminee    { border-left-color: var(--green); }
+
+  .rev-date { font-family: var(--mono); font-size: .82rem; font-weight: 600; color: var(--accent); white-space: nowrap; min-width: 130px; }
+
+  .rev-body { flex: 1; min-width: 0; }
+  .rev-titre { font-size: .85rem; font-weight: 600; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rev-desc  { font-size: .72rem; color: var(--text-muted); }
+
+  .badge { display: inline-block; font-family: var(--mono); font-size: .65rem; font-weight: 600; padding: 2px 8px; border-radius: 2px; white-space: nowrap; }
+  .badge-preparation { background: var(--blue-bg);   color: var(--blue); }
+  .badge-en-cours    { background: var(--orange-bg); color: var(--orange); }
+  .badge-terminee    { background: var(--green-bg);  color: var(--green); }
+
+  .rev-links { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .rev-link { display: inline-block; font-family: var(--mono); font-size: .68rem; font-weight: 600; padding: 3px 9px; border-radius: 2px; text-decoration: none; border: 1.5px solid var(--border); color: var(--text-muted); transition: all .15s; white-space: nowrap; }
+  .rev-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .rev-link.link-cr      { border-color: var(--accent); color: var(--accent); }
+  .rev-link.link-cr:hover { background: var(--accent); color: white; }
+  .rev-link.link-edit    { border-color: var(--orange); color: var(--orange); }
+  .rev-link.link-edit:hover { background: var(--orange); color: white; }
+  .rev-link.link-prepare { border-color: var(--blue); color: var(--blue); }
+  .rev-link.link-prepare:hover { background: var(--blue); color: white; }
+
+  .empty-state  { text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: .85rem; font-style: italic; }
+  .loading-state { text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: .85rem; font-style: italic; }
+
+  footer { margin-top: 36px; padding-top: 12px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: .68rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div id="server-indicator" class="off">
+  <span class="dot"></span>
+  <span id="server-label">Serveur...</span>
+</div>
+
+<div id="breadcrumb" class="breadcrumb"></div>
+
+<header>
+  <h1>Réunions du Comité RSE</h1>
+  <div class="sub" id="header-sub">Chargement...</div>
+</header>
+
+<div id="container"><div class="loading-state">Chargement...</div></div>
+
+<footer id="footer-info"></footer>
+
+<script>
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+const BC_TITLE    = 'Reunions';
+const BC_FALLBACK = '../../index.html';
+function bcRender(){const raw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const el=document.getElementById('breadcrumb');if(!el)return;if(!raw){el.innerHTML='<a href="'+BC_FALLBACK+'">Tableau de bord</a> &rsaquo; <span>'+BC_TITLE+'</span>';return;}const crumbs=raw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};});const links=crumbs.map(c=>'<a href="'+escHtml(c.lien)+'">'+escHtml(c.nom)+'</a>');links.push('<span>'+escHtml(BC_TITLE)+'</span>');el.innerHTML=links.join(' &rsaquo; ');}
+function navTo(targetUrl){const bcRaw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const pathRaw=new URLSearchParams(window.location.search).get('path')||'';const crumbs=bcRaw?bcRaw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};}):[]; const pathCourant=pathRaw?pathRaw.split('/').filter(Boolean):[];const inverse=[];const segments=targetUrl.replace(/\?.*$/,'').split('/');segments.pop();for(const seg of segments){if(seg==='..'){inverse.unshift(pathCourant.pop()||'');}else if(seg){inverse.unshift('..');pathCourant.push(seg);}}const inv=inverse.filter(Boolean).join('/');const newCrumbs=crumbs.map(c=>({nom:c.nom,lien:inv?inv+'/'+c.lien:c.lien}));const myFile=window.location.pathname.split('/').pop();newCrumbs.push({nom:BC_TITLE,lien:inv?inv+'/'+myFile:myFile});const bcStr=newCrumbs.map(c=>encodeURIComponent(c.nom)+':'+encodeURIComponent(c.lien)).join('|');const pathStr=pathCourant.join('/');const sep=targetUrl.includes('?')?'&':'?';return targetUrl+sep+'breadcrumb='+bcStr+'&path='+pathStr;}
+document.addEventListener('DOMContentLoaded', bcRender);
+// ── Fin breadcrumb ────────────────────────────────────────────────────────────
+
+// ── Données embarquées (injectées par export-github-pages.js) ──
+const REVISIONS_EMBEDDED = [
+  {
+    "date": "2026-05-27",
+    "data": {
+      "date": "2026-05-27",
+      "titre": "Premiere reunion du Comite RSE",
+      "lieu": "Visio",
+      "start_min": 1110,
+      "duree_min": 60,
+      "participants": [
+        {
+          "nom": "Remi Lequette",
+          "role": "Responsable comite",
+          "email": "lequette@gmail.com",
+          "presence_prevue": "present",
+          "excuse_source": null
+        },
+        {
+          "nom": "Laetitia Balac-Ruscher",
+          "role": "Membre",
+          "email": "",
+          "presence_prevue": "present",
+          "excuse_source": null
+        },
+        {
+          "nom": "Francois Marmier",
+          "role": "Membre",
+          "email": "",
+          "presence_prevue": "present",
+          "excuse_source": null
+        },
+        {
+          "nom": "Claire Pannetier",
+          "role": "Membre",
+          "email": "",
+          "presence_prevue": "present",
+          "excuse_source": null
+        }
+      ],
+      "invites": [],
+      "odj": [
+        {
+          "id": "n1",
+          "num": 1,
+          "titre": "Accueil et tour de table",
+          "statut": "actif",
+          "statut_raison": null,
+          "duree_min": 5,
+          "resp": "Remi",
+          "items": [
+            "Presentation rapide de chaque membre (role, motivation)",
+            "Verifier Dropbox : acces et type d'utilisation de chaque membre",
+            "Completer les infos manquantes - Francois et Claire"
+          ],
+          "ressources": [
+            {
+              "label": "Membres",
+              "url": "referentiels/membres.html"
+            }
+          ]
+        },
+        {
+          "id": "n2",
+          "num": 2,
+          "titre": "Revue des roles et de la gouvernance",
+          "statut": "actif",
+          "statut_raison": null,
+          "duree_min": 5,
+          "resp": "Remi",
+          "items": [
+            "Validation des roles definis (responsable, secretaire, referents engagements)",
+            "Demander au Bureau la creation d'une adresse e-mail rse@afrscm.fr"
+          ],
+          "ressources": [
+            {
+              "label": "Membres",
+              "url": "referentiels/membres.html"
+            }
+          ]
+        },
+        {
+          "id": "n3",
+          "num": 3,
+          "titre": "Vote mission et charte",
+          "statut": "actif",
+          "statut_raison": null,
+          "duree_min": 5,
+          "resp": "Remi",
+          "items": [
+            "Lecture et discussion de la charte proposee",
+            "Vote formel - Amendements eventuels"
+          ],
+          "ressources": [
+            {
+              "label": "Charte RSE",
+              "url": "reunions/2026-05-27/supports/proposition-charte-comite-rse.html"
+            },
+            {
+              "label": "Mission RSE",
+              "url": "reunions/2026-05-27/supports/proposition-mission-comite-rse.html"
+            },
+            {
+              "label": "Chartes Admin",
+              "url": "reunions/2026-05-27/supports/proposition-chartes-admin-formateurs.html"
+            }
+          ]
+        },
+        {
+          "id": "n4",
+          "num": 4,
+          "titre": "Priorisation des engagements Lucie",
+          "statut": "actif",
+          "statut_raison": null,
+          "duree_min": 20,
+          "resp": "Remi",
+          "items": [
+            "Revue des engagements en attente",
+            "Designation des referents par engagement",
+            "Definir les KPIs de suivi des engagements"
+          ],
+          "ressources": [
+            {
+              "label": "Engagements",
+              "url": "ressources/engagements/index.html?date=2026-05-27&mode=edit"
+            }
+          ]
+        },
+        {
+          "id": "n5",
+          "num": 5,
+          "titre": "Cartographie des risques - methodologie",
+          "statut": "actif",
+          "statut_raison": null,
+          "duree_min": 20,
+          "resp": "Remi",
+          "items": [
+            "Presentation de la methodologie proposee",
+            "Partage de bonnes pratiques membres"
+          ],
+          "ressources": [
+            {
+              "label": "Methodo risques",
+              "url": "reunions/2026-05-27/supports/point5-cartographie-risques.html"
+            }
+          ]
+        },
+        {
+          "id": "n6",
+          "num": 6,
+          "titre": "Suivi des chantiers RSE (tableau de bord)",
+          "statut": "reporte",
+          "statut_raison": "Reporte faute de temps",
+          "duree_min": 0,
+          "resp": "Remi",
+          "items": [],
+          "ressources": [
+            {
+              "label": "Tableau de bord",
+              "url": "index.html"
+            },
+            {
+              "label": "Engagements",
+              "url": "ressources/engagements/index.html?date=2026-05-27"
+            }
+          ]
+        },
+        {
+          "id": "n7",
+          "num": 7,
+          "titre": "Preparation CA et prochaine reunion",
+          "statut": "actif",
+          "statut_raison": null,
+          "duree_min": 5,
+          "resp": "Remi",
+          "items": [
+            "Prochaine reunion CA : 15 juin",
+            "Chartes a soumettre au CA"
+          ],
+          "ressources": [
+            {
+              "label": "Charte RSE",
+              "url": "reunions/2026-05-27/supports/proposition-charte-comite-rse.html"
+            },
+            {
+              "label": "Mission RSE",
+              "url": "reunions/2026-05-27/supports/proposition-mission-comite-rse.html"
+            }
+          ]
+        },
+        {
+          "id": "n8",
+          "num": 8,
+          "titre": "Conclusion",
+          "statut": "actif",
+          "statut_raison": null,
+          "duree_min": 0,
+          "resp": "Remi",
+          "items": [],
+          "ressources": []
+        }
+      ]
+    },
+    "changes": {
+      "statut": "Terminee",
+      "presences": [
+        {
+          "nom": "Remi Lequette",
+          "presence_reelle": "present"
+        },
+        {
+          "nom": "Laetitia Balac-Ruscher",
+          "presence_reelle": "present"
+        },
+        {
+          "nom": "Francois Marmier",
+          "presence_reelle": "present"
+        },
+        {
+          "nom": "Claire Pannetier",
+          "presence_reelle": "present"
+        }
+      ],
+      "notes": {
+        "n1": "Claire et Francois se presentent\nLes membres ont bien acces a Dropbox et l'utilisent via l'interface WEB.\nRemi va ajouter un export du html du comite vers un site github accessible (les liens ne marcheraient pas dans Dropbox WEB)\n\nLes fiches membres ont ete examinees et les modifications sont a envoyer a Remi en Juin si possible (mail)",
+        "n2": "On discute d'une adresse mail RSE pour le comite.\nrse@afrscm.fr est trop general pour le moment, on opte pour comite-rse. Elle servira aussi en interne au comite. Le responsable Comite la gere.",
+        "n3": "Charte et missions du comite sont approuvees\nFrancois pourrait avoir le role de representant des formateurs, il faut le mettre en contact avec des formateurs choisis de l'AfrSCM, consultants et universites.\nL'addendum a la charte administrateur AfrSCM pour inclure la RSE est approuve. Laetitia le porte au bureau et CA.",
+        "n4": "Discussion autour du nom RSE ou RSO, AfrSCM est une organisation, mais RSE parle plus.\n\nDes membres se portent referents (voir document mise a jour des engagements)\n\nLe referent et le responsable comite s'accordent pour detailler les etapes d'un engagement\n\nLes referents ne sont pas obligatoirement dans le comite.",
+        "n5": "Une premiere methode est presentee.\nLa decision est prise de couvrir l'ensemble des categories de risque (voir la note risques jointe)\n\nIl faut faire le lien avec la vision, la mission et les valeurs d'AfrSCM. Laetitia les partagera.\n\nIl faut identifier des participants pour le brainstorming, voir au CA lors de la presentation.\n\nFrancois suggere d'integrer ses recents travaux sur la perception des contradictions.",
+        "n7": "Pour le CA :\nFonctionnement du comite\nFaire voter les modifs de la charte administrateur-e\nPresenter les engagements selectionnes\nPresenter les decisions sur les risques",
+        "n8": "Remi a utilise un outillage pour les process du comite developpe avec l'IA. Les membres sont interesses par une demo."
+      },
+      "decisions": [
+        {
+          "id": "d10",
+          "point_id": "n3",
+          "texte": "Charte et missions Comite RSE approuves"
+        },
+        {
+          "id": "d11",
+          "point_id": "n5",
+          "texte": "Couvrir la globalite des risques"
+        },
+        {
+          "id": "d12",
+          "point_id": "n5",
+          "texte": "Associer le bureau et le CA a la recherche de partenaires brainstorming"
+        },
+        {
+          "id": "d13",
+          "point_id": "n4",
+          "texte": "On adopte la denomination RSE (pas RSO)"
+        }
+      ],
+      "actions": [
+        {
+          "id": "a1",
+          "point_id": "n8",
+          "resp": "Remi",
+          "description": "Rediger et diffuser le CR de la reunion",
+          "echeance": "2026-05-28"
+        },
+        {
+          "id": "a11",
+          "point_id": "n1",
+          "resp": "Claire",
+          "description": "Completer fiche membre",
+          "echeance": "2026-07-31"
+        },
+        {
+          "id": "a12",
+          "point_id": "n1",
+          "resp": "Laetitia",
+          "description": "Completer fiche membre",
+          "echeance": "2026-07-31"
+        },
+        {
+          "id": "a13",
+          "point_id": "n2",
+          "resp": "Laetitia",
+          "description": "Porter au bureau la demande d'adresse mail",
+          "echeance": null
+        },
+        {
+          "id": "a14",
+          "point_id": "n3",
+          "resp": "Remi",
+          "description": "Faire signer la charte aux membres",
+          "echeance": "2026-06-30"
+        },
+        {
+          "id": "a15",
+          "point_id": "n3",
+          "resp": "Laetitia",
+          "description": "Explorer mise en contact Francois - formateurs",
+          "echeance": null
+        },
+        {
+          "id": "a17",
+          "point_id": "n5",
+          "resp": "Laetitia",
+          "description": "Partager Vision, Mission, Valeurs AfrSCM",
+          "echeance": null
+        },
+        {
+          "id": "a18",
+          "point_id": "n8",
+          "resp": "Remi",
+          "description": "Organiser une demo de l'outillage via IA",
+          "echeance": null
+        }
+      ]
+    }
+  }
+];
+
+// ── Config ──
+const SERVER_URL = 'http://localhost:3000';
+const BASE = window.location.pathname.replace(/^\//, '').replace(/reunions\/historique\/[^/]*$/, '');
+const HIST_DIR   = BASE + 'reunions/historique';
+
+// --- LOCAL-SERVER-START --- [github-pages stub]
+var serverAvailable = false;
+async function ping() { return false; }
+async function saveChanges() {}
+function setIndicator() {}
+// Masquer l'indicateur serveur — sans objet sur GitHub Pages
+document.addEventListener('DOMContentLoaded', function() {
+  var el = document.getElementById('server-indicator');
+  if (el) el.style.display = 'none';
+});
+// --- LOCAL-SERVER-END ---
+
+function fmtDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function fmtDateShort(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Chargement ──
+async function loadRevisions() {
+  if (!serverAvailable) {
+    if (REVISIONS_EMBEDDED) { render(REVISIONS_EMBEDDED); return; }
+    document.getElementById('container').innerHTML =
+      '<div class="empty-state">Serveur non disponible — démarrez start-server.bat</div>';
+    return;
+  }
+
+  try {
+    const r = await fetch(SERVER_URL + '/dir?path=' + encodeURIComponent(HIST_DIR));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const { entries } = await r.json();
+    if (!entries) throw new Error('Réponse invalide');
+
+    const dates = (entries || [])
+      .map(e => { const m = e.name.match(/^data-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+      .filter(Boolean).sort().reverse();
+
+    if (!dates.length) {
+      document.getElementById('container').innerHTML = '<div class="empty-state">Aucune réunion enregistrée.</div>';
+      document.getElementById('header-sub').textContent = 'Aucune réunion';
+      return;
+    }
+
+    const changesDates = new Set(
+      (entries || [])
+        .map(e => { const m = e.name.match(/^changes-(\d{4}-\d{2}-\d{2})\.json$/); return m ? m[1] : null; })
+        .filter(Boolean)
+    );
+
+    // Charger les data pour avoir titre et statut
+    const revisions = await Promise.all(dates.map(async date => {
+      try {
+        const dataRes = await fetch(SERVER_URL + '/file?path=' + encodeURIComponent(HIST_DIR + '/data-' + date + '.json'));
+        const data = dataRes.ok ? await dataRes.json() : null;
+        let etat = 'preparation';
+        if (changesDates.has(date)) {
+          const changesRes = await fetch(SERVER_URL + '/file?path=' + encodeURIComponent(HIST_DIR + '/changes-' + date + '.json'));
+          if (changesRes.ok) {
+            const changes = await changesRes.json();
+            etat = changes.statut === 'Terminée' ? 'terminee' : 'en-cours';
+          }
+        }
+        return { date, data, etat };
+      } catch(e) { return { date, data: null, etat: 'preparation' }; }
+    }));
+
+    render(revisions);
+  } catch(e) {
+    setIndicator('err', 'Erreur');
+    document.getElementById('container').innerHTML =
+      '<div class="empty-state">Erreur de chargement : ' + escHtml(e.message) + '</div>';
+  }
+}
+
+function calcEtat(rev) {
+  if (rev.etat) return rev.etat;  // chemin serveur : deja calcule
+  if (!rev.changes) return 'preparation';
+  const s = rev.changes.statut || '';
+  if (s === 'Terminee' || s === 'Terminée') return 'terminee';
+  if (s === 'En cours') return 'en-cours';
+  return 'preparation';
+}
+
+function render(revisions) {
+  if (!revisions.length) {
+    document.getElementById('container').innerHTML = '<div class="empty-state">Aucune réunion enregistrée.</div>';
+    document.getElementById('header-sub').textContent = 'Aucune réunion';
+    return;
+  }
+
+  const items = revisions.map(rev => {
+    const etat  = calcEtat(rev);
+    const titre = rev.data ? (rev.data.titre || ('Réunion du ' + fmtDateShort(rev.date))) : ('Réunion du ' + fmtDateShort(rev.date));
+    const lieu  = rev.data ? (rev.data.lieu || '') : '';
+    const h     = rev.data ? (() => { const m = rev.data.start_min || 0; return Math.floor(m/60) + 'h' + String(m%60).padStart(2,'0'); })() : '';
+    const desc  = [h, lieu].filter(Boolean).join(' · ');
+
+    let badge, badgeCls;
+    if (etat === 'terminee')    { badge = 'Terminée';    badgeCls = 'badge-terminee'; }
+    else if (etat === 'en-cours') { badge = 'En cours';    badgeCls = 'badge-en-cours'; }
+    else                            { badge = 'Préparation'; badgeCls = 'badge-preparation'; }
+
+    const fiche = navTo('../index.html?date=' + rev.date);
+    const links = [];
+    if (etat === 'terminee') {
+      links.push('<a class="rev-link link-cr" href="' + escHtml(fiche) + '">CR</a>');
+    } else if (etat === 'en-cours') {
+      links.push('<a class="rev-link link-edit" href="' + escHtml(navTo('../index.html?date=' + rev.date + '&mode=edit')) + '">Éditer</a>');
+      links.push('<a class="rev-link" href="' + escHtml(fiche) + '">Voir</a>');
+    } else {
+      links.push('<a class="rev-link link-prepare" href="' + escHtml(navTo('../index.html?date=' + rev.date + '&mode=prepare')) + '">Préparer</a>');
+      links.push('<a class="rev-link" href="' + escHtml(fiche) + '">Voir</a>');
+    }
+
+    return '<li class="rev-item ' + etat + '" onclick="window.location.href=\'' + escHtml(fiche) + '\'">'
+      + '<span class="rev-date">' + escHtml(fmtDateShort(rev.date)) + '</span>'
+      + '<div class="rev-body">'
+      + '<div class="rev-titre">' + escHtml(titre) + '</div>'
+      + (desc ? '<div class="rev-desc">' + escHtml(desc) + '</div>' : '')
+      + '</div>'
+      + '<div class="rev-links">' + links.join('') + '</div>'
+      + '<span class="badge ' + badgeCls + '">' + badge + '</span>'
+      + '</li>';
+  }).join('');
+
+  document.getElementById('container').innerHTML = '<ul class="rev-list">' + items + '</ul>';
+
+  const nb = revisions.length;
+  const enCours   = revisions.filter(r => calcEtat(r) === 'en-cours').length;
+  const terminees = revisions.filter(r => calcEtat(r) === 'terminee').length;
+  document.getElementById('header-sub').textContent =
+    nb + ' réunion' + (nb > 1 ? 's' : '')
+    + (terminees ? ' · ' + terminees + ' terminée' + (terminees > 1 ? 's' : '') : '')
+    + (enCours   ? ' · ' + enCours + ' en cours' : '');
+  document.getElementById('footer-info').textContent =
+    'AfrSCM · Comité RSE · ' + nb + ' réunion' + (nb > 1 ? 's' : '');
+}
+
+async function init() {
+  await ping();
+  if (!serverAvailable && REVISIONS_EMBEDDED) {
+    render(REVISIONS_EMBEDDED);
+    return;
+  }
+  await loadRevisions();
+}
+
+init();
+</script>
+</body>
+</html>
