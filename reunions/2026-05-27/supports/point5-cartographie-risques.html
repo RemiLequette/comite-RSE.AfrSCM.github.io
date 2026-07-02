@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Point 5 — Cartographie des risques · Réunion 27 mai 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+
+  :root {
+    --bg: #f5f3ee; --surface: #ffffff; --border: #d8d4cc; --border-strong: #a09890;
+    --text: #1a1815; --text-muted: #7a746c; --accent: #2d5a8e; --accent-light: #e8eff7;
+    --green: #2e7d52; --green-bg: #eaf4ee; --green-border: #b0d9bf;
+    --orange: #b85c00; --orange-bg: #fdf0e0; --orange-border: #e8b870;
+    --red: #8b1a1a; --red-bg: #fdeaea; --red-border: #f0b8b8;
+    --blue: #1a5296; --blue-bg: #e8f0fb;
+    --amber: #c87a1a; --amber-light: #fff8e6; --amber-border: #e6b84a;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+    --radius: 4px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: var(--sans); color: var(--text); padding: 28px; max-width: 1100px; margin: 0 auto; }
+
+  .breadcrumb { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); margin-bottom: 20px; }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  /* ── HEADER ── */
+  header { border-bottom: 2px solid var(--border-strong); padding-bottom: 14px; margin-bottom: 28px; }
+  .header-tag { font-family: var(--mono); font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  header h1 { font-family: var(--mono); font-size: 1.25rem; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+  .header-meta { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
+  .duration-badge { display: inline-block; background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange-border); font-family: var(--mono); font-size: 0.68rem; font-weight: 600; padding: 2px 9px; border-radius: 2px; margin-left: 10px; vertical-align: middle; }
+
+  /* ── SECTIONS ── */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
+  .section-header { background: var(--text); color: #fff; font-family: var(--mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; display: flex; align-items: center; gap: 10px; }
+  .section-header .sh-num { background: rgba(255,255,255,0.15); padding: 1px 7px; border-radius: 2px; font-size: 0.65rem; }
+  .section-body { padding: 16px 18px; }
+
+  /* ── OBJECTIF SOIRÉE ── */
+  .objective-box { background: var(--accent-light); border: 1.5px solid var(--accent); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px; }
+  .objective-box .ob-label { font-family: var(--mono); font-size: 0.65rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .objective-steps { list-style: none; }
+  .objective-steps li { display: flex; gap: 10px; padding: 5px 0; font-size: 0.84rem; align-items: flex-start; border-bottom: 1px dashed var(--border); }
+  .objective-steps li:last-child { border-bottom: none; }
+  .objective-steps .step-num { font-family: var(--mono); font-size: 0.7rem; font-weight: 600; color: var(--accent); background: white; border: 1px solid var(--accent); border-radius: 2px; padding: 1px 6px; flex-shrink: 0; margin-top: 1px; }
+  .objective-steps .step-time { font-family: var(--mono); font-size: 0.65rem; color: var(--text-muted); flex-shrink: 0; align-self: center; margin-left: auto; }
+
+  /* ── PERIMETRE GRID ── */
+  .perimeter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 700px) { .perimeter-grid { grid-template-columns: 1fr 1fr; } }
+  .peri-card { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; transition: border-color 0.15s; }
+  .peri-card:hover { border-color: var(--border-strong); }
+  .peri-card .peri-code { font-family: var(--mono); font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+  .peri-card .peri-label { font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; }
+  .peri-card .peri-examples { font-size: 0.7rem; color: var(--text-muted); font-style: italic; line-height: 1.5; }
+  .peri-card.cat-e { border-color: var(--green-border); background: var(--green-bg); }
+  .peri-card.cat-e .peri-code { color: var(--green); }
+  .peri-card.cat-s { border-color: var(--blue-bg); background: var(--blue-bg); }
+  .peri-card.cat-s .peri-code { color: var(--blue); }
+  .peri-card.cat-g { border-color: var(--amber-border); background: var(--amber-light); }
+  .peri-card.cat-g .peri-code { color: var(--amber); }
+  .peri-card.cat-f { border-color: var(--red-border); background: var(--red-bg); }
+  .peri-card.cat-f .peri-code { color: var(--red); }
+  .peri-card.cat-o { border-color: var(--orange-border); background: var(--orange-bg); }
+  .peri-card.cat-o .peri-code { color: var(--orange); }
+  .peri-card.cat-x { border-color: #c8b0e0; background: #f5effc; }
+  .peri-card.cat-x .peri-code { color: #7b3fa0; }
+  .peri-rse-tag { font-family: var(--mono); font-size: 0.58rem; font-weight: 600; padding: 1px 5px; border-radius: 2px; vertical-align: middle; margin-left: 5px; }
+  .tag-rse { background: var(--accent); color: white; }
+  .tag-global { background: var(--border-strong); color: white; }
+
+  /* ── MÉTHODE PHASES ── */
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 700px) { .phases { grid-template-columns: 1fr; } }
+  .phase-card { border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .phase-header { padding: 9px 12px; display: flex; align-items: center; gap: 8px; }
+  .phase-header .ph-num { font-family: var(--mono); font-size: 0.75rem; font-weight: 600; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .phase-header .ph-title { font-size: 0.82rem; font-weight: 600; }
+  .phase-body { padding: 10px 12px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; border-top: 1px solid var(--border); }
+  .phase-body strong { color: var(--text); }
+  .phase-body .ph-livrable { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); font-size: 0.72rem; }
+  .phase-body .ph-livrable::before { content: "→ "; font-family: var(--mono); color: var(--accent); font-weight: 600; }
+  .phase-1 .phase-header { background: var(--blue-bg); }
+  .phase-1 .ph-num { background: var(--blue); color: white; }
+  .phase-1 .ph-title { color: var(--blue); }
+  .phase-2 .phase-header { background: var(--orange-bg); }
+  .phase-2 .ph-num { background: var(--orange); color: white; }
+  .phase-2 .ph-title { color: var(--orange); }
+  .phase-3 .phase-header { background: var(--green-bg); }
+  .phase-3 .ph-num { background: var(--green); color: white; }
+  .phase-3 .ph-title { color: var(--green); }
+
+  /* ── MATRICE ── */
+  .matrix-wrap { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+  .matrix-container { flex-shrink: 0; }
+  .matrix-title { font-family: var(--mono); font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; text-align: center; }
+  .matrix-grid { display: grid; grid-template-columns: 28px repeat(3, 70px); grid-template-rows: repeat(3, 70px) 28px; gap: 3px; }
+  .matrix-cell { display: flex; align-items: center; justify-content: center; border-radius: 3px; font-family: var(--mono); font-size: 0.65rem; font-weight: 600; }
+  .cell-label-y { writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted); text-align: center; letter-spacing: 0.05em; }
+  .cell-label-x { font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted); text-align: center; }
+  .cell-axis-title { grid-column: 1 / 5; font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted); text-align: center; padding-top: 2px; }
+  /* zones couleurs */
+  .z-green { background: #c8ecd7; color: var(--green); }
+  .z-orange { background: #fde8c0; color: var(--orange); }
+  .z-red { background: #fdd8d8; color: var(--red); }
+  .z-axis { background: transparent; }
+
+  .matrix-legend { flex: 1; min-width: 180px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 3px; margin-bottom: 6px; font-size: 0.78rem; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+  .legend-green { background: var(--green-bg); border: 1px solid var(--green-border); }
+  .legend-green .legend-dot { background: var(--green); }
+  .legend-orange { background: var(--orange-bg); border: 1px solid var(--orange-border); }
+  .legend-orange .legend-dot { background: var(--orange); }
+  .legend-red { background: var(--red-bg); border: 1px solid var(--red-border); }
+  .legend-red .legend-dot { background: var(--red); }
+  .legend-item .li-score { font-family: var(--mono); font-size: 0.7rem; font-weight: 600; margin-left: auto; }
+
+  /* ── TRAITEMENT ── */
+  .treatment-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .treatment-table th { font-family: var(--mono); font-size: 0.63rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 6px 10px; text-align: left; border-bottom: 1.5px solid var(--border-strong); background: var(--bg); }
+  .treatment-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.4; }
+  .treatment-table tr:last-child td { border-bottom: none; }
+  .strat-badge { display: inline-block; font-family: var(--mono); font-size: 0.65rem; font-weight: 600; padding: 2px 7px; border-radius: 2px; white-space: nowrap; }
+  .s-reduire { background: var(--blue-bg); color: var(--blue); }
+  .s-transferer { background: var(--green-bg); color: var(--green); }
+  .s-eviter { background: var(--red-bg); color: var(--red); }
+  .s-accepter { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* ── GARDE-FOUS ── */
+  .guardrails { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 600px) { .guardrails { grid-template-columns: 1fr; } }
+  .guardrail-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); font-size: 0.78rem; line-height: 1.5; }
+  .guardrail-item .gi-icon { font-size: 1rem; flex-shrink: 0; }
+  .guardrail-item strong { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+
+  /* ── DECISION VOTE ── */
+  .vote-box { background: var(--amber-light); border: 1.5px solid var(--amber-border); border-radius: var(--radius); padding: 14px 16px; }
+  .vote-box .vote-label { font-family: var(--mono); font-size: 0.65rem; font-weight: 600; color: var(--amber); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .vote-question { font-size: 0.88rem; font-weight: 600; margin-bottom: 12px; }
+  .vote-options { display: flex; gap: 10px; flex-wrap: wrap; }
+  .vote-opt { border: 2px solid var(--border-strong); border-radius: var(--radius); padding: 8px 16px; font-size: 0.78rem; background: white; cursor: pointer; transition: all 0.15s; font-family: var(--sans); }
+  .vote-opt:hover { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .vote-opt.selected { border-color: var(--accent); background: var(--accent); color: white; }
+  .vote-result { margin-top: 12px; font-family: var(--mono); font-size: 0.72rem; color: var(--amber); display: none; }
+  .vote-result.visible { display: block; }
+</style>
+</head>
+<body>
+
+<div id="breadcrumb" class="breadcrumb"></div>
+<script>
+const BC_TITLE='Point 5 — Cartographie risques';const BC_FALLBACK='../../../index.html';
+function bcRender(){const raw=new URLSearchParams(window.location.search).get('breadcrumb')||'';const el=document.getElementById('breadcrumb');if(!el)return;if(!raw){el.innerHTML='<a href="'+BC_FALLBACK+'">Tableau de bord</a> &rsaquo; <span>'+BC_TITLE+'</span>';return;}const crumbs=raw.split('|').map(p=>{const i=p.indexOf(':');return{nom:decodeURIComponent(p.slice(0,i)),lien:decodeURIComponent(p.slice(i+1))};});const links=crumbs.map(c=>'<a href="'+_bce(c.lien)+'">'+_bce(c.nom)+'</a>');links.push('<span>'+_bce(BC_TITLE)+'</span>');el.innerHTML=links.join(' &rsaquo; ');}
+function _bce(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+document.addEventListener('DOMContentLoaded',bcRender);
+</script>
+
+<header>
+  <div class="header-tag">Comité RSE · Réunion du 27 mai 2026</div>
+  <h1>Point 5 — Cartographie des risques <span class="duration-badge">20 min</span></h1>
+  <div class="header-meta">Présentation de la méthodologie proposée · Partage de bonnes pratiques</div>
+</header>
+
+<!-- ── OBJECTIF CE SOIR ── -->
+<div class="objective-box">
+  <div class="ob-label">🎯 Objectif de ce soir — 4 étapes</div>
+  <ul class="objective-steps">
+    <li>
+      <span class="step-num">1</span>
+      Présenter la méthode proposée (ce document)
+      <span class="step-time">3 min</span>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      Décider du périmètre : RSE seul ou cartographie globale ?
+      <span class="step-time">3 min</span>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      Premier brainstorming express — chacun cite 1 risque qui lui « fait peur »
+      <span class="step-time">10 min</span>
+    </li>
+    <li>
+      <span class="step-num">4</span>
+      Décider : cotation ce soir ou lors de la prochaine réunion ?
+      <span class="step-time">4 min</span>
+    </li>
+  </ul>
+</div>
+
+<!-- ── PÉRIMÈTRE ── -->
+<div class="section">
+  <div class="section-header">
+    <span class="sh-num">1</span>
+    Périmètre — Quels risques cartographier ?
+  </div>
+  <div class="section-body">
+    <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:14px; line-height:1.6;">
+      Deux options sont possibles. La recommandation est d'adopter d'emblée un <strong>périmètre global</strong> avec la grille ESG comme colonne vertébrale,
+      en y ajoutant les risques vitaux de l'association. Un seul registre est bien plus tenable pour des bénévoles que deux démarches parallèles,
+      et renforce la légitimité du comité RSE auprès du Bureau et du CA.
+    </p>
+    <div class="perimeter-grid">
+      <div class="peri-card cat-e">
+        <div class="peri-code">E <span class="peri-rse-tag tag-rse">RSE</span></div>
+        <div class="peri-label">Environnemental</div>
+        <div class="peri-examples">Empreinte carbone événements · déplacements membres · impact numérique · déchets</div>
+      </div>
+      <div class="peri-card cat-s">
+        <div class="peri-code">S <span class="peri-rse-tag tag-rse">RSE</span></div>
+        <div class="peri-label">Social / Sociétal</div>
+        <div class="peri-examples">Diversité & inclusion · accessibilité formations · conditions bénévoles/permanents · parties prenantes</div>
+      </div>
+      <div class="peri-card cat-g">
+        <div class="peri-code">G <span class="peri-rse-tag tag-rse">RSE</span></div>
+        <div class="peri-label">Gouvernance & Éthique</div>
+        <div class="peri-examples">Transparence · conflits d'intérêt sponsors · conformité réglementaire · RGPD adhérents</div>
+      </div>
+      <div class="peri-card cat-f">
+        <div class="peri-code">F <span class="peri-rse-tag tag-global">Global</span></div>
+        <div class="peri-label">Financier & Économique</div>
+        <div class="peri-examples">Perte sponsor majeur · baisse adhésions · dérapage budget congrès · trésorerie</div>
+      </div>
+      <div class="peri-card cat-o">
+        <div class="peri-code">O <span class="peri-rse-tag tag-global">Global</span></div>
+        <div class="peri-label">Opérationnel & Tech</div>
+        <div class="peri-examples">Cyberattaque · perte du délégué général · défaillance prestataire événement · panne CRM</div>
+      </div>
+      <div class="peri-card cat-x">
+        <div class="peri-code">X <span class="peri-rse-tag tag-global">Global</span></div>
+        <div class="peri-label">Stratégique</div>
+        <div class="peri-examples">Perte de représentativité · offre perçue obsolète · dérive de mission · concurrence LinkedIn</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MÉTHODE ── -->
+<div class="section">
+  <div class="section-header">
+    <span class="sh-num">2</span>
+    Méthode — 3 phases, simple et progressive
+  </div>
+  <div class="section-body">
+    <div class="phases">
+      <div class="phase-card phase-1">
+        <div class="phase-header">
+          <span class="ph-num">1</span>
+          <span class="ph-title">Brainstorming</span>
+        </div>
+        <div class="phase-body">
+          Tour de table par catégorie (E/S/G/F/O/X).<br>
+          <strong>Chacun amène 1–2 risques</strong> qu'il ressent pour l'association.<br>
+          Pas de filtre, pas de notation à ce stade.<br>
+          <div class="ph-livrable">Liste brute de 15–25 risques</div>
+        </div>
+      </div>
+      <div class="phase-card phase-2">
+        <div class="phase-header">
+          <span class="ph-num">2</span>
+          <span class="ph-title">Cotation</span>
+        </div>
+        <div class="phase-body">
+          Chaque risque noté :<br>
+          <strong>Probabilité (1–3) × Impact (1–3)</strong><br>
+          Échelle volontairement à 3 niveaux pour aller vite.<br>
+          Matrice visuelle → identification des top 5–8.
+          <div class="ph-livrable">Risques prioritaires identifiés</div>
+        </div>
+      </div>
+      <div class="phase-card phase-3">
+        <div class="phase-header">
+          <span class="ph-num">3</span>
+          <span class="ph-title">Traitement</span>
+        </div>
+        <div class="phase-body">
+          Pour chaque risque rouge/orange :<br>
+          Choisir une stratégie parmi <strong>4 options</strong> (voir ci-dessous).<br>
+          Désigner un <strong>pilote unique</strong> + une échéance.
+          <div class="ph-livrable">Registre des risques v1 → CA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MATRICE ── -->
+<div class="section">
+  <div class="section-header">
+    <span class="sh-num">3</span>
+    La matrice Impact × Probabilité (grille 3×3)
+  </div>
+  <div class="section-body">
+    <div class="matrix-wrap">
+      <div class="matrix-container">
+        <div class="matrix-title">Impact × Probabilité</div>
+        <div class="matrix-grid">
+          <!-- Row 1 : Impact Fort (haut) -->
+          <div class="matrix-cell cell-label-y" style="grid-row:1;grid-column:1;font-size:0.55rem;">Fort</div>
+          <div class="matrix-cell z-orange" style="grid-row:1;grid-column:2;">3</div>
+          <div class="matrix-cell z-red"    style="grid-row:1;grid-column:3;">6</div>
+          <div class="matrix-cell z-red"    style="grid-row:1;grid-column:4;">9</div>
+          <!-- Row 2 : Impact Moyen -->
+          <div class="matrix-cell cell-label-y" style="grid-row:2;grid-column:1;font-size:0.55rem;">Moyen</div>
+          <div class="matrix-cell z-green"  style="grid-row:2;grid-column:2;">2</div>
+          <div class="matrix-cell z-orange" style="grid-row:2;grid-column:3;">4</div>
+          <div class="matrix-cell z-red"    style="grid-row:2;grid-column:4;">6</div>
+          <!-- Row 3 : Impact Faible (bas) -->
+          <div class="matrix-cell cell-label-y" style="grid-row:3;grid-column:1;font-size:0.55rem;">Faible</div>
+          <div class="matrix-cell z-green"  style="grid-row:3;grid-column:2;">1</div>
+          <div class="matrix-cell z-green"  style="grid-row:3;grid-column:3;">2</div>
+          <div class="matrix-cell z-orange" style="grid-row:3;grid-column:4;">3</div>
+          <!-- Row 4 : labels X -->
+          <div style="grid-row:4;grid-column:1;"></div>
+          <div class="matrix-cell cell-label-x" style="grid-row:4;grid-column:2;font-size:0.55rem;">Faible</div>
+          <div class="matrix-cell cell-label-x" style="grid-row:4;grid-column:3;font-size:0.55rem;">Moyen</div>
+          <div class="matrix-cell cell-label-x" style="grid-row:4;grid-column:4;font-size:0.55rem;">Fort</div>
+        </div>
+        <div style="text-align:center; font-family:var(--mono); font-size:0.58rem; color:var(--text-muted); margin-top:5px;">← Probabilité →</div>
+      </div>
+      <div class="matrix-legend">
+        <div style="font-family:var(--mono);font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;">Zones</div>
+        <div class="legend-item legend-red">
+          <div class="legend-dot"></div>
+          <div><strong style="display:block;font-size:0.75rem;">Zone rouge</strong>Action prioritaire — traitement obligatoire</div>
+          <span class="li-score">6–9</span>
+        </div>
+        <div class="legend-item legend-orange">
+          <div class="legend-dot"></div>
+          <div><strong style="display:block;font-size:0.75rem;">Zone orange</strong>À surveiller — plan d'action à définir</div>
+          <span class="li-score">3–4</span>
+        </div>
+        <div class="legend-item legend-green">
+          <div class="legend-dot"></div>
+          <div><strong style="display:block;font-size:0.75rem;">Zone verte</strong>Risque acceptable — à monitorer</div>
+          <span class="li-score">1–2</span>
+        </div>
+        <div style="margin-top:14px; font-size:0.72rem; color:var(--text-muted); line-height:1.6; font-style:italic;">
+          Cotation = Probabilité × Impact.<br>
+          Évaluation simplifiée à 3 niveaux (1/2/3) pour aller vite et éviter les débats sur des demi-points.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 4 STRATÉGIES ── -->
+<div class="section">
+  <div class="section-header">
+    <span class="sh-num">4</span>
+    Les 4 stratégies de traitement
+  </div>
+  <div class="section-body">
+    <table class="treatment-table">
+      <thead>
+        <tr>
+          <th>Stratégie</th>
+          <th>Définition</th>
+          <th>Exemple AfrSCM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="strat-badge s-reduire">Réduire</span></td>
+          <td>Actions pour baisser la probabilité ou l'impact</td>
+          <td>Rédiger des procédures et doubler les compétences sur les outils clés pour pallier un départ</td>
+        </tr>
+        <tr>
+          <td><span class="strat-badge s-transferer">Transférer</span></td>
+          <td>Déporter le risque financier vers un tiers</td>
+          <td>Souscrire une assurance « Annulation d'événement » pour le congrès annuel</td>
+        </tr>
+        <tr>
+          <td><span class="strat-badge s-eviter">Éviter</span></td>
+          <td>Supprimer l'activité génératrice de risque</td>
+          <td>Refuser un partenariat sponsor dont les pratiques contredisent la charte éthique</td>
+        </tr>
+        <tr>
+          <td><span class="strat-badge s-accepter">Accepter</span></td>
+          <td>Assumer en connaissance de cause (coût de réduction &gt; impact)</td>
+          <td>Accepter la fluctuation mineure du prix des billets de train pour les intervenants</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.74rem; color:var(--text-muted); margin-top:12px; font-style:italic;">
+      Chaque action retenue doit avoir un <strong>pilote unique</strong> (membre du comité ou permanent) et une <strong>échéance</strong>.
+    </p>
+  </div>
+</div>
+
+<!-- ── GARDE-FOUS ── -->
+<div class="section">
+  <div class="section-header">
+    <span class="sh-num">5</span>
+    Ce qu'on ne fait PAS — pour ne pas se décourager
+  </div>
+  <div class="section-body">
+    <div class="guardrails">
+      <div class="guardrail-item">
+        <span class="gi-icon">🚫</span>
+        <div><strong>Pas d'échelle à 4 ou 5 niveaux</strong>Les débats sur "est-ce un 3 ou un 4 ?" font perdre du temps. On reste sur 1/2/3.</div>
+      </div>
+      <div class="guardrail-item">
+        <span class="gi-icon">🚫</span>
+        <div><strong>Pas de PCA complet dès V1</strong>La criticité résiduelle, le Plan de Continuité d'Activité détaillé — c'est pour après, si on en a besoin.</div>
+      </div>
+      <div class="guardrail-item">
+        <span class="gi-icon">🚫</span>
+        <div><strong>Pas d'outil sophistiqué</strong>Un tableau HTML dans le projet suffit en V1. Pas de logiciel dédié, pas d'abonnement SaaS.</div>
+      </div>
+      <div class="guardrail-item">
+        <span class="gi-icon">🚫</span>
+        <div><strong>Pas d'exhaustivité</strong>10–15 risques traités valent mieux que 40 listés sans suite. On cible le top prioritaire.</div>
+      </div>
+      <div class="guardrail-item">
+        <span class="gi-icon">✅</span>
+        <div><strong>Revue 2× par an maximum</strong>Avant chaque CA — pas plus. L'outil doit servir, pas alourdir.</div>
+      </div>
+      <div class="guardrail-item">
+        <span class="gi-icon">✅</span>
+        <div><strong>Présentation CA</strong>La cartographie finalisée est présentée et validée par le CA — ce qui responsabilise les administrateurs.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── VOTE ── -->
+<div class="section">
+  <div class="section-header">
+    <span class="sh-num">6</span>
+    Décision à prendre ce soir
+  </div>
+  <div class="section-body">
+    <div class="vote-box">
+      <div class="vote-label">🗳 Vote du comité</div>
+      <div class="vote-question">Quel périmètre pour notre cartographie des risques ?</div>
+      <div class="vote-options">
+        <button class="vote-opt" onclick="vote(this, 'RSE uniquement (E/S/G)')">RSE uniquement — E / S / G</button>
+        <button class="vote-opt" onclick="vote(this, 'Périmètre global (E/S/G + F/O/X)')">Périmètre global — E / S / G + F / O / X</button>
+        <button class="vote-opt" onclick="vote(this, 'À décider lors d\'une prochaine réunion')">Décider à la prochaine réunion</button>
+      </div>
+      <div class="vote-result" id="vote-result"></div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div style="font-family:var(--mono);font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:10px;">Et pour la cotation ?</div>
+      <div class="vote-options">
+        <button class="vote-opt" onclick="vote2(this, 'Cotation ce soir')">On code les risques ce soir</button>
+        <button class="vote-opt" onclick="vote2(this, 'Cotation lors de la prochaine réunion')">Cotation à la prochaine réunion</button>
+      </div>
+      <div class="vote-result" id="vote-result2"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function vote(btn, label) {
+  btn.closest('.vote-options').querySelectorAll('.vote-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const r = document.getElementById('vote-result');
+  r.textContent = '✓ Décision retenue : ' + label;
+  r.classList.add('visible');
+}
+function vote2(btn, label) {
+  btn.closest('.vote-options').querySelectorAll('.vote-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const r = document.getElementById('vote-result2');
+  r.textContent = '✓ Décision retenue : ' + label;
+  r.classList.add('visible');
+}
+</script>
+
+</body>
+</html>
